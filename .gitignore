@@ -1,0 +1,23 @@
+# Whitelist — ignore everything, then explicitly allow toolbox content
+*
+!.gitignore
+!CLAUDE.md
+!development.md
+
+!docs/
+!docs/**
+
+!skills/
+!skills/**
+
+!standards/
+!standards/**
+
+!templates/
+!templates/**
+
+!memory/
+!memory/MEMORY.md
+
+!.claude/
+!.claude/settings.json
