@@ -7,10 +7,13 @@ Run this when starting a new project, repo, service, or tool with no existing co
 
 ## Steps
 
-### 1. Load Global Context
-Read Layer 1 and Layer 2:
-- `{{TOOLBOX_PATH}}/memory/MEMORY.md` — global preferences and learnings
-- `{{TOOLBOX_PATH}}/standards/universal/` — all 5 universal standard files
+### 1. Load Global Context and Detect Stack (parallel)
+
+Run both of these at the same time — they have no dependency on each other:
+
+- Read `{{TOOLBOX_PATH}}/memory/MEMORY.md` — global preferences and learnings
+- Read `{{TOOLBOX_PATH}}/standards/universal/` — all 5 universal standard files
+- Check working directory for stack signals: `package.json`, `go.mod`, `requirements.txt`, `Cargo.toml`, `pyproject.toml`, etc.
 
 ### 2. Collect the Idea
 Ask the user for input in the most natural way:
@@ -18,21 +21,23 @@ Ask the user for input in the most natural way:
 - **Structured prompts**: Ask about goal, users, key constraints, success criteria
 - **Existing spec**: If the user has a doc, read it first instead of asking
 
-### 3. Detect or Choose Stack
-1. Check working directory for signals: `package.json`, `go.mod`, `requirements.txt`, `Cargo.toml`, `pyproject.toml`, etc.
-2. If signals found → propose the detected stack and ask to confirm
-3. If no signals → ask: "What stack are you using?"
-4. If stack directory exists at `{{TOOLBOX_PATH}}/standards/stacks/<stack>/` → load it
-5. If stack is new → research current best practices, draft a new standards file, get user approval, save to `{{TOOLBOX_PATH}}/standards/stacks/<new-stack>/`
+### 3. Confirm Stack
+
+1. If signals found in Step 1 → propose the detected stack and ask to confirm
+2. If no signals → ask: "What stack are you using?"
+3. If stack directory exists at `{{TOOLBOX_PATH}}/standards/stacks/<stack>/` → load it
+4. If stack is new → research current best practices, draft a new standards file, get user approval, save to `{{TOOLBOX_PATH}}/standards/stacks/<new-stack>/`
 
 ### 4. Brainstorm + Plan
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Brainstorm and scope a new project."
-Then invoke `superpowers:brainstorming` using the chosen model to scope and design the project.
+
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Brainstorm and plan a new project."
+Use the returned model for both agent calls below.
+
+Invoke `superpowers:brainstorming` using the chosen model to scope and design the project.
 
 If the project has a UI — any frontend, mobile app, dashboard, landing page, or user-facing screens — invoke the `ui-ux-pro-max` skill now to establish the design system (style, color palette, typography) before writing the plan.
 
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Write the implementation plan for the project."
-Then invoke `superpowers:writing-plans` using the chosen model to produce the implementation plan.
+Invoke `superpowers:writing-plans` using the chosen model to produce the implementation plan.
 
 ### 5. Scaffold the Project
 Create the following structure in the project root:
