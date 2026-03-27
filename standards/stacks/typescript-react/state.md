@@ -17,6 +17,7 @@ Reach for global state only when state is genuinely cross-cutting. If only two c
 
 ```tsx
 // Stable context pattern
+type Theme = 'light' | 'dark'
 const ThemeContext = createContext<Theme | null>(null)
 
 function ThemeProvider({ children }: { children: ReactNode }) {
