@@ -51,16 +51,18 @@ export async function GET(
 - Server Actions throw errors; Route Handlers return `NextResponse` with status codes
 
 ## Server Action Return Values
-When used with `useActionState` (React 19 / Next.js 15), return a typed result instead of throwing — this enables field-level error display without an error boundary:
+When used with `useActionState` (React 19 / Next.js 15), return a typed result instead of throwing — this enables field-level error display without an error boundary. Replace the throwing pattern above with this signature:
 
 ```ts
 type ActionResult = { success: true } | { success: false; error: string }
 
-export async function updateProfile(
+export async function updateProfileAction(
   _prev: ActionResult,
   formData: FormData
 ): Promise<ActionResult> {
-  const parsed = UpdateProfileSchema.safeParse({ ... })
+  const parsed = UpdateProfileSchema.safeParse({
+    // extract fields from formData
+  })
   if (!parsed.success) return { success: false, error: parsed.error.message }
   await userService.update(parsed.data)
   return { success: true }
