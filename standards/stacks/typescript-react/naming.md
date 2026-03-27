@@ -4,7 +4,8 @@
 - Components: `PascalCase.tsx` (e.g., `UserCard.tsx`)
 - Hooks: `useCamelCase.ts` (e.g., `useCurrentUser.ts`)
 - Utilities/helpers: `camelCase.ts` (e.g., `formatDate.ts`)
-- Constants: `SCREAMING_SNAKE_CASE.ts` (e.g., `API_ROUTES.ts`)
+- Flat constants: `SCREAMING_SNAKE_CASE.ts` (e.g., `API_ROUTES.ts`)
+- Config/object constants: `camelCase.ts` (e.g., `apiConfig.ts`)
 - Types-only files: `camelCase.types.ts` (e.g., `user.types.ts`)
 
 ## Folders
