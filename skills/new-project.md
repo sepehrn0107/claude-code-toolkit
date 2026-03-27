@@ -26,8 +26,11 @@ Ask the user for input in the most natural way:
 5. If stack is new → research current best practices, draft a new standards file, get user approval, save to `{{TOOLBOX_PATH}}/standards/stacks/<new-stack>/`
 
 ### 4. Brainstorm + Plan
-Invoke `superpowers:brainstorming` to scope and design the project.
-Then invoke `superpowers:writing-plans` to produce the implementation plan.
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Brainstorm and scope a new project."
+Then invoke `superpowers:brainstorming` using the chosen model to scope and design the project.
+
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Write the implementation plan for the project."
+Then invoke `superpowers:writing-plans` using the chosen model to produce the implementation plan.
 
 ### 5. Scaffold the Project
 Create the following structure in the project root:
