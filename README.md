@@ -2,6 +2,8 @@
 
 A cross-repo development assistant built on Claude Code. It brings coding standards, memory, and workflow skills to every project — automatically.
 
+When you open any project in Claude Code, the toolbox is already there: it loads your standards, reads project memory so you never repeat context, and guides each phase of development with the right workflow. You run one command; it handles the rest.
+
 ---
 
 ## Getting Started
@@ -48,7 +50,7 @@ Layer 4 — Session context        progress.md (written each session)
 
 **Standards** live in `standards/universal/` (applies everywhere) and `standards/stacks/<stack>/` (detected automatically per project).
 
-**Skills** in `skills/` orchestrate the right workflow for each phase of development. They chain together superpowers skills (brainstorming, TDD, code review, etc.) so the right process is always followed.
+**Skills** in `skills/` orchestrate the right workflow for each phase of development. They chain together superpowers skills — a suite of workflow skills built into Claude Code (brainstorming, TDD, code review, etc.) — so the right process is always followed.
 
 **Memory** persists context across sessions — project goals, stack decisions, architectural choices, lessons learned. Nothing is re-explained from scratch.
 
@@ -56,7 +58,7 @@ Layer 4 — Session context        progress.md (written each session)
 
 ## Model Selection
 
-When the toolbox launches a sub-agent, it automatically picks the most cost-effective model for the task.
+When the toolbox runs a complex workflow step, it dispatches a sub-agent — a focused Claude process with its own context — to handle that step. It automatically picks the most cost-effective model for the task.
 
 ### Memory-first policy
 
