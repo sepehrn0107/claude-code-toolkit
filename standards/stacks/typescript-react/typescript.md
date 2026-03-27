@@ -3,7 +3,7 @@
 ## Configuration
 - `strict: true` in `tsconfig.json` — always, no exceptions
 - `noUncheckedIndexedAccess: true` — catches undefined array access at compile time
-- `exactOptionalPropertyTypes: true` — optional props (`foo?: string`) only accept `string`, not `string | undefined`; explicitly pass `undefined` if you need to unset a value
+- `exactOptionalPropertyTypes: true` — optional props (`foo?: string`) only accept `string`, not `string | undefined`; to allow `undefined`, widen the type to `foo?: string | undefined`
 
 ## No `any`
 - Never use `any` — use `unknown` with type narrowing instead
