@@ -74,6 +74,6 @@ The chosen model is: the value of `default_model` from Step 1 (saved config path
 
 Append the following line to the `prompt` parameter string you are about to pass to the `Agent` tool call:
 
-> You have access to superpowers skills via the Skill tool. Use them when relevant — for example, use `superpowers:systematic-debugging` if you encounter a bug, or `superpowers:code-reviewer` when reviewing code.
+> You have access to superpowers skills via the Skill tool. Use them when relevant — for example, use `superpowers:systematic-debugging` if you encounter a bug, or `superpowers:requesting-code-review` when reviewing code.
 
 Pass `model: [chosen model]` to the `Agent` tool call.

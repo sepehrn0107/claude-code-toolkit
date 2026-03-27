@@ -108,7 +108,7 @@ Delete `memory/model-config.md` in the toolbox directory. The prompt will appear
 
 ## Sub-agents and Superpowers
 
-Every sub-agent launched by the toolbox is instructed to use superpowers skills when relevant. Sub-agents have the `Skill` tool available and will invoke skills like `superpowers:systematic-debugging` or `superpowers:code-reviewer` without you asking.
+Every sub-agent launched by the toolbox is instructed to use superpowers skills when relevant. Sub-agents have the `Skill` tool available and will invoke skills like `superpowers:systematic-debugging` or `superpowers:requesting-code-review` without you asking.
 
 ---
 

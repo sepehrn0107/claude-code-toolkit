@@ -36,9 +36,6 @@ Present each proposed change to the user one at a time. Do not make any changes 
 ### 4. Implement Approved Changes via PR
 For each approved change:
 
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Implement an approved toolbox change and open a PR."
-Use the chosen model for any agent work in this step.
-
 1. Create a branch in the local toolbox clone:
    ```bash
    cd {{TOOLBOX_PATH}}
