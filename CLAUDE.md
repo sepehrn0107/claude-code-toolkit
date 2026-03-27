@@ -32,6 +32,7 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 - /add-feature      → `skills/add-feature.md`
 - /standards-check  → `skills/standards-check.md`
 - /retrospective    → `skills/retrospective.md`
+- /add-stack-standards → `skills/add-stack-standards.md`
 
 ## Memory
 
