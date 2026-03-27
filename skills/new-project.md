@@ -29,6 +29,8 @@ Ask the user for input in the most natural way:
 Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Brainstorm and scope a new project."
 Then invoke `superpowers:brainstorming` using the chosen model to scope and design the project.
 
+If the project has a UI — any frontend, mobile app, dashboard, landing page, or user-facing screens — invoke the `ui-ux-pro-max` skill now to establish the design system (style, color palette, typography) before writing the plan.
+
 Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Write the implementation plan for the project."
 Then invoke `superpowers:writing-plans` using the chosen model to produce the implementation plan.
 
