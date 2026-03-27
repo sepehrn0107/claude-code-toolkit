@@ -71,7 +71,6 @@ If a base stack was identified in Step 3:
 
 Create `{{TOOLBOX_PATH}}/standards/stacks/<stack>/_base.md`:
 ```
-# Base stack declaration — read by load-standards to load base stack first
 base: <base-stack-name>
 ```
 
@@ -81,16 +80,25 @@ Open `{{TOOLBOX_PATH}}/skills/load-standards.md` and verify Step 2 ("Check for B
 - If present: nothing to do
 - If missing: add Step 2 as described in the load-standards skill file
 
-### 8. Register the Stack in CLAUDE.md and Template
+### 8. Register the New Skill in CLAUDE.md and Template
 
-Open `{{TOOLBOX_PATH}}/CLAUDE.md`. If a "Stacks" or similar section exists, add the new stack name.
-Open `{{TOOLBOX_PATH}}/templates/CLAUDE.global.md`. Apply the same addition.
+Open `{{TOOLBOX_PATH}}/CLAUDE.md` and find the **Lifecycle Skills** section. Add a line for the new stack's skill:
+
+```
+- /add-<stack>-standards → `skills/add-<stack>-standards.md`
+```
+
+Open `{{TOOLBOX_PATH}}/templates/CLAUDE.global.md` and add the same line using the `{{TOOLBOX_PATH}}` prefix:
+
+```
+- /add-<stack>-standards → {{TOOLBOX_PATH}}/skills/add-<stack>-standards.md
+```
 
 ### 9. Commit and Open PR
 
 ```bash
 git checkout -b feat/add-<stack>-standards
-git add standards/stacks/<stack>/
+git add standards/stacks/<stack>/ {{TOOLBOX_PATH}}/CLAUDE.md {{TOOLBOX_PATH}}/templates/CLAUDE.global.md
 git commit -m "feat: add <stack> standards"
 gh pr create --title "feat: add <stack> standards" --body "Adds substantive standards for the <stack> stack via /add-stack-standards."
 ```
