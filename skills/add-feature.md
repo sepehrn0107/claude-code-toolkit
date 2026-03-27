@@ -28,6 +28,8 @@ Then invoke `superpowers:brainstorming` using the chosen model to clarify:
 - What edge cases or constraints apply?
 - Does this decision warrant an ADR?
 
+If the feature involves UI work — screens, components, color palette, typography, layout, design system, or any visual styling — invoke the `ui-ux-pro-max` skill before moving to implementation.
+
 ### 4. Implement with TDD
 Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Implement the feature using test-driven development."
 Then invoke `superpowers:test-driven-development` using the chosen model.
