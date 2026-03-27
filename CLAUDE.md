@@ -49,7 +49,8 @@ When the user says "set up the toolbox":
 
 ## Always Apply
 
-- All changes to toolbox content go through GitHub PRs
+- **Before touching any file**: checkout a new branch. Never commit to master directly.
+- All changes go through GitHub PRs — never push to master directly
 - Never write back to this repo directly from project sessions — use PRs
 - When starting a new project with no context, run /new-project
 - When working in this repo, run /standards-check before committing
