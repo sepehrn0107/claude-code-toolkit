@@ -17,7 +17,10 @@ Use queries in this order — the first that works is the right one:
 2. `getByLabelText`
 3. `getByPlaceholderText`
 4. `getByText`
-5. `getByTestId` (last resort — add `data-testid` only when no semantic query works)
+5. `getByDisplayValue`
+6. `getByAltText`
+7. `getByTitle`
+8. `getByTestId` (last resort — add `data-testid` only when no semantic query works)
 
 Never query by class name, CSS selector, or component internals.
 
@@ -34,3 +37,14 @@ Never query by class name, CSS selector, or component internals.
 - No snapshot tests for logic — snapshots only for design-system leaf components with stable output
 - No `waitFor` polling loops — use `findBy*` queries for async elements
 - Do not test implementation: no spying on `setState`, no reading component props
+
+## User Interactions
+- Use `userEvent` (from `@testing-library/user-event`) for all user interactions — not `fireEvent`
+- `userEvent` simulates real browser behavior (focus, keyboard events, pointer events); `fireEvent` dispatches synthetic DOM events and misses many real-world scenarios
+- Always call `userEvent.setup()` before each test:
+
+```ts
+const user = userEvent.setup()
+await user.click(screen.getByRole('button', { name: /submit/i }))
+await user.type(screen.getByLabelText('Email'), 'user@example.com')
+```

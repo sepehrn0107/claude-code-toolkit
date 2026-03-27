@@ -3,7 +3,7 @@
 ## Configuration
 - `strict: true` in `tsconfig.json` — always, no exceptions
 - `noUncheckedIndexedAccess: true` — catches undefined array access at compile time
-- `exactOptionalPropertyTypes: true` — distinguishes missing from undefined
+- `exactOptionalPropertyTypes: true` — optional props (`foo?: string`) only accept `string`, not `string | undefined`; explicitly pass `undefined` if you need to unset a value
 
 ## No `any`
 - Never use `any` — use `unknown` with type narrowing instead
@@ -41,7 +41,14 @@ interface User { id: string; name: string }              // object shape → int
 ```ts
 // prefer this
 function isUser(value: unknown): value is User {
-  return typeof value === 'object' && value !== null && 'id' in value
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    typeof (value as Record<string, unknown>).id === 'string' &&
+    'name' in value &&
+    typeof (value as Record<string, unknown>).name === 'string'
+  )
 }
 
 // over this
@@ -51,4 +58,3 @@ const user = response as User
 ## Generics
 - Name type parameters descriptively for public APIs: `TItem`, `TResult`, not just `T`
 - Single-letter `T` is acceptable in short, obvious utility types
-```
