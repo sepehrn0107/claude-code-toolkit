@@ -8,9 +8,8 @@ Run this: before opening a PR, after a major implementation, or on demand.
 ## Steps
 
 ### 1. Load Active Standards
-Read:
-- `{{TOOLBOX_PATH}}/standards/universal/` — all 5 universal standard files
-- `{{TOOLBOX_PATH}}/standards/stacks/<stack>/` — if stack is set in `.claude/memory/stack.md`
+
+Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line.
 
 ### 2. Check Code Against Standards
 Review relevant code against each standard area:
@@ -23,11 +22,12 @@ Review relevant code against each standard area:
 
 ### 3. Code Review
 Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Review code against standards and best practices."
-Then invoke `superpowers:requesting-code-review` using the chosen model.
+Use the returned model for Steps 3 and 4.
+
+Invoke `superpowers:requesting-code-review` using the chosen model.
 
 ### 4. Simplify
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Simplify and clarify recently changed code."
-Then invoke `code-simplifier` using the chosen model for a quality and clarity pass on recently changed code.
+Invoke `code-simplifier` using the chosen model for a quality and clarity pass on recently changed code.
 
 ### 5. Output Results
 Produce a checklist with pass/fail for each area, with file references for failures:

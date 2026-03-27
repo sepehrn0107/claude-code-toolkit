@@ -30,3 +30,4 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - Follow active stack standards
 - Write session summary to progress.md when stopping work
 - When starting a new project with no context, run /new-project
+- When two or more steps have no data dependency between them, run them in parallel using multiple tool calls in a single message

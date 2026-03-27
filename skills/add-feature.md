@@ -7,22 +7,28 @@ Run this when adding a new feature, endpoint, component, or capability to an exi
 
 ## Steps
 
-### 1. Load Standards (blocking)
+### 1. Load Standards and Project Context (parallel)
 
-Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line before continuing.
-Do not write or edit any code until standards are loaded and acknowledged.
+Run both of these at the same time — they have no dependency on each other:
 
-### 2. Load Project Context
-Read Layer 3 — project memory:
-- `.claude/memory/MEMORY.md` — index of all memory files
-- `.claude/memory/stack.md` — active stack and which standards to apply
-- `.claude/memory/architecture.md` — existing structure and key components
-- `.claude/memory/progress.md` — current phase and what's been done
-- `.claude/memory/decisions/*.md` — any relevant ADRs
+- Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line
+- Read Layer 3 — project memory:
+  - `.claude/memory/MEMORY.md` — index of all memory files
+  - `.claude/memory/stack.md` — active stack and which standards to apply
+  - `.claude/memory/architecture.md` — existing structure and key components
+  - `.claude/memory/progress.md` — current phase and what's been done
+  - `.claude/memory/decisions/*.md` — any relevant ADRs
+
+Do not write or edit any code until `/load-standards` has confirmed.
+
+### 2. Select Model
+
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Implement a feature: scoping, TDD, and verification."
+Use the returned model for all agent calls in Steps 3–5.
 
 ### 3. Scope the Feature
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Scope and design the feature via brainstorming."
-Then invoke `superpowers:brainstorming` using the chosen model to clarify:
+
+Invoke `superpowers:brainstorming` using the chosen model to clarify:
 - What exactly is being added?
 - Where does it fit in the existing architecture?
 - What edge cases or constraints apply?
@@ -31,36 +37,21 @@ Then invoke `superpowers:brainstorming` using the chosen model to clarify:
 If the feature involves UI work — screens, components, color palette, typography, layout, design system, or any visual styling — invoke the `ui-ux-pro-max` skill before moving to implementation.
 
 ### 4. Implement with TDD
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Implement the feature using test-driven development."
-Then invoke `superpowers:test-driven-development` using the chosen model.
+
+Invoke `superpowers:test-driven-development` using the chosen model.
 Follow red-green-refactor for all business logic.
 
 ### 5. Verify Before Declaring Done
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Verify the feature is complete and correct."
-Then invoke `superpowers:verification-before-completion` using the chosen model.
+
+Invoke `superpowers:verification-before-completion` using the chosen model.
 Do not claim the feature is complete until this passes.
 
 ### 6. Write ADR (if applicable)
-If an architectural decision was made during implementation, write an ADR:
 
-**File:** `.claude/memory/decisions/YYYY-MM-DD-<slug>.md`
+If an architectural decision was made during implementation, write an ADR to:
+`.claude/memory/decisions/YYYY-MM-DD-<slug>.md`
 
-```markdown
-# Decision: <title>
-Date: YYYY-MM-DD
-
-## Context
-What situation prompted this decision?
-
-## Decision
-What was decided?
-
-## Consequences
-What are the trade-offs?
-
-## Alternatives Considered
-What else was considered and why rejected?
-```
+Use the template at `{{TOOLBOX_PATH}}/templates/ADR.md`.
 
 ### 7. Update Progress
 Update `.claude/memory/progress.md`:
