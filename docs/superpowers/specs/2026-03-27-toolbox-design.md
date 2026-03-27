@@ -22,9 +22,10 @@ Layer 4 — Session context        auto-written to progress.md each session
 ```
 
 ### Distribution model
-- The `toolbox/` repo is the **source of truth** — it is never modified during a project
-- Projects pull from it at bootstrap time
-- Only `/retrospective` writes back to it (with user approval)
+- The `toolbox/` repo is the **source of truth** — hosted at `https://github.com/sepehrn0107/toolbox`
+- Each user clones their own copy; skills are loaded from their local clone path
+- Projects pull templates from it at bootstrap time
+- Nothing is written back to the toolbox directly — all changes go through GitHub PRs
 - No symlinks, no submodules, no scripts — all markdown + git + Claude Code
 
 ---
@@ -54,9 +55,17 @@ toolbox/
 │       ├── go/
 │       └── ...
 │
+├── skills/                            # Lifecycle skills — source of truth
+│   ├── new-project.md
+│   ├── add-feature.md
+│   ├── standards-check.md
+│   └── retrospective.md
+│
 ├── templates/
 │   ├── CLAUDE.md.template             # Base project CLAUDE.md
+│   ├── CLAUDE.global.md               # Template for ~/.claude/CLAUDE.md (setup once)
 │   ├── memory/                        # Starter memory files for new projects
+│   │   ├── MEMORY.md
 │   │   ├── project_context.md
 │   │   ├── stack.md
 │   │   ├── architecture.md
@@ -69,14 +78,9 @@ toolbox/
     └── superpowers/
         └── specs/
             └── 2026-03-27-toolbox-design.md
+```
 
-# Skill deployment
-toolbox/skills/*.md  →  (copied to)  →  ~/.claude/commands/*.md
-```
-Custom lifecycle skills are authored in `toolbox/skills/` (version controlled) and deployed to `~/.claude/commands/` to be available as slash commands in every repo. When a skill is updated in the toolbox, it is manually re-copied to `~/.claude/commands/`.
-
-```
-```
+Skills are loaded by absolute path from the local toolbox clone — not copied anywhere. `~/.claude/CLAUDE.md` tells Claude where to find each skill. Updating a skill in the toolbox takes effect immediately.
 
 ### New project structure (bootstrapped by `/new-project`)
 
@@ -135,9 +139,10 @@ Run at project completion, a significant milestone, or automatically prompted on
 
 1. Read full project memory (Layer 3)
 2. Extract: what worked, what didn't, new patterns, stack-specific learnings
-3. Propose updates to `toolbox/standards/stacks/<stack>/` — user approves each
-4. Optionally promote reusable patterns to `toolbox/standards/universal/`
-5. Write summary to toolbox global memory (Layer 1)
+3. Draft proposed changes: updated standards, new skills, or promoted universal patterns
+4. User approves each proposed change
+5. For each approved change: create a branch in the local toolbox clone, commit the content, and open a PR to `https://github.com/sepehrn0107/toolbox` with a detailed description of what was learned and why it's being proposed
+6. Write summary to toolbox global memory (Layer 1)
 
 ### Superpowers integration map
 
@@ -217,38 +222,40 @@ lessons.md captures learnings during development
     ↓
 /retrospective extracts patterns, proposes toolbox updates
     ↓
-User approves → standards/stacks/<stack>/ updated
+User approves → PR opened to github.com/sepehrn0107/toolbox
     ↓
-Next project using same stack inherits the improvement
+PR merged → all users inherit the improvement on next pull
     ↓
-Universal patterns promoted to standards/universal/
+Universal patterns promoted to standards/universal/ via the same PR flow
 ```
 
-Nothing is written back to the toolbox without explicit user approval.
+Nothing is written back to the toolbox without explicit user approval. All changes go through GitHub PRs — the PR is the approval mechanism.
 
 ---
 
 ## `~/.claude/CLAUDE.md` — Global Activation File
 
-This file makes the toolbox available in every repo automatically. It is maintained in the toolbox repo and manually synced to `~/.claude/CLAUDE.md`.
+This file makes the toolbox available in every repo automatically. It is maintained in the toolbox repo at `toolbox/templates/CLAUDE.global.md` and copied once to `~/.claude/CLAUDE.md` during initial setup (the only manual step in setup).
 
 ```markdown
 # Toolbox
 
 Standards, memory, and lifecycle skills for all projects.
+Source: https://github.com/sepehrn0107/toolbox (local clone: C:/Users/<you>/Documents/toolbox)
 
 ## Standards
-- Universal: C:/Users/sepeh/Documents/toolbox/standards/universal/
+- Universal: C:/Users/<you>/Documents/toolbox/standards/universal/
 - Stack-specific: loaded per project via .claude/memory/stack.md
 
 ## Lifecycle Skills
-- /new-project      — start a new project from scratch
-- /add-feature      — add a feature to an existing project
-- /standards-check  — review code against active standards
-- /retrospective    — capture learnings and evolve the toolbox
+Skills are loaded from the local toolbox clone. Read the skill file before following it.
+- /new-project      → C:/Users/<you>/Documents/toolbox/skills/new-project.md
+- /add-feature      → C:/Users/<you>/Documents/toolbox/skills/add-feature.md
+- /standards-check  → C:/Users/<you>/Documents/toolbox/skills/standards-check.md
+- /retrospective    → C:/Users/<you>/Documents/toolbox/skills/retrospective.md
 
 ## Memory
-- Global memory: C:/Users/sepeh/Documents/toolbox/memory/MEMORY.md
+- Global memory: C:/Users/<you>/Documents/toolbox/memory/MEMORY.md
 - Project memory: .claude/memory/MEMORY.md (when present)
 
 ## Always apply
@@ -257,6 +264,8 @@ Standards, memory, and lifecycle skills for all projects.
 - Write session summary to progress.md when stopping work
 - When starting a new project with no context, run /new-project
 ```
+
+Users replace `<you>` with their username once during setup.
 
 ---
 
