@@ -22,10 +22,12 @@ Review relevant code against each standard area:
 - **Documentation**: README present and current, ADRs written for key decisions, non-obvious code commented
 
 ### 3. Code Review
-Invoke `superpowers:requesting-code-review`.
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Review code against standards and best practices."
+Then invoke `superpowers:requesting-code-review` using the chosen model.
 
 ### 4. Simplify
-Invoke `code-simplifier` for a quality and clarity pass on recently changed code.
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Simplify and clarify recently changed code."
+Then invoke `code-simplifier` using the chosen model for a quality and clarity pass on recently changed code.
 
 ### 5. Output Results
 Produce a checklist with pass/fail for each area, with file references for failures:
