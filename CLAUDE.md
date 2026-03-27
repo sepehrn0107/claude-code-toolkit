@@ -33,6 +33,7 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 - /standards-check  → `skills/standards-check.md`
 - /retrospective    → `skills/retrospective.md`
 - /add-stack-standards → `skills/add-stack-standards.md`
+- /local-llm        → `skills/local-llm.md` (called automatically by select-model for local tier)
 
 ## Memory
 
@@ -55,3 +56,4 @@ When the user says "set up the toolbox":
 - Never write back to this repo directly from project sessions — use PRs
 - When starting a new project with no context, run /new-project
 - When working in this repo, run /standards-check before committing
+- Model tiers: `local` (Ollama, zero cost) → `haiku` → `sonnet` → `opus`. Use `local` only for single-shot, fully-specified text tasks with no tool access needed. See `docs/local-llm-setup.md` for Ollama setup.
