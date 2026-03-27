@@ -21,18 +21,21 @@ Read Layer 3 — project memory:
 - `.claude/memory/decisions/*.md` — any relevant ADRs
 
 ### 3. Scope the Feature
-Invoke `superpowers:brainstorming` to clarify:
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Scope and design the feature via brainstorming."
+Then invoke `superpowers:brainstorming` using the chosen model to clarify:
 - What exactly is being added?
 - Where does it fit in the existing architecture?
 - What edge cases or constraints apply?
 - Does this decision warrant an ADR?
 
 ### 4. Implement with TDD
-Invoke `superpowers:test-driven-development`.
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Implement the feature using test-driven development."
+Then invoke `superpowers:test-driven-development` using the chosen model.
 Follow red-green-refactor for all business logic.
 
 ### 5. Verify Before Declaring Done
-Invoke `superpowers:verification-before-completion`.
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Verify the feature is complete and correct."
+Then invoke `superpowers:verification-before-completion` using the chosen model.
 Do not claim the feature is complete until this passes.
 
 ### 6. Write ADR (if applicable)
