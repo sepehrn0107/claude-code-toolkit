@@ -21,8 +21,8 @@ export default function ProductPage() {          // Server Component
   return <div><ProductInfo /><AddToCartButton /></div>
 }
 
+'use client'
 // AddToCartButton.tsx — "use client" scoped to only what needs it
-"use client"
 export function AddToCartButton() { ... }
 ```
 
@@ -38,4 +38,5 @@ Configure via `export const revalidate = N` in the segment, or `{ next: { revali
 ## Data Fetching
 - Fetch data in Server Components — avoid fetching in Client Components when possible
 - Use `fetch` with Next.js cache options; do not wrap in `useEffect` for initial data
+- Next.js 15+: `fetch` is uncached by default (`no-store`) — opt in explicitly with `{ cache: 'force-cache' }` or `export const revalidate`. Next.js 14: `fetch` is cached by default — opt out with `{ cache: 'no-store' }`
 - For client-side dynamic data (search, filters), use SWR or React Query

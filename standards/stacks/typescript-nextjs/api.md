@@ -31,9 +31,14 @@ Use Route Handlers (`app/.../route.ts`) for API endpoints consumed by external c
 ```ts
 // app/api/users/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
+import { userService } from '@/services/user' // import from your service layer
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const user = await userService.findById(params.id)
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
+  const user = await userService.findById(id)
   if (!user) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   return NextResponse.json(user)
 }
@@ -44,6 +49,23 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 - Validate all inputs at the boundary with Zod — never trust client-provided data
 - Return consistent error shapes from Route Handlers: `{ error: string }`
 - Server Actions throw errors; Route Handlers return `NextResponse` with status codes
+
+## Server Action Return Values
+When used with `useActionState` (React 19 / Next.js 15), return a typed result instead of throwing — this enables field-level error display without an error boundary:
+
+```ts
+type ActionResult = { success: true } | { success: false; error: string }
+
+export async function updateProfile(
+  _prev: ActionResult,
+  formData: FormData
+): Promise<ActionResult> {
+  const parsed = UpdateProfileSchema.safeParse({ ... })
+  if (!parsed.success) return { success: false, error: parsed.error.message }
+  await userService.update(parsed.data)
+  return { success: true }
+}
+```
 
 ## What Not to Do
 - Do not create a Route Handler for mutations that are only called from your own UI — use Server Actions

@@ -12,6 +12,8 @@
 | `loading.tsx` | Automatic Suspense fallback for the segment |
 | `error.tsx` | Error boundary for the segment — must be a Client Component |
 | `not-found.tsx` | UI for `notFound()` calls within the segment |
+| `template.tsx` | Like a layout but creates a new instance on each navigation — use for animations or per-page state reset |
+| `default.tsx` | Fallback UI for a parallel route slot when no match exists |
 | `route.ts` | API Route Handler — no UI |
 
 ## Route Organization
