@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(git -C /c/Users/sepeh/Documents/toolbox log --oneline -5)",
+      "Bash(git add:*)"
     ]
   }
 }
