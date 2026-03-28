@@ -47,7 +47,12 @@ When the user says "set up the toolbox":
 2. Read `templates/CLAUDE.global.md`
 3. Replace every `{{TOOLBOX_PATH}}` with the detected path
 4. Write the result to `~/.claude/CLAUDE.md`
-5. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>"
+5. Create `~/.claude/hooks/` if it does not exist
+6. Copy `templates/hooks/session-start.sh` to `~/.claude/hooks/session-start.sh`
+7. Copy `templates/hooks/pre-tool-standards-gate.sh` to `~/.claude/hooks/pre-tool-standards-gate.sh`
+8. Run `chmod +x ~/.claude/hooks/session-start.sh ~/.claude/hooks/pre-tool-standards-gate.sh`
+9. Read `~/.claude/settings.json` (or start from `{}` if absent), merge in the `hooks` block from `.claude/settings.json`, and write it back
+10. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>"
 
 ## Always Apply
 

@@ -69,3 +69,13 @@ Standards loaded: universal (9 files) — no typescript-react-specific rules yet
 ```
 
 This output is required before any code is written. Do not skip it.
+
+### 6. Set Session Flag
+
+After outputting the confirmation line, set the session flag so the PreToolUse gate allows edits through:
+
+```bash
+touch "/tmp/toolbox-standards-loaded-${CLAUDE_SESSION_ID:-$(pwd | md5sum | cut -c1-8)}"
+```
+
+Run this via the Bash tool. This is a silent step — do not announce it to the user.
