@@ -18,7 +18,10 @@ Run all at the same time — no dependencies between them:
   - `.claude/memory/architecture.md` — existing structure and key components
   - `.claude/memory/progress.md` — current phase and what's been done
   - `.claude/memory/decisions/*.md` — any relevant ADRs
-- If `.claude/index/README.md` exists, read it and `.claude/index/graph-clusters.json`
+- If `.claude/index/README.md` exists, launch a **sub-agent** (haiku model):
+  - Task: read `{{TOOLBOX_PATH}}/skills/query-index.md` and follow it
+  - Question: "Give me the high-level map: entry points, clusters, and which areas are most active"
+  - Return the answer to the parent session — do not read the index files yourself
 
 Do not write or edit any code until `/load-standards` has confirmed.
 
@@ -35,10 +38,13 @@ Invoke `superpowers:brainstorming` using the chosen model to clarify:
 - What edge cases or constraints apply?
 - Does this decision warrant an ADR?
 
-If the index is available (`.claude/index/` exists), use it during scoping to:
-- Identify which cluster(s) the feature touches
-- Find files likely to need changes (via `graph-imports.json`)
-- Understand what calls into and out of the affected area (`graph-calls.json`)
+If the index is available (`.claude/index/` exists), use it during scoping by launching
+targeted **sub-agents** (haiku model) via `{{TOOLBOX_PATH}}/skills/query-index.md`:
+- "Which cluster(s) does [feature area] belong to?"
+- "What files import [affected file]?" — to understand blast radius
+- "What calls [key function]?" — to understand call chain impact
+Launch each query as a separate sub-agent and use the returned answers to inform scoping.
+Do not read index files directly in the main session.
 
 If the feature involves UI work — screens, components, color palette, typography, layout, design system, or any visual styling — invoke the `ui-ux-pro-max` skill before moving to implementation.
 

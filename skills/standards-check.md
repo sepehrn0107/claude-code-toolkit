@@ -12,10 +12,13 @@ Run this: before opening a PR, after a major implementation, or on demand.
 Run both at the same time:
 
 - Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line
-- If `.claude/index/graph-imports.json` exists:
+- If `.claude/index/README.md` exists:
   - Run `git diff --name-only main` to get the list of changed files
-  - Look up each changed file in `graph-imports.json` and collect its `imported_by` entries
-  - This is the **blast radius** — review changed files and their direct importers, not the whole codebase
+  - Launch a **sub-agent** (haiku model) via `{{TOOLBOX_PATH}}/skills/query-index.md` with question:
+    "What are the direct importers (imported_by) of these files: [paste the changed file list]?
+     Also note which cluster(s) they belong to."
+  - The sub-agent reads `graph-imports.json` and `graph-clusters.json` and returns the blast radius
+  - Use the returned file list as the review scope — changed files plus their direct importers
 
 ### 2. Check Code Against Standards
 Review relevant code against each standard area:

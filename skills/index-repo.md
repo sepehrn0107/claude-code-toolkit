@@ -94,16 +94,19 @@ For `ollama`:
 python3 {{TOOLBOX_PATH}}/tools/indexer/semantic.py --index .claude/index
 ```
 
-### 4. Write Index README
+### 4. Write Index README (sub-agent)
 
+Launch a sub-agent (haiku model) with this task:
+
+```
 Read these files:
-- `.claude/index/files.json`
-- `.claude/index/graph-clusters.json`
-- `.claude/index/manifest.json`
+- .claude/index/files.json
+- .claude/index/graph-clusters.json
+- .claude/index/manifest.json
+- .claude/index/config.json (if it exists)
 
-Write `.claude/index/README.md` with this structure:
+Then write .claude/index/README.md with this structure:
 
-```markdown
 # Repo Index
 
 Last indexed: YYYY-MM-DD
@@ -112,10 +115,13 @@ Clusters: cluster1, cluster2, ...
 Semantic: none | tfidf | ollama (model-name)
 
 ## Entry Points
-(List files that are imported by many others but import few themselves, or named index/main/app)
+List files that are imported by many others but import few themselves,
+or files named index/main/app. Derive this from graph-clusters.json entry_points
+and files.json where imports array is short but imported_by is long.
 
 ## Clusters
-For each cluster, write one sentence describing what it contains based on the file paths and tags.
+For each cluster in graph-clusters.json, write one sentence describing what it
+contains based on the file paths, tags, and description fields.
 
 ## How to Query This Index
 - "What calls X?" → read graph-calls.json
@@ -124,6 +130,8 @@ For each cluster, write one sentence describing what it contains based on the fi
 - "Similar files to W" → read vectors.json (if semantic layer enabled)
 - Re-index after major changes: /index-repo
 ```
+
+Wait for the sub-agent to complete and confirm `.claude/index/README.md` was written.
 
 ### 5. Update Architecture Memory
 
