@@ -3,6 +3,30 @@
 Standards, memory, and lifecycle skills for all projects.
 Source: https://github.com/sepehrn0107/toolbox (local clone: {{TOOLBOX_PATH}})
 
+## Session Start (automatic)
+
+At the start of every session, before responding to the first message, do all of this silently:
+
+1. Check if `.claude/memory/MEMORY.md` exists in the current project
+2. If yes: read all memory files in parallel — `project_context.md`, `stack.md`, `architecture.md`, `progress.md`, `lessons.md`
+3. Also read `{{TOOLBOX_PATH}}/memory/MEMORY.md` to load global cross-project learnings
+4. Note whether `.claude/index/README.md` exists — if it does, it is available for code navigation
+5. Do not announce any of this — just have the context ready before responding
+
+## Automatic Skill Routing
+
+Detect user intent from the first message and route automatically — do not wait to be asked:
+
+| User says…                                                              | Auto-trigger                          |
+|-------------------------------------------------------------------------|---------------------------------------|
+| "add [X]", "implement [X]", "build [X]", "create [feature]"            | Read and follow `/add-feature` skill  |
+| "fix [X]", "debug [X]", "something is broken", "not working"            | Invoke `superpowers:systematic-debugging` |
+| "check this", "review [X]", "ready to merge", "before PR"              | Read and follow `/standards-check`    |
+| "new project", "starting fresh", "scaffold this"                        | Read and follow `/new-project`        |
+| Any code edit request (none of the above matched)                       | Run `/load-standards` then proceed    |
+
+Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following it. Do not ask the user to run the skill — just do it.
+
 ## Standards
 
 Before writing or editing any code, invoke `{{TOOLBOX_PATH}}/skills/load-standards.md`.
@@ -10,6 +34,10 @@ This is a blocking requirement — wait for the confirmation line before proceed
 
 The skill reads all universal standards and any stack-specific standards for the project.
 Do not read them manually or skip this step.
+
+## Before Any PR (automatic)
+
+When preparing to push code or open a PR — even if the user does not ask — automatically run `/standards-check` first. Do not skip this.
 
 ## Lifecycle Skills
 
