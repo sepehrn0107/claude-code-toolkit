@@ -20,6 +20,7 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /standards-check  → {{TOOLBOX_PATH}}/skills/standards-check.md
 - /retrospective    → {{TOOLBOX_PATH}}/skills/retrospective.md
 - /add-stack-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
+- /index-repo       → {{TOOLBOX_PATH}}/skills/index-repo.md
 
 ## Memory
 - Global memory: {{TOOLBOX_PATH}}/memory/MEMORY.md

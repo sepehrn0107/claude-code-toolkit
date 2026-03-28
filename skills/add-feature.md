@@ -7,9 +7,9 @@ Run this when adding a new feature, endpoint, component, or capability to an exi
 
 ## Steps
 
-### 1. Load Standards and Project Context (parallel)
+### 1. Load Standards, Project Context, and Index (parallel)
 
-Run both of these at the same time — they have no dependency on each other:
+Run all at the same time — no dependencies between them:
 
 - Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line
 - Read Layer 3 — project memory:
@@ -18,6 +18,7 @@ Run both of these at the same time — they have no dependency on each other:
   - `.claude/memory/architecture.md` — existing structure and key components
   - `.claude/memory/progress.md` — current phase and what's been done
   - `.claude/memory/decisions/*.md` — any relevant ADRs
+- If `.claude/index/README.md` exists, read it and `.claude/index/graph-clusters.json`
 
 Do not write or edit any code until `/load-standards` has confirmed.
 
@@ -33,6 +34,11 @@ Invoke `superpowers:brainstorming` using the chosen model to clarify:
 - Where does it fit in the existing architecture?
 - What edge cases or constraints apply?
 - Does this decision warrant an ADR?
+
+If the index is available (`.claude/index/` exists), use it during scoping to:
+- Identify which cluster(s) the feature touches
+- Find files likely to need changes (via `graph-imports.json`)
+- Understand what calls into and out of the affected area (`graph-calls.json`)
 
 If the feature involves UI work — screens, components, color palette, typography, layout, design system, or any visual styling — invoke the `ui-ux-pro-max` skill before moving to implementation.
 

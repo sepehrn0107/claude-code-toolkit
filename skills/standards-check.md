@@ -7,9 +7,15 @@ Run this: before opening a PR, after a major implementation, or on demand.
 
 ## Steps
 
-### 1. Load Active Standards
+### 1. Load Active Standards and Index (parallel)
 
-Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line.
+Run both at the same time:
+
+- Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line
+- If `.claude/index/graph-imports.json` exists:
+  - Run `git diff --name-only main` to get the list of changed files
+  - Look up each changed file in `graph-imports.json` and collect its `imported_by` entries
+  - This is the **blast radius** — review changed files and their direct importers, not the whole codebase
 
 ### 2. Check Code Against Standards
 Review relevant code against each standard area:

@@ -27,6 +27,16 @@ Apply on every task:
 - `/add-feature`     → {{TOOLBOX_PATH}}/skills/add-feature.md
 - `/standards-check` → {{TOOLBOX_PATH}}/skills/standards-check.md
 - `/retrospective`   → {{TOOLBOX_PATH}}/skills/retrospective.md
+- `/index-repo`      → {{TOOLBOX_PATH}}/skills/index-repo.md
+
+## Index (if initialized)
+
+If `.claude/index/` exists, read at session start:
+- `.claude/index/README.md` — repo map and cluster overview
+- `.claude/index/graph-clusters.json` — domain groupings
+
+Run `/index-repo` to build or refresh. Re-run after major refactors.
+Query on demand: "What calls X?", "What imports Y?", "Files in Z cluster?"
 
 ## Before Writing Code (blocking)
 
