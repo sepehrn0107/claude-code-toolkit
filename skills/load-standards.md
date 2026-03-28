@@ -25,13 +25,17 @@ Read `.claude/memory/stack.md` if it exists.
 
 ### 3. Read Universal Standards
 
-Read all five files — do not skip any:
+Read all files — do not skip any:
 
 - `{{TOOLBOX_PATH}}/standards/universal/architecture.md`
 - `{{TOOLBOX_PATH}}/standards/universal/security.md`
 - `{{TOOLBOX_PATH}}/standards/universal/git.md`
 - `{{TOOLBOX_PATH}}/standards/universal/testing.md`
 - `{{TOOLBOX_PATH}}/standards/universal/documentation.md`
+- `{{TOOLBOX_PATH}}/standards/universal/error-handling.md`
+- `{{TOOLBOX_PATH}}/standards/universal/debugging.md`
+- `{{TOOLBOX_PATH}}/standards/universal/code-review.md`
+- `{{TOOLBOX_PATH}}/standards/universal/observability.md`
 
 ### 4. Read Stack Standards
 
@@ -51,17 +55,17 @@ If a stack was identified in Step 1:
 Output a one-line acknowledgment listing what was loaded. Examples:
 
 ```
-Standards loaded: universal (architecture, security, git, testing, documentation) + typescript-react
+Standards loaded: universal (architecture, security, git, testing, documentation, error-handling, debugging, code-review, observability) + typescript-react
 ```
 
 With base stack inheritance:
 ```
-Standards loaded: universal (architecture, security, git, testing, documentation) + typescript-react (base) + typescript-nextjs
+Standards loaded: universal (9 files) + typescript-react (base) + typescript-nextjs
 ```
 
 If stack standards were empty:
 ```
-Standards loaded: universal (architecture, security, git, testing, documentation) — no typescript-react-specific rules yet
+Standards loaded: universal (9 files) — no typescript-react-specific rules yet
 ```
 
 This output is required before any code is written. Do not skip it.
