@@ -1,0 +1,9 @@
+# Optional dependencies for the semantic enrichment layer (semantic.py).
+# The base indexer (indexer.py) requires no dependencies — Python stdlib only.
+#
+# Install only if using TF-IDF mode:
+#   pip install -r requirements.txt
+#
+# Ollama mode requires no pip packages — it uses urllib from stdlib.
+
+scikit-learn>=1.3

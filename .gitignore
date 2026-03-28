@@ -20,5 +20,8 @@
 !memory/
 !memory/MEMORY.md
 
+!tools/
+!tools/**
+
 !.claude/
 !.claude/settings.json

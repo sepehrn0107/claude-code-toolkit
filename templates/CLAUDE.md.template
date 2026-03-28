@@ -27,6 +27,22 @@ Apply on every task:
 - `/add-feature`     → {{TOOLBOX_PATH}}/skills/add-feature.md
 - `/standards-check` → {{TOOLBOX_PATH}}/skills/standards-check.md
 - `/retrospective`   → {{TOOLBOX_PATH}}/skills/retrospective.md
+- `/index-repo`      → {{TOOLBOX_PATH}}/skills/index-repo.md
+
+## Index (if initialized)
+
+If `.claude/index/` exists, read at session start:
+- `.claude/index/README.md` — repo map and cluster overview
+- `.claude/index/graph-clusters.json` — domain groupings
+
+Run `/index-repo` to build or refresh. Re-run after major refactors.
+
+## Code Navigation
+
+When finding files or understanding code structure:
+1. If `.claude/index/` exists — launch a **sub-agent** via `{{TOOLBOX_PATH}}/skills/query-index.md` with the specific question. The sub-agent reads the relevant index files and returns precise results without flooding the main context.
+2. Fall back to Grep/Glob only if the index doesn't exist, or for specific string content searches.
+3. Never re-read files the index already summarizes — use the index answer and read source only when editing.
 
 ## Before Writing Code (blocking)
 

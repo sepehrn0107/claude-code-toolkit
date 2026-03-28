@@ -7,9 +7,18 @@ Run this: before opening a PR, after a major implementation, or on demand.
 
 ## Steps
 
-### 1. Load Active Standards
+### 1. Load Active Standards and Index (parallel)
 
-Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line.
+Run both at the same time:
+
+- Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line
+- If `.claude/index/README.md` exists:
+  - Run `git diff --name-only main` to get the list of changed files
+  - Launch a **sub-agent** (haiku model) via `{{TOOLBOX_PATH}}/skills/query-index.md` with question:
+    "What are the direct importers (imported_by) of these files: [paste the changed file list]?
+     Also note which cluster(s) they belong to."
+  - The sub-agent reads `graph-imports.json` and `graph-clusters.json` and returns the blast radius
+  - Use the returned file list as the review scope — changed files plus their direct importers
 
 ### 2. Check Code Against Standards
 Review relevant code against each standard area:
