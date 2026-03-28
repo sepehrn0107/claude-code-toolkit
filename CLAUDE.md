@@ -34,6 +34,7 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 - /retrospective    → `skills/retrospective.md`
 - /add-stack-standards → `skills/add-stack-standards.md`
 - /index-repo       → `skills/index-repo.md`
+- /openspace        → `skills/openspace.md`
 
 ## Memory
 
