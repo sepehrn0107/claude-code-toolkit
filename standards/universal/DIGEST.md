@@ -17,7 +17,7 @@
 
 ## git → {{TOOLBOX_PATH}}/standards/universal/git.md
 - Conventional commits: `type(scope): imperative summary ≤72 chars` (feat/fix/docs/refactor/test/chore)
-- Never commit to main directly; always branch + PR; one logical change per commit
+- **Never push to main/master** — always branch from main, commit there, open a PR; no exceptions
 - Never commit secrets, binaries, or generated files
 
 ## testing → {{TOOLBOX_PATH}}/standards/universal/testing.md
