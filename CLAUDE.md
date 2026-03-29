@@ -43,7 +43,7 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 ## Setup Skill
 
 When the user says "set up the toolbox":
-1. Detect the current working directory — this is `TOOLBOX_PATH`
+1. `TOOLBOX_PATH` is the absolute path to the directory containing **this CLAUDE.md file** — not the shell's current working directory, not the workspace root. Resolve it by finding where this file lives (e.g. if this file is at `/home/alice/workspace/toolbox/CLAUDE.md`, then `TOOLBOX_PATH = /home/alice/workspace/toolbox`).
 2. Read `templates/CLAUDE.global.md`
 3. Replace every `{{TOOLBOX_PATH}}` with the detected path
 4. Write the result to `~/.claude/CLAUDE.md`
