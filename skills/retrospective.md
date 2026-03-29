@@ -1,3 +1,8 @@
+---
+name: retrospective
+description: Captures learnings from a completed feature or project and proposes improvements to the toolbox. Use this at project completion, after significant milestones, or when the user says "retrospective", "retro", "capture learnings", or "what did we learn?" Also surfaces after /implement completes as an optional follow-up. Saves useful patterns to global memory and opens PRs to the toolbox repo for approved changes.
+---
+
 # /retrospective
 
 Capture learnings from a completed feature or project and propose toolbox improvements.

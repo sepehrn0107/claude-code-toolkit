@@ -1,3 +1,8 @@
+---
+name: index-repo
+description: Builds a structural index of the current repository for fast, precise code navigation. Use this when the user runs /index-repo, when Claude is struggling to find files or understand structure in a large codebase, after a major refactor, or when the user wants to enable semantic search. Also trigger this automatically after /new-project once initial code exists. If you find yourself doing repeated grep/glob searches to understand the codebase, suggest running this first.
+---
+
 # /index-repo
 
 Build a structural index of the current repo. Writes JSON files to `.claude/index/` describing

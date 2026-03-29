@@ -1,3 +1,8 @@
+---
+name: new-project
+description: Full scaffolding skill for starting any new project, repo, service, or tool from scratch. Use this when the user says "new project", "starting fresh", "scaffold this", or begins work in a directory with no existing project context. Handles stack detection, brainstorming, planning, memory scaffold creation, and git init. Always trigger this before /implement on a brand-new codebase — if there's no .claude/memory/ yet, this should run first.
+---
+
 # /new-project
 
 Entry point for starting any project from scratch.

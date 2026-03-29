@@ -1,3 +1,8 @@
+---
+name: project
+description: Workspace-level project context switcher for managing which repo is active across sessions. Use this when the user says "switch project", "change project", "work on [repo]", "what project am I on?", or wants to see available projects. Supports /project switch (change active project and load its memory), /project list (show all repos), and /project status (show active project summary). The active choice persists so future sessions auto-load the right context.
+---
+
 # /project
 
 Workspace-level project context switcher. Use when Claude Code is open at the workspace root

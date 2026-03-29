@@ -1,3 +1,8 @@
+---
+name: load-standards
+description: Mandatory pre-coding gate that loads all applicable standards (universal + stack-specific) before any code is written or edited. This skill must run before writing, editing, or reviewing any code — it sets the session flag that allows edits through the PreToolUse gate. Invoke it at the start of any direct coding task. If you're about to write code and haven't loaded standards yet, stop and run this first. Do not skip it even for small changes.
+---
+
 # /load-standards
 
 Mandatory gate before writing any code. Reads and activates all applicable standards for this project.
