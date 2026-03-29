@@ -3,6 +3,37 @@
 # Outputs a project brief when opening a toolbox-enabled project.
 # Installed to ~/.claude/hooks/session-start.sh by the toolbox setup skill.
 
+# Workspace mode: detect if we're in the workspace root (has memory/ but no .claude/memory/)
+if [ -f "memory/MEMORY.md" ] && [ ! -f ".claude/memory/MEMORY.md" ]; then
+  # Scan for user-facing git repos (exclude toolbox — it's infrastructure)
+  PROJECTS=$(for d in */; do
+    [ -d "${d}.git" ] && [ "${d%/}" != "toolbox" ] && printf "%s," "${d%/}"
+  done | sed 's/,$//')
+
+  ACTIVE=$(grep -m1 "^active:" memory/active-project.md 2>/dev/null \
+           | awk '{print $2}' | grep -v "^(none)$" || echo "")
+
+  echo "---"
+  if [ -n "$ACTIVE" ]; then
+    # Machine-readable tag + human hint on one line
+    echo "WORKSPACE_MODE:ACTIVE=${ACTIVE} | Projects: ${PROJECTS}"
+    echo "Active project: ${ACTIVE} — reply 'switch project' to change."
+  else
+    # Machine-readable tag first, then a human-readable selection list
+    echo "WORKSPACE_MODE:CHOOSE | Projects: ${PROJECTS}"
+    echo ""
+    echo "Which project are you working on? Reply with the name to load its context:"
+    N=1
+    IFS=',' read -ra PROJ_ARRAY <<< "$PROJECTS"
+    for p in "${PROJ_ARRAY[@]}"; do
+      echo "  ${N}. ${p}"
+      N=$((N+1))
+    done
+  fi
+  echo "---"
+  exit 0
+fi
+
 # Only activate if this is a toolbox-enabled project
 if [ ! -f ".claude/memory/MEMORY.md" ]; then
   exit 0
