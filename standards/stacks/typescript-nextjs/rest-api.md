@@ -42,6 +42,51 @@ Never mix fields across success and error shapes.
 | 409 | Conflict (e.g. duplicate) |
 | 500 | Unexpected server error |
 
+## Typed Error Hierarchy
+
+Define domain errors in `lib/errors.ts` that carry their own HTTP status codes. Services throw domain errors; handlers catch once at the boundary.
+
+```ts
+// lib/errors.ts
+export class AppError extends Error {
+  constructor(
+    message: string,
+    public readonly statusCode: number,
+    public readonly code?: string,
+  ) {
+    super(message)
+    this.name = this.constructor.name
+  }
+}
+
+export class NotFoundError extends AppError {
+  constructor(message = 'Not found') { super(message, 404, 'NOT_FOUND') }
+}
+export class UnauthorizedError extends AppError {
+  constructor(message = 'Unauthorized') { super(message, 401, 'UNAUTHORIZED') }
+}
+export class ForbiddenError extends AppError {
+  constructor(message = 'Forbidden') { super(message, 403, 'FORBIDDEN') }
+}
+export class ConflictError extends AppError {
+  constructor(message: string) { super(message, 409, 'CONFLICT') }
+}
+export class ValidationError extends AppError {
+  constructor(message: string) { super(message, 400, 'VALIDATION_ERROR') }
+}
+```
+
+Route handler catch block (pair with `ok()` / `err()` helpers):
+```ts
+} catch (e) {
+  if (e instanceof AppError) return err(e.message, e.statusCode, e.code)
+  console.error(e)
+  return err('Internal server error', 500)
+}
+```
+
+No HTTP status codes anywhere except `errors.ts` — services throw, handlers catch once.
+
 ## Route Handler Structure
 
 ```ts
