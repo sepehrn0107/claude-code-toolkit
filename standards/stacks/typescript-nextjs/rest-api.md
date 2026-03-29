@@ -71,9 +71,36 @@ export async function POST(req: NextRequest) {
 }
 ```
 
+## Response Helpers
+
+Extract `ok()` / `err()` into `lib/api-response.ts` to enforce the envelope shape in one place and keep handlers thin:
+
+```ts
+// lib/api-response.ts
+import { NextResponse } from 'next/server'
+
+export const ok = <T>(data: T, status = 200) =>
+  NextResponse.json({ data }, { status })
+
+export const err = (message: string, status = 500, code?: string) =>
+  NextResponse.json({ error: { message, ...(code && { code }) } }, { status })
+```
+
+Usage:
+```ts
+// app/api/exercises/route.ts
+export async function GET() {
+  const session = await requireSession()
+  if (!session) return err('Unauthorized', 401)
+  const exercises = await exerciseService.list(session.userId)
+  return ok(exercises)
+}
+```
+
 ## Rules
 - No business logic in route handlers — delegate to service functions
 - Always validate input with Zod at the boundary
 - Always check auth before any data access
 - Never leak internal error messages to clients — map to safe messages at boundary
 - Keep route handler files thin: auth check → validate → call service → return response
+- Use `ok()` / `err()` helpers — never inline `NextResponse.json` with envelope shapes directly
