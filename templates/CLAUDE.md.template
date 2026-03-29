@@ -24,7 +24,6 @@ Apply on every task:
 
 ## Lifecycle Skills
 
-- `/work-ticket`     → {{TOOLBOX_PATH}}/skills/work-ticket.md
 - `/add-feature`     → {{TOOLBOX_PATH}}/skills/add-feature.md
 - `/standards-check` → {{TOOLBOX_PATH}}/skills/standards-check.md
 - `/retrospective`   → {{TOOLBOX_PATH}}/skills/retrospective.md
@@ -49,9 +48,9 @@ When finding files or understanding code structure:
 
 Two modes depending on context:
 
-- **Orchestrating via `/work-ticket`**: read only `{{TOOLBOX_PATH}}/standards/universal/DIGEST.md`
+- **Orchestrating via `/add-feature`**: read only `{{TOOLBOX_PATH}}/standards/universal/DIGEST.md`
   (the compact 1-page reference). Full standards are loaded by sub-agents per phase.
-- **Direct code edit (simple `/add-feature` or one-off edits)**: invoke
+- **Direct one-off edits**: invoke
   `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line.
   This is a blocking requirement — do not proceed without it.
 

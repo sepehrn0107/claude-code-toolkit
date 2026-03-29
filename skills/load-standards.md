@@ -2,7 +2,7 @@
 
 Mandatory gate before writing any code. Reads and activates all applicable standards for this project.
 
-> **Note for `/work-ticket` sub-agents**: when this skill is invoked inside a Phase 3–5 sub-agent,
+> **Note for `/add-feature` sub-agents**: when this skill is invoked inside a Phase 3–5 sub-agent,
 > load the full standards as normal — sub-agents always get the full load. Only the main session
 > uses the compact `DIGEST.md` instead.
 
