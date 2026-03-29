@@ -26,3 +26,5 @@
 
 !.claude/
 !.claude/settings.json
+
+!.mcp.json

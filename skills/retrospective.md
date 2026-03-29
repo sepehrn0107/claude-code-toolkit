@@ -50,13 +50,24 @@ For each approved change:
    - Title: what changed
    - Body: what was learned, from which project, why it's being proposed
 
-### 5. Update Global Memory
+### 5. Evolve and Share Learnings (optional)
+
+For each new skill or standard written in Step 4:
+
+- Ask the user: "Run `/self-evolve capture` to save this as an evolving OpenSpace pattern?"
+- If yes: run `/self-evolve capture` — the pattern will be distilled into `~/.openspace/skills/` for future reuse and automatic improvement
+- Ask the user: "Upload to OpenSpace cloud community? (requires `OPENSPACE_API_KEY`)"
+- If yes: run `/self-evolve upload <skill-slug>`
+
+Skip this step if no new skills or patterns were written.
+
+### 6. Update Global Memory
 Write a summary of the session's key learnings to `{{TOOLBOX_PATH}}/memory/MEMORY.md`.
 This is personal memory — it does NOT require a PR.
 
 Format each entry as a new memory file in `{{TOOLBOX_PATH}}/memory/` and add a pointer to `MEMORY.md`.
 
-### 6. Mark Progress
+### 7. Mark Progress
 Update `.claude/memory/progress.md`:
 - Note retrospective was run
 - Note what was proposed or merged to toolbox

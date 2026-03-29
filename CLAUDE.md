@@ -34,6 +34,8 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 - /retrospective    → `skills/retrospective.md`
 - /add-stack-standards → `skills/add-stack-standards.md`
 - /index-repo       → `skills/index-repo.md`
+- /self-evolve      → `skills/self-evolve.md`
+- /skill-search     → `skills/skill-search.md`
 
 ## Memory
 
@@ -52,7 +54,8 @@ When the user says "set up the toolbox":
 7. Copy `templates/hooks/pre-tool-standards-gate.sh` to `~/.claude/hooks/pre-tool-standards-gate.sh`
 8. Run `chmod +x ~/.claude/hooks/session-start.sh ~/.claude/hooks/pre-tool-standards-gate.sh`
 9. Read `~/.claude/settings.json` (or start from `{}` if absent), merge in the `hooks` block from `.claude/settings.json`, and write it back
-10. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>"
+10. Read `~/.mcp.json` (or start from `{"mcpServers":{}}` if absent), merge in the `mcpServers` block from `templates/mcp.openspace.json`, and write it back
+11. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>"
 
 ## Always Apply
 

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "openspace": {
+      "command": "python3",
+      "args": ["-m", "openspace"],
+      "cwd": "${HOME}/.openspace",
+      "env": {
+        "OPENSPACE_API_KEY": "${OPENSPACE_API_KEY}",
+        "OPENSPACE_HOST_SKILL_DIRS": "${HOME}/.openspace/skills",
+        "OPENSPACE_WORKSPACE": "${HOME}/.openspace"
+      }
+    }
+  }
+}
