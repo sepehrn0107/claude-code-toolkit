@@ -58,6 +58,41 @@ const selectItemCount = (state: RootState) => state.cart.items.length
 - Derive types from Zod schemas at API boundaries
 - Define state shape explicitly in slice — `initialState` must be fully typed
 
+## Client-Side Full-List Cache
+
+For small, read-heavy datasets that are frequently filtered (exercise library, tag list, user roster — up to ~500 items), fetch once and filter client-side. Don't build a server search endpoint.
+
+```ts
+// hooks/useExercises.ts
+const CACHE_TTL = 5 * 60 * 1000
+
+let cache: { data: Exercise[]; at: number } | null = null
+
+export function useExercises() {
+  const [exercises, setExercises] = useState<Exercise[]>(cache?.data ?? [])
+  const [loading, setLoading] = useState(!cache)
+
+  useEffect(() => {
+    if (cache && Date.now() - cache.at < CACHE_TTL) return
+    fetch('/api/exercises')
+      .then(r => r.json())
+      .then(({ data }) => {
+        cache = { data, at: Date.now() }
+        setExercises(data)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  const invalidate = () => { cache = null }
+
+  return { exercises, loading, invalidate }
+}
+```
+
+- Use **module-level** cache (not `useState`) — survives remounts and re-renders
+- Call `invalidate()` after any mutation that changes the list
+- Beyond ~500 items, switch to server-side search with debounce
+
 ## Anti-Patterns
 - Do not store derived data in state — compute it
 - Do not duplicate server state in Redux — use React Query or SWR for server state
