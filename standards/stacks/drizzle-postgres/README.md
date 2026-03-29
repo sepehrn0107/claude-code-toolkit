@@ -20,6 +20,26 @@ export const db = drizzle(client, { schema })
 
 For serverless (Neon, Vercel Postgres): use `drizzle-orm/neon-http` + `@neondatabase/serverless` instead.
 
+## Dev Hot-Reload Guard (Next.js)
+
+Next.js fast-refresh re-evaluates modules on every save but preserves the `globalThis` object. Without a guard, each save opens a new connection pool and exhausts the database limit within minutes.
+
+```ts
+// db/index.ts
+import { drizzle } from 'drizzle-orm/node-postgres'
+import { Pool } from 'pg'
+import * as schema from './schema'
+
+const globalForDb = globalThis as unknown as { pool?: Pool }
+
+const pool = globalForDb.pool ?? new Pool({ connectionString: process.env.DATABASE_URL! })
+if (process.env.NODE_ENV !== 'production') globalForDb.pool = pool
+
+export const db = drizzle(pool, { schema })
+```
+
+> **Rule:** In Next.js projects, always use a `globalThis` guard for the DB client. Production is unaffected — the guard only assigns in dev mode.
+
 ## Schema Definition
 ```ts
 // db/schema/workouts.ts
