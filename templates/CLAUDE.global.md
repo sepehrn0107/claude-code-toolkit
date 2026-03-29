@@ -19,6 +19,7 @@ Detect user intent from the first message and route automatically — do not wai
 
 | User says…                                                              | Auto-trigger                          |
 |-------------------------------------------------------------------------|---------------------------------------|
+| "work on [ticket]", "ticket [X]", "work ticket", "implement ticket"    | Read and follow `/work-ticket` skill  |
 | "add [X]", "implement [X]", "build [X]", "create [feature]"            | Read and follow `/add-feature` skill  |
 | "fix [X]", "debug [X]", "something is broken", "not working"            | Invoke `superpowers:systematic-debugging` |
 | "check this", "review [X]", "ready to merge", "before PR"              | Read and follow `/standards-check`    |
@@ -29,11 +30,14 @@ Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following i
 
 ## Standards
 
-Before writing or editing any code, invoke `{{TOOLBOX_PATH}}/skills/load-standards.md`.
-This is a blocking requirement — wait for the confirmation line before proceeding.
+Before writing or editing any code, standards must be loaded. Two modes:
 
-The skill reads all universal standards and any stack-specific standards for the project.
-Do not read them manually or skip this step.
+- **Orchestrating via `/work-ticket`**: read only `{{TOOLBOX_PATH}}/standards/universal/DIGEST.md`
+  (the compact 1-page reference). Full standards are loaded by sub-agents per phase.
+  Do not read all 9 standards files into the main session.
+- **Direct code edit (`/add-feature` or one-off edits)**: invoke
+  `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line.
+  This is a blocking requirement — do not proceed without it.
 
 ## Before Any PR (automatic)
 
@@ -43,6 +47,7 @@ When preparing to push code or open a PR — even if the user does not ask — a
 
 Skills are loaded from the local toolbox clone. Read the skill file before following it.
 
+- /work-ticket      → {{TOOLBOX_PATH}}/skills/work-ticket.md
 - /new-project      → {{TOOLBOX_PATH}}/skills/new-project.md
 - /add-feature      → {{TOOLBOX_PATH}}/skills/add-feature.md
 - /standards-check  → {{TOOLBOX_PATH}}/skills/standards-check.md
@@ -73,3 +78,4 @@ When you need to find files, understand code structure, or answer questions abou
 - Write session summary to progress.md when stopping work
 - When starting a new project with no context, run /new-project
 - When two or more steps have no data dependency between them, run them in parallel using multiple tool calls in a single message
+- When using /work-ticket: act as orchestrator only — hold file paths and one-line summaries, not content. All reasoning, file reading, and code writing happens inside sub-agents.

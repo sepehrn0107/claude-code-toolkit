@@ -2,6 +2,10 @@
 
 Entry point for adding anything to an existing project.
 
+> **Prefer `/work-ticket` for complex features** — it delegates all phases to sub-agents and keeps
+> the main session context lean. Use `/add-feature` for simple, focused edits that don't warrant
+> a full ideate → plan → implement → test → PR workflow.
+
 ## When to Use
 Run this when adding a new feature, endpoint, component, or capability to an existing project.
 
@@ -12,12 +16,10 @@ Run this when adding a new feature, endpoint, component, or capability to an exi
 Run all at the same time — no dependencies between them:
 
 - Invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line
-- Read Layer 3 — project memory:
-  - `.claude/memory/MEMORY.md` — index of all memory files
-  - `.claude/memory/stack.md` — active stack and which standards to apply
-  - `.claude/memory/architecture.md` — existing structure and key components
-  - `.claude/memory/progress.md` — current phase and what's been done
-  - `.claude/memory/decisions/*.md` — any relevant ADRs
+- Project memory is already loaded from session start. If this is a fresh session
+  without a session-start hook, read `.claude/memory/MEMORY.md` and the files it
+  indexes (`stack.md`, `architecture.md`, `progress.md`, `decisions/*.md`).
+  Otherwise skip — do not re-read files already in context.
 - If `.claude/index/README.md` exists, launch a **sub-agent** (haiku model):
   - Task: read `{{TOOLBOX_PATH}}/skills/query-index.md` and follow it
   - Question: "Give me the high-level map: entry points, clusters, and which areas are most active"
