@@ -1,7 +1,7 @@
 # Toolbox
 
 Development standards, memory, and lifecycle skills for all projects.
-Source: https://github.com/sepehrn0107/toolbox
+Source: https://github.com/sepehrn0107/claude-code-toolkit
 
 ## Setup
 

@@ -51,7 +51,7 @@ For each approved change:
    ```bash
    git commit -m "docs(<area>): <what changed and why>"
    ```
-4. Open a PR to `https://github.com/sepehrn0107/toolbox`:
+4. Open a PR to `https://github.com/sepehrn0107/claude-code-toolkit`:
    - Title: what changed
    - Body: what was learned, from which project, why it's being proposed
 
