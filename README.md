@@ -1,8 +1,14 @@
-# Toolbox
+# claude-code-toolkit
 
-A cross-repo development assistant built on Claude Code. It brings coding standards, memory, and workflow skills to every project — automatically.
+Standards, memory, and lifecycle skills for Claude Code — loads automatically across every project.
 
-When you open any project in Claude Code, the toolbox is already there: it loads your standards, reads project memory so you never repeat context, and guides each phase of development with the right workflow. You run one command; it handles the rest.
+Every Claude Code session starts cold: no memory of your stack, your decisions, or what you built last week. This toolkit fixes that. It loads your coding standards, reads project memory so you never repeat context, and guides each phase of development with the right workflow. You run one command; it handles the rest.
+
+---
+
+## Who Is This For
+
+Developers who use Claude Code regularly and want it to behave consistently across projects — following the same standards, remembering past decisions, and running the right workflow for each task (new feature, bug fix, PR review) without being told each time.
 
 ---
 
@@ -10,13 +16,13 @@ When you open any project in Claude Code, the toolbox is already there: it loads
 
 **Requirements:** Claude Code installed, Git.
 
-### 1. Clone the toolbox
+### 1. Clone the toolkit
 
-Clone into a workspace directory — the toolbox must live **one level below** the workspace root, because memory and Claude settings are installed at the workspace level (not inside the repo).
+Clone into a workspace directory — the toolkit must live **one level below** the workspace root, because memory and Claude settings are installed at the workspace level (not inside the repo).
 
 ```bash
 mkdir -p ~/Documents/workspace
-git clone https://github.com/sepehrn0107/toolbox ~/Documents/workspace/toolbox
+git clone https://github.com/sepehrn0107/claude-code-toolkit ~/Documents/workspace/toolbox
 ```
 
 ### 2. Run setup
@@ -41,14 +47,14 @@ In any project directory, open Claude Code and run:
 
 - `/new-project` — start a new project from scratch (brainstorm → plan → scaffold)
 - `/implement` — add a feature to an existing project (scope → TDD → verify)
-- `/standards-check` — check code against toolbox standards before a PR
-- `/retrospective` — capture learnings and propose toolbox improvements
+- `/standards-check` — check code against toolkit standards before a PR
+- `/retrospective` — capture learnings and propose toolkit improvements
 
 ---
 
-## How It Works
+## How Claude Code Toolkit Works
 
-The toolbox is organized as 4 layers:
+The toolkit is organized as 4 layers:
 
 ```
 Layer 1 — Global preferences     ~/.claude/CLAUDE.md + <workspace>/memory/
@@ -67,7 +73,7 @@ Layer 4 — Session context        progress.md (written each session)
 
 ## Model Selection
 
-When the toolbox runs a complex workflow step, it dispatches a sub-agent — a focused Claude process with its own context — to handle that step. It automatically picks the most cost-effective model for the task.
+When the toolkit runs a complex workflow step, it dispatches a sub-agent — a focused Claude process with its own context — to handle that step. It automatically picks the most cost-effective model for the task.
 
 ### Memory-first policy
 
@@ -117,7 +123,7 @@ Delete `<workspace>/memory/model-config.md`. The prompt will appear again on the
 
 ## Sub-agents and Superpowers
 
-Every sub-agent launched by the toolbox is instructed to use superpowers skills when relevant. Sub-agents have the `Skill` tool available and will invoke skills like `superpowers:systematic-debugging` or `superpowers:requesting-code-review` without you asking.
+Every sub-agent launched by the toolkit is instructed to use superpowers skills when relevant. Sub-agents have the `Skill` tool available and will invoke skills like `superpowers:systematic-debugging` or `superpowers:requesting-code-review` without you asking.
 
 ---
 

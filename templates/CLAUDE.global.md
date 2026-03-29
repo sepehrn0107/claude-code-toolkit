@@ -1,7 +1,7 @@
 # Toolbox
 
 Standards, memory, and lifecycle skills for all projects.
-Source: https://github.com/sepehrn0107/toolbox (local clone: {{TOOLBOX_PATH}})
+Source: https://github.com/sepehrn0107/claude-code-toolkit (local clone: {{TOOLBOX_PATH}})
 
 > `{{WORKSPACE_PATH}}` = the directory that contains the toolbox clone (i.e. the parent of `{{TOOLBOX_PATH}}`).
 > Example: if `{{TOOLBOX_PATH}}` = `C:/Users/sepeh/Documents/workspace/toolbox`, then `{{WORKSPACE_PATH}}` = `C:/Users/sepeh/Documents/workspace`.
