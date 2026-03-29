@@ -141,9 +141,61 @@ export const verifyPassword = (plain: string, hash: string) => bcrypt.compare(pl
 
 Store the hash in a `password` column on `users` (nullable — null for OAuth users).
 
+## OTP Email Verification (Credentials provider)
+
+When using the Credentials provider, gate sign-in on email verification via a 6-digit OTP sent on registration.
+
+**Schema:**
+```ts
+// db/schema/otp-tokens.ts
+export const otpTokens = pgTable('otp_tokens', {
+  id:        uuid('id').primaryKey().defaultRandom(),
+  userId:    uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  code:      varchar('code', { length: 6 }).notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
+  usedAt:    timestamp('used_at'),
+})
+```
+
+**Service:**
+```ts
+// services/otp.service.ts
+export async function generateOtp(userId: string) {
+  const code = Math.floor(100000 + Math.random() * 900000).toString()
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 min TTL
+  await db.insert(otpTokens).values({ userId, code, expiresAt })
+  return code
+}
+
+export async function verifyOtp(userId: string, code: string) {
+  const token = await db.query.otpTokens.findFirst({
+    where: and(
+      eq(otpTokens.userId, userId),
+      eq(otpTokens.code, code),
+      isNull(otpTokens.usedAt),
+      gt(otpTokens.expiresAt, new Date()),
+    ),
+  })
+  if (!token) throw new UnauthorizedError('Invalid or expired code')
+  await db.update(otpTokens).set({ usedAt: new Date() }).where(eq(otpTokens.id, token.id))
+}
+```
+
+**Registration flow:** create user (unverified) → generate OTP → send email → redirect to `/verify-email` → call `verifyOtp()` → set `emailVerified = new Date()` → redirect to sign-in.
+
+**`authorize()` guard:**
+```ts
+async authorize(credentials) {
+  const user = await userService.verifyCredentials(parsed.data)
+  if (!user.emailVerified) throw new Error('EMAIL_NOT_VERIFIED')
+  return user
+}
+```
+
 ## Rules
 - Never store plain-text passwords — always bcrypt hash with cost ≥12
 - Use `session: { strategy: 'database' }` (not JWT) for server-side session revocation
 - All API route handlers must call `auth()` and check for a valid session before touching data
 - Wrap `authorize()` in Credentials provider with Zod validation — never trust raw input
 - OAuth users have no password; Credentials users have no OAuth account — handle both gracefully
+- OTP tokens: store in a dedicated table (not `users`), mark `usedAt` on consumption (don't delete), enforce expiry in the DB query
