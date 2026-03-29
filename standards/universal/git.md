@@ -32,7 +32,15 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 4. Squash or merge — be consistent within a project
 
 ## Rules
-- Never commit directly to `main`/`master`
+- **Never push directly to `main`/`master`** — not even "just this once"
+- **Always branch from `main`/`master`** before starting any work
+- **Always open a pull request** — no direct merges, no force-pushes to main
 - Never commit secrets, credentials, or large binaries
 - Every commit message must be meaningful — "fix stuff" is not acceptable
 - Keep commits atomic: one logical change per commit
+
+## Claude Enforcement
+When assisting with git tasks, Claude must:
+1. Refuse to run `git push origin main` or `git push origin master` — always create a branch first
+2. After committing, always offer/create a branch and PR instead of pushing to main
+3. If asked to push to main directly, explain the rule and push to a feature branch + open a PR instead
