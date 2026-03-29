@@ -24,7 +24,7 @@ Apply on every task:
 
 ## Lifecycle Skills
 
-- `/add-feature`     → {{TOOLBOX_PATH}}/skills/add-feature.md
+- `/implement`     → {{TOOLBOX_PATH}}/skills/implement.md
 - `/standards-check` → {{TOOLBOX_PATH}}/skills/standards-check.md
 - `/retrospective`   → {{TOOLBOX_PATH}}/skills/retrospective.md
 - `/index-repo`      → {{TOOLBOX_PATH}}/skills/index-repo.md
@@ -48,7 +48,7 @@ When finding files or understanding code structure:
 
 Two modes depending on context:
 
-- **Orchestrating via `/add-feature`**: read only `{{TOOLBOX_PATH}}/standards/universal/DIGEST.md`
+- **Orchestrating via `/implement`**: read only `{{TOOLBOX_PATH}}/standards/universal/DIGEST.md`
   (the compact 1-page reference). Full standards are loaded by sub-agents per phase.
 - **Direct one-off edits**: invoke
   `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line.

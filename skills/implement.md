@@ -1,4 +1,4 @@
-# /add-feature
+# /implement
 
 Primary entry point for adding any feature, endpoint, component, or capability to an existing project.
 Each phase runs as a sub-agent and writes its output to a ticket state file.

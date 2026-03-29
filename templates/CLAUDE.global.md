@@ -19,7 +19,7 @@ Detect user intent from the first message and route automatically — do not wai
 
 | User says…                                                              | Auto-trigger                          |
 |-------------------------------------------------------------------------|---------------------------------------|
-| "add [X]", "implement [X]", "build [X]", "create [feature]", "work on [ticket]", "ticket [X]" | Read and follow `/add-feature` skill  |
+| "add [X]", "implement [X]", "build [X]", "create [feature]", "work on [ticket]", "ticket [X]" | Read and follow `/implement` skill  |
 | "fix [X]", "debug [X]", "something is broken", "not working"            | Invoke `superpowers:systematic-debugging` |
 | "check this", "review [X]", "ready to merge", "before PR"              | Read and follow `/standards-check`    |
 | "new project", "starting fresh", "scaffold this"                        | Read and follow `/new-project`        |
@@ -31,7 +31,7 @@ Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following i
 
 Before writing or editing any code, standards must be loaded. Two modes:
 
-- **Orchestrating via `/add-feature`**: read only `{{TOOLBOX_PATH}}/standards/universal/DIGEST.md`
+- **Orchestrating via `/implement`**: read only `{{TOOLBOX_PATH}}/standards/universal/DIGEST.md`
   (the compact 1-page reference). Full standards are loaded by sub-agents per phase.
   Do not read all 9 standards files into the main session.
 - **Direct one-off edits**: invoke `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for
@@ -46,7 +46,7 @@ When preparing to push code or open a PR — even if the user does not ask — a
 Skills are loaded from the local toolbox clone. Read the skill file before following it.
 
 - /new-project      → {{TOOLBOX_PATH}}/skills/new-project.md
-- /add-feature      → {{TOOLBOX_PATH}}/skills/add-feature.md
+- /implement      → {{TOOLBOX_PATH}}/skills/implement.md
 - /standards-check  → {{TOOLBOX_PATH}}/skills/standards-check.md
 - /retrospective    → {{TOOLBOX_PATH}}/skills/retrospective.md
 - /add-stack-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
@@ -75,4 +75,4 @@ When you need to find files, understand code structure, or answer questions abou
 - Write session summary to progress.md when stopping work
 - When starting a new project with no context, run /new-project
 - When two or more steps have no data dependency between them, run them in parallel using multiple tool calls in a single message
-- When using /add-feature: act as orchestrator only — hold file paths and one-line summaries, not content. All reasoning, file reading, and code writing happens inside sub-agents.
+- When using /implement: act as orchestrator only — hold file paths and one-line summaries, not content. All reasoning, file reading, and code writing happens inside sub-agents.

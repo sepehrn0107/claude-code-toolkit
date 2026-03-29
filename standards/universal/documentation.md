@@ -28,7 +28,7 @@ Write an ADR whenever you make a significant architectural choice:
 - Stored in `.claude/memory/decisions/YYYY-MM-DD-<slug>.md`
 - Format: context → decision → consequences → alternatives considered
 
-See `/add-feature` skill for the full ADR template.
+See `/implement` skill for the full ADR template.
 
 ## Code Comments
 - Explain the *why* of complex or non-obvious logic

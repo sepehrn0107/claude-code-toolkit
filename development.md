@@ -27,6 +27,6 @@ toolbox/
 │
 └── skills/ # Custom lifecycle skills (Layer 1 additions)
 ├── new-project.md
-├── add-feature.md
+├── implement.md
 ├── standards-check.md
 └── retrospective.md
