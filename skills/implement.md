@@ -1,13 +1,8 @@
-# /work-ticket
+# /implement
 
-Primary entry point for implementing a ticket, feature, bug fix, or task.
+Primary entry point for adding any feature, endpoint, component, or capability to an existing project.
 Each phase runs as a sub-agent and writes its output to a ticket state file.
 The main session is an orchestrator only — it holds file paths, not content.
-
-## When to Use
-Use for any ticket or feature involving code changes.
-Prefer this over `/add-feature` for anything beyond a trivial one-liner.
-`/add-feature` remains available for simple, in-session edits.
 
 ## Ticket State Files
 
@@ -23,14 +18,14 @@ Each phase writes its output to `.claude/tickets/<ticket-id>/`:
   pr.md             ← Phase 5: PR_SUMMARY + URL
 ```
 
-Ticket ID is derived from the ticket name or number (e.g. `ABC-123`, `add-dark-mode`).
+Ticket ID is derived from the feature name or request (e.g. `add-dark-mode`, `fix-auth-flow`).
 If `.claude/tickets/<ticket-id>/` already contains state files, resume from the latest phase.
 
 ---
 
 ## Phase 0 — Intake (main session, no sub-agent)
 
-1. Derive `TICKET_ID` from the ticket name/number provided by the user.
+1. Derive `TICKET_ID` from the feature name/request provided by the user.
    Create `.claude/tickets/<ticket-id>/` if it does not exist.
 
 2. Read in parallel — do not load full standards files:
@@ -38,7 +33,7 @@ If `.claude/tickets/<ticket-id>/` already contains state files, resume from the 
    - `.claude/memory/MEMORY.md` if present and not already loaded this session
 
 3. Extract and hold only these values in working memory:
-   - `TICKET`: one-paragraph description of the task
+   - `TICKET`: one-paragraph description of the feature
    - `STACK`: active stack name (from `.claude/memory/stack.md` or inferred)
    - `INDEX_AVAILABLE`: true if `.claude/index/README.md` exists, otherwise false
    - `PROJECT_SUMMARY`: one line per memory file (project_context, stack, architecture, progress)
@@ -64,7 +59,7 @@ If `.claude/tickets/<ticket-id>/` already contains state files, resume from the 
    - progress: <one line>
    ```
 
-5. Announce: "Ticket understood. Starting Phase 1 — Ideate."
+5. Announce: "Feature understood. Starting Phase 1 — Ideate."
 
 ---
 
@@ -72,12 +67,12 @@ If `.claude/tickets/<ticket-id>/` already contains state files, resume from the 
 
 Goal: understand the problem space, clarify scope, surface unknowns.
 
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Brainstorm a ticket: ideation and scoping."
+Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Brainstorm a feature: ideation and scoping."
 
 Launch a sub-agent with this prompt:
 
 ```
-ROLE: You are a senior engineer doing ideation for a ticket.
+ROLE: You are a senior engineer doing ideation for a feature.
 
 INPUT — read this file first:
   .claude/tickets/<ticket-id>/context.md
@@ -332,7 +327,7 @@ STEP 6: Update .claude/memory/progress.md — move feature to Done, update Next.
 STEP 7: Commit all changes following git standards (conventional commits).
 STEP 8: Open PR with the GitHub MCP tools. Include in body:
   - What: summary of changes
-  - Why: the ticket description (from context.md)
+  - Why: the feature description (from context.md)
   - How: key decisions from plan.md
   - Tests: what was tested
 
@@ -357,4 +352,4 @@ Write the file, then return the PR URL and verdict.
 
 - If blocking issues found: return to Phase 3 or 4 as appropriate.
 - Otherwise: announce the PR URL and prompt:
-  > "Work complete. PR: [URL]. Want to run `/retrospective` to capture any learnings?"
+  > "Feature complete. PR: [URL]. Want to run `/retrospective` to capture any learnings?"

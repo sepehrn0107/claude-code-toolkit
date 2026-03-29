@@ -69,4 +69,4 @@ git commit -m "chore: initial scaffold"
 If git already exists, skip this step.
 
 ### 7. Hand Off
-Announce: "Project scaffolded. Run /add-feature to start building."
+Announce: "Project scaffolded. Run /implement to start building."

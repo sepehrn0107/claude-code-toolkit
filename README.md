@@ -31,7 +31,7 @@ Claude will write `~/.claude/CLAUDE.md` pointing to your local clone. That's the
 In any project directory, open Claude Code and run:
 
 - `/new-project` — start a new project from scratch (brainstorm → plan → scaffold)
-- `/add-feature` — add a feature to an existing project (scope → TDD → verify)
+- `/implement` — add a feature to an existing project (scope → TDD → verify)
 - `/standards-check` — check code against toolbox standards before a PR
 - `/retrospective` — capture learnings and propose toolbox improvements
 

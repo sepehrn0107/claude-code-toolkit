@@ -28,9 +28,8 @@ back directly from project sessions.
 Read each skill file before following it. The `{{TOOLBOX_PATH}}` placeholder in skill
 files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 
-- /work-ticket      → `skills/work-ticket.md`
 - /new-project      → `skills/new-project.md`
-- /add-feature      → `skills/add-feature.md`
+- /implement      → `skills/implement.md`
 - /standards-check  → `skills/standards-check.md`
 - /retrospective    → `skills/retrospective.md`
 - /add-stack-standards → `skills/add-stack-standards.md`
