@@ -37,22 +37,25 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 
 ## Memory
 
-- Global memory (Layer 1): `memory/MEMORY.md`
+- Global memory (Layer 1): `../memory/MEMORY.md` (lives in the workspace root, outside this repo)
 - Project memory (Layer 3): `.claude/memory/MEMORY.md` (when present in a project)
 
 ## Setup Skill
 
 When the user says "set up the toolbox":
 1. `TOOLBOX_PATH` is the absolute path to the directory containing **this CLAUDE.md file** — not the shell's current working directory, not the workspace root. Resolve it by finding where this file lives (e.g. if this file is at `/home/alice/workspace/toolbox/CLAUDE.md`, then `TOOLBOX_PATH = /home/alice/workspace/toolbox`).
-2. Read `templates/CLAUDE.global.md`
-3. Replace every `{{TOOLBOX_PATH}}` with the detected path
-4. Write the result to `~/.claude/CLAUDE.md`
-5. Create `~/.claude/hooks/` if it does not exist
-6. Copy `templates/hooks/session-start.sh` to `~/.claude/hooks/session-start.sh`
-7. Copy `templates/hooks/pre-tool-standards-gate.sh` to `~/.claude/hooks/pre-tool-standards-gate.sh`
-8. Run `chmod +x ~/.claude/hooks/session-start.sh ~/.claude/hooks/pre-tool-standards-gate.sh`
-9. Read `~/.claude/settings.json` (or start from `{}` if absent), merge in the `hooks` block from `.claude/settings.json`, and write it back
-10. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>"
+2. `WORKSPACE_PATH` is the **parent directory** of `TOOLBOX_PATH` (e.g. `/home/alice/workspace`).
+3. Read `templates/CLAUDE.global.md`
+4. Replace every `{{TOOLBOX_PATH}}` with the detected path and every `{{WORKSPACE_PATH}}` with the detected workspace path
+5. Write the result to `~/.claude/CLAUDE.md`
+6. Create `~/.claude/hooks/` if it does not exist
+7. Copy `templates/hooks/session-start.sh` to `~/.claude/hooks/session-start.sh`
+8. Copy `templates/hooks/pre-tool-standards-gate.sh` to `~/.claude/hooks/pre-tool-standards-gate.sh`
+9. Run `chmod +x ~/.claude/hooks/session-start.sh ~/.claude/hooks/pre-tool-standards-gate.sh`
+10. Read `~/.claude/settings.json` (or start from `{}` if absent), merge in the `hooks` block from `templates/workspace-settings.json`, and write it back
+11. Write `templates/workspace-settings.json` to `{{WORKSPACE_PATH}}/.claude/settings.json` (create `{{WORKSPACE_PATH}}/.claude/` if it does not exist)
+12. Create `{{WORKSPACE_PATH}}/memory/` if it does not exist, and write `templates/memory/MEMORY.md` to `{{WORKSPACE_PATH}}/memory/MEMORY.md`
+13. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
 
 ## Always Apply
 

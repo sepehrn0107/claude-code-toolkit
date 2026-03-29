@@ -12,7 +12,7 @@ Call this skill immediately before using the `Agent` tool. Pass the task descrip
 
 ### 1. Check for Saved Config
 
-Read `{{TOOLBOX_PATH}}/memory/model-config.md`.
+Read `{{WORKSPACE_PATH}}/memory/model-config.md`.
 
 - If the file exists → extract `default_model` from the frontmatter, skip to Step 4. If `default_model` is missing or not one of `haiku / sonnet / opus`, treat the file as absent and continue to Step 2.
 - If the file does not exist → continue to Step 2.
@@ -55,7 +55,7 @@ If the user responds with neither `1` nor `2` (e.g. they type a model name or fr
 
 **Step 3a — Writing saved config (only when user says "save this config"):**
 
-Write `{{TOOLBOX_PATH}}/memory/model-config.md` with:
+Write `{{WORKSPACE_PATH}}/memory/model-config.md` with:
 
 ```markdown
 ---

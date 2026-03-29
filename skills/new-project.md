@@ -11,7 +11,7 @@ Run this when starting a new project, repo, service, or tool with no existing co
 
 Run both of these at the same time — they have no dependency on each other:
 
-- Read `{{TOOLBOX_PATH}}/memory/MEMORY.md` — global preferences and learnings
+- Read `{{WORKSPACE_PATH}}/memory/MEMORY.md` — global preferences and learnings
 - Read `{{TOOLBOX_PATH}}/standards/universal/` — all 5 universal standard files
 - Check working directory for stack signals: `package.json`, `go.mod`, `requirements.txt`, `Cargo.toml`, `pyproject.toml`, etc.
 
