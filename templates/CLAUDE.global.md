@@ -15,6 +15,18 @@ At the start of every session, before responding to the first message, do all of
 3. Also read `{{WORKSPACE_PATH}}/memory/MEMORY.md` to load global cross-project learnings
 4. Note whether `.claude/index/README.md` exists — if it does, it is available for code navigation
 5. Do not announce any of this — just have the context ready before responding
+6. If the session-start hook output includes `WORKSPACE_MODE`:
+   - If the line starts with `WORKSPACE_MODE:ACTIVE=<name>`: silently load
+     `{{WORKSPACE_PATH}}/<name>/.claude/memory/` files in parallel
+     (project_context.md, stack.md, architecture.md, progress.md, lessons.md — skip missing).
+     Do not output anything — the hook already printed the "Active project" line.
+   - If the line starts with `WORKSPACE_MODE:CHOOSE`: the hook has already shown a numbered list.
+     Treat the user's FIRST message as their project choice (name or number).
+     Resolve number → name using the `Projects:` list in the hook line.
+     Then: write the choice to `{{WORKSPACE_PATH}}/memory/active-project.md`
+     as `active: <choice>` / `updated: <YYYY-MM-DD>`, load that project's memory files, and
+     output: `Active project: <choice>. Context loaded.`
+     If the user's first message is not a valid project name/number, re-show the list and wait.
 
 ## Automatic Skill Routing
 
@@ -26,6 +38,7 @@ Detect user intent from the first message and route automatically — do not wai
 | "fix [X]", "debug [X]", "something is broken", "not working"            | Invoke `superpowers:systematic-debugging` |
 | "check this", "review [X]", "ready to merge", "before PR"              | Read and follow `/standards-check`    |
 | "new project", "starting fresh", "scaffold this"                        | Read and follow `/new-project`        |
+| "switch project", "change project", "work on [repo]"                    | Read and follow `/project` skill      |
 | Any code edit request (none of the above matched)                       | Run `/load-standards` then proceed    |
 
 Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following it. Do not ask the user to run the skill — just do it.
@@ -54,6 +67,7 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /retrospective    → {{TOOLBOX_PATH}}/skills/retrospective.md
 - /add-stack-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
 - /index-repo       → {{TOOLBOX_PATH}}/skills/index-repo.md
+- /project          → {{TOOLBOX_PATH}}/skills/project.md
 
 ## Memory
 - Global memory: {{WORKSPACE_PATH}}/memory/MEMORY.md
