@@ -3,13 +3,16 @@
 Standards, memory, and lifecycle skills for all projects.
 Source: https://github.com/sepehrn0107/toolbox (local clone: {{TOOLBOX_PATH}})
 
+> `{{WORKSPACE_PATH}}` = the directory that contains the toolbox clone (i.e. the parent of `{{TOOLBOX_PATH}}`).
+> Example: if `{{TOOLBOX_PATH}}` = `C:/Users/sepeh/Documents/workspace/toolbox`, then `{{WORKSPACE_PATH}}` = `C:/Users/sepeh/Documents/workspace`.
+
 ## Session Start (automatic)
 
 At the start of every session, before responding to the first message, do all of this silently:
 
 1. Check if `.claude/memory/MEMORY.md` exists in the current project
 2. If yes: read all memory files in parallel — `project_context.md`, `stack.md`, `architecture.md`, `progress.md`, `lessons.md`
-3. Also read `{{TOOLBOX_PATH}}/memory/MEMORY.md` to load global cross-project learnings
+3. Also read `{{WORKSPACE_PATH}}/memory/MEMORY.md` to load global cross-project learnings
 4. Note whether `.claude/index/README.md` exists — if it does, it is available for code navigation
 5. Do not announce any of this — just have the context ready before responding
 
@@ -53,7 +56,7 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /index-repo       → {{TOOLBOX_PATH}}/skills/index-repo.md
 
 ## Memory
-- Global memory: {{TOOLBOX_PATH}}/memory/MEMORY.md
+- Global memory: {{WORKSPACE_PATH}}/memory/MEMORY.md
 - Project memory: .claude/memory/MEMORY.md (when present)
 
 ## Code Navigation

@@ -12,8 +12,11 @@ When you open any project in Claude Code, the toolbox is already there: it loads
 
 ### 1. Clone the toolbox
 
+Clone into a workspace directory — the toolbox must live **one level below** the workspace root, because memory and Claude settings are installed at the workspace level (not inside the repo).
+
 ```bash
-git clone https://github.com/sepehrn0107/toolbox ~/Documents/toolbox
+mkdir -p ~/Documents/workspace
+git clone https://github.com/sepehrn0107/toolbox ~/Documents/workspace/toolbox
 ```
 
 ### 2. Run setup
@@ -24,7 +27,13 @@ Open the toolbox directory in Claude Code and say:
 Set up the toolbox
 ```
 
-Claude will write `~/.claude/CLAUDE.md` pointing to your local clone. That's the only manual step.
+Claude will:
+- Write `~/.claude/CLAUDE.md` pointing to your local clone
+- Install hooks into `~/.claude/hooks/`
+- Create `<workspace>/.claude/settings.json` with plugins and hooks config
+- Create `<workspace>/memory/` for global cross-project memory
+
+That's the only manual step.
 
 ### 3. Start using it
 
@@ -42,8 +51,8 @@ In any project directory, open Claude Code and run:
 The toolbox is organized as 4 layers:
 
 ```
-Layer 1 — Global preferences     ~/.claude/CLAUDE.md + toolbox/memory/
-Layer 2 — Stack standards        toolbox/standards/
+Layer 1 — Global preferences     ~/.claude/CLAUDE.md + <workspace>/memory/
+Layer 2 — Stack standards        <workspace>/toolbox/standards/
 Layer 3 — Project context        <project>/.claude/memory/
 Layer 4 — Session context        progress.md (written each session)
 ```
@@ -70,7 +79,7 @@ To save a preference, respond to any model selection prompt with your choice and
 2 save this config
 ```
 
-Your preference is stored in `memory/model-config.md` and applied to all future agent launches.
+Your preference is stored in `<workspace>/memory/model-config.md` and applied to all future agent launches.
 
 ### First-time prompt
 
@@ -102,7 +111,7 @@ When uncertain, sonnet is the default.
 
 ### Resetting your saved config
 
-Delete `memory/model-config.md` in the toolbox directory. The prompt will appear again on the next agent launch.
+Delete `<workspace>/memory/model-config.md`. The prompt will appear again on the next agent launch.
 
 ---
 

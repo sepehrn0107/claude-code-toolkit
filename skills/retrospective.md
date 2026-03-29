@@ -51,10 +51,10 @@ For each approved change:
    - Body: what was learned, from which project, why it's being proposed
 
 ### 5. Update Global Memory
-Write a summary of the session's key learnings to `{{TOOLBOX_PATH}}/memory/MEMORY.md`.
+Write a summary of the session's key learnings to `{{WORKSPACE_PATH}}/memory/MEMORY.md`.
 This is personal memory — it does NOT require a PR.
 
-Format each entry as a new memory file in `{{TOOLBOX_PATH}}/memory/` and add a pointer to `MEMORY.md`.
+Format each entry as a new memory file in `{{WORKSPACE_PATH}}/memory/` and add a pointer to `MEMORY.md`.
 
 ### 6. Mark Progress
 Update `.claude/memory/progress.md`:
