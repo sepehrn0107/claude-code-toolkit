@@ -1,3 +1,8 @@
+---
+name: standards-check
+description: Verifies the codebase meets all toolbox standards (architecture, security, git, testing, documentation) before merging. Run this before opening any PR, after a major implementation, or when the user says "check this", "review", "ready to merge", or "before PR". This is automatically required before any push or PR — never skip it. Also invokes code-simplifier for a quality pass on recently changed code.
+---
+
 # /standards-check
 
 Run at any point to verify the codebase meets toolbox standards.

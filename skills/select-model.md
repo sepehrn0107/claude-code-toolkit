@@ -1,3 +1,8 @@
+---
+name: select-model
+description: Selects the right AI model tier (haiku/sonnet/opus) before every Agent tool call and injects the superpowers instruction. Invoke this immediately before using the Agent tool — pass the task description and it returns the appropriate model with justification. Handles saved model preferences via memory/model-config.md. Always use this before spawning any sub-agent; never hardcode a model tier directly.
+---
+
 # /select-model
 
 Invoked before every `Agent` tool call. Determines the right model for the task and injects the superpowers instruction into the agent prompt.

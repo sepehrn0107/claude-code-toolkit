@@ -1,3 +1,8 @@
+---
+name: add-stack-standards
+description: Adds coding standards for a new technology stack to the toolbox. Use this whenever the user says "add standards for [stack]", "document my stack", "add [Go/TypeScript/Python/etc] conventions", or when starting a project whose stack has no standards yet. Also trigger this if the user wants to extend or update existing stack standards. Don't wait for an explicit slash command — if stack-specific standards are clearly missing and the user is about to write code, suggest running this first.
+---
+
 # /add-stack-standards
 
 Automates the full workflow for adding standards for a new technology stack to the toolbox.

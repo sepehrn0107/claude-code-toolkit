@@ -1,3 +1,8 @@
+---
+name: implement
+description: Full lifecycle skill for implementing any feature, endpoint, component, or capability in an existing project. Use this whenever the user says "add [X]", "implement [X]", "build [X]", "create a feature", "work on a ticket", or any similar intent to introduce new functionality. This orchestrates ideation → planning → TDD implementation → verification → PR via sub-agents. This is the primary entry point for all non-trivial development work — default to this over ad-hoc coding whenever the task has more than one moving part.
+---
+
 # /implement
 
 Primary entry point for adding any feature, endpoint, component, or capability to an existing project.

@@ -1,3 +1,8 @@
+---
+name: query-index
+description: Answers structural questions about the codebase using the repo index — faster and more precise than grep or glob. Use this for questions like "what calls X?", "what imports Y?", "what files are in the auth area?", "what are the entry points?", or "what does this file export?" Always prefer this over Grep/Glob for structural or relational questions when .claude/index/ exists. Designed to run as a sub-agent to keep the main context clean.
+---
+
 # /query-index
 
 Answer a structural question about the codebase using the repo index.
