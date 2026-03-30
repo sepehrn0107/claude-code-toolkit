@@ -1,11 +1,16 @@
 ---
 name: select-model
-description: Selects the right AI model tier (haiku/sonnet/opus) before every Agent tool call and injects the superpowers instruction. Invoke this immediately before using the Agent tool — pass the task description and it returns the appropriate model with justification. Handles saved model preferences via memory/model-config.md. Always use this before spawning any sub-agent; never hardcode a model tier directly.
+description: Selects the right AI model tier (local/haiku/sonnet) before every Agent
+  tool call and injects the superpowers instruction. Invoke this immediately before
+  using the Agent tool — pass the task description and it returns the appropriate model
+  with justification. Handles saved model preferences via memory/model-config.md.
+  Always use this before spawning any sub-agent; never hardcode a model tier directly.
 ---
 
 # /select-model
 
-Invoked before every `Agent` tool call. Determines the right model for the task and injects the superpowers instruction into the agent prompt.
+Invoked before every `Agent` tool call (or before calling the local LLM directly).
+Determines the right model tier for the task.
 
 ## When to Use
 
@@ -15,11 +20,35 @@ Call this skill immediately before using the `Agent` tool. Pass the task descrip
 
 ## Steps
 
+### 0. Check Local LLM (Tier 0 — automatic, no user prompt)
+
+Read `{{TOOLBOX_PATH}}/tools/local-llm/config.json`.
+
+If `enabled: true`, check whether the task maps to Tier 0:
+
+| Task type | Tier 0? |
+|---|---|
+| Single-function code generation (signature given) | Yes |
+| Unit test scaffolding for a given function | Yes |
+| Code summarization (< 200 lines) | Yes |
+| Docstrings / inline documentation | Yes |
+| Simple single-file refactoring (rename, extract, lint fix) | Yes |
+| Boilerplate / CRUD skeleton generation | Yes |
+
+If the task maps to Tier 0:
+1. Run `python3 {{TOOLBOX_PATH}}/tools/local-llm/call.py --health` via Bash tool (silently)
+2. If exit code 0 → invoke `{{TOOLBOX_PATH}}/skills/local-llm.md` and **stop here** (skip Steps 1–4)
+3. If exit code 1 → LM Studio is unreachable; proceed to Step 1 (haiku/sonnet routing)
+
+No user prompt is shown for Tier 0 routing — it is fully automatic.
+
+---
+
 ### 1. Check for Saved Config
 
 Read `{{WORKSPACE_PATH}}/memory/model-config.md`.
 
-- If the file exists → extract `default_model` from the frontmatter, skip to Step 4. If `default_model` is missing or not one of `haiku / sonnet / opus`, treat the file as absent and continue to Step 2.
+- If the file exists → extract `default_model` from the frontmatter, skip to Step 4. If `default_model` is missing or not one of `haiku / sonnet`, treat the file as absent and continue to Step 2.
 - If the file does not exist → continue to Step 2.
 
 ### 2. Reason About Task Complexity
@@ -32,8 +61,8 @@ Evaluate the task description against this table:
 | Code reading, summarization, straightforward edits | haiku |
 | Multi-step implementation, TDD, code generation | sonnet |
 | Architecture decisions, brainstorming, planning | sonnet |
-| Novel problem-solving, highly ambiguous tasks | opus |
-| Security review, high-stakes analysis | opus |
+| Feature ideation, novel problem-solving | sonnet |
+| Security review, high-stakes analysis | sonnet |
 
 When uncertain, default to **sonnet**.
 
@@ -45,12 +74,10 @@ Show the user this prompt (filling in the actual task and models):
 About to launch an agent for: [one-line task description]
 
 1. [recommended model] — [one-line justification] (recommended)
-2. [next tier up] — [one-line justification]
+2. [next tier] — [one-line justification]
 
 Type 1 or 2. Add "save this config" to persist your choice.
 ```
-
-If `opus` is the recommended model, present `opus` as option 1 and `sonnet` as option 2 (labeled as lighter/cheaper alternative), reversing the usual order.
 
 Wait for the user to respond. Accept:
 - `1` or `2` — use that model
@@ -69,8 +96,7 @@ saved_by_user: true
 ---
 
 Use haiku for routine/search/lookup tasks.
-Use sonnet for complex reasoning, multi-step implementation, or architecture decisions.
-Use opus for highly novel, open-ended, or high-stakes tasks.
+Use sonnet for complex reasoning, multi-step implementation, architecture, or high-stakes decisions.
 ```
 
 ### 4. Inject Superpowers and Launch

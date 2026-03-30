@@ -1,0 +1,104 @@
+{
+  "category": "refactor",
+  "description": "Single-file refactoring tasks \u00e2\u20ac\u201d apply a specific, described change to existing code",
+  "tasks": [
+    {
+      "id": "refactor-001",
+      "name": "magic_numbers_to_constants",
+      "difficulty": "easy",
+      "prompt": "Refactor this Python function by replacing the magic numbers with named constants at the top of the function. Output only the refactored function.\n\ndef calculate_shipping(weight_kg: float, distance_km: float) -> float:\n    base = 2.50\n    weight_cost = weight_kg * 0.75\n    distance_cost = (distance_km / 100) * 1.20\n    if distance_km > 500:\n        distance_cost *= 0.85\n    return round(base + weight_cost + distance_cost, 2)",
+      "expected_patterns": [
+        "def calculate_shipping",
+        "BASE",
+        "="
+      ],
+      "forbidden_patterns": [
+        "2.50",
+        "0.75",
+        "1.20"
+      ],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "refactor-002",
+      "name": "list_comprehension",
+      "difficulty": "easy",
+      "prompt": "Refactor this Python function to use a list comprehension instead of the for loop. Output only the refactored function.\n\ndef get_even_squares(numbers: list) -> list:\n    result = []\n    for n in numbers:\n        if n % 2 == 0:\n            result.append(n ** 2)\n    return result",
+      "expected_patterns": [
+        "def get_even_squares",
+        "return",
+        "**"
+      ],
+      "forbidden_patterns": [
+        "for n in",
+        ".append"
+      ],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "refactor-003",
+      "name": "extract_validation",
+      "difficulty": "medium",
+      "prompt": "Refactor this Python function by extracting the validation logic into a separate helper function called `_validate_user_input`. Output both functions.\n\ndef create_user(name: str, email: str, age: int) -> dict:\n    if not name or not name.strip():\n        raise ValueError('Name cannot be empty')\n    if '@' not in email or '.' not in email:\n        raise ValueError('Invalid email address')\n    if age < 0 or age > 150:\n        raise ValueError('Age must be between 0 and 150')\n    return {'name': name.strip(), 'email': email.lower(), 'age': age}",
+      "expected_patterns": [
+        "def _validate_user_input",
+        "def create_user",
+        "raise ValueError"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "refactor-004",
+      "name": "dict_get_default",
+      "difficulty": "easy",
+      "prompt": "Refactor this Python function to use dict.get() with defaults instead of if-key-in-dict checks. Output only the refactored function.\n\ndef get_user_display(user: dict) -> str:\n    if 'display_name' in user:\n        name = user['display_name']\n    else:\n        name = 'Anonymous'\n    if 'avatar_url' in user:\n        avatar = user['avatar_url']\n    else:\n        avatar = '/default-avatar.png'\n    return f'{name} ({avatar})'",
+      "expected_patterns": [
+        "def get_user_display",
+        ".get(",
+        "Anonymous",
+        "default-avatar"
+      ],
+      "forbidden_patterns": [
+        "if 'display_name' in",
+        "if 'avatar_url' in"
+      ],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "refactor-005",
+      "name": "add_type_hints",
+      "difficulty": "medium",
+      "prompt": "Add type hints to all function parameters and return types in this Python code. Do not change any logic. Output the full refactored code.\n\nclass TextProcessor:\n    def __init__(self, text):\n        self.text = text\n        self._words = None\n\n    def word_count(self):\n        return len(self.get_words())\n\n    def get_words(self):\n        if self._words is None:\n            self._words = self.text.lower().split()\n        return self._words\n\n    def most_common(self, n):\n        from collections import Counter\n        return Counter(self.get_words()).most_common(n)",
+      "expected_patterns": [
+        "def __init__(self, text: str)",
+        "def word_count(self) -> int",
+        "def get_words(self) -> list",
+        "def most_common(self, n: int)"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "refactor-006",
+      "name": "early_return",
+      "difficulty": "medium",
+      "prompt": "Refactor this Python function to use early returns instead of nested if-else. Output only the refactored function.\n\ndef process_order(order: dict) -> str:\n    if order.get('status') == 'pending':\n        if order.get('payment_verified'):\n            if order.get('stock_available'):\n                return 'Order confirmed'\n            else:\n                return 'Out of stock'\n        else:\n            return 'Payment failed'\n    else:\n        return 'Order not pending'",
+      "expected_patterns": [
+        "def process_order",
+        "return 'Order confirmed'",
+        "return 'Payment failed'"
+      ],
+      "forbidden_patterns": [
+        "else:\n        return 'Order not pending'"
+      ],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    }
+  ]
+}

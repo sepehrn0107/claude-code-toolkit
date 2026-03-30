@@ -1,0 +1,122 @@
+{
+  "category": "tests",
+  "description": "Unit test generation tasks \u00e2\u20ac\u201d given a function body, write pytest tests",
+  "tasks": [
+    {
+      "id": "tests-001",
+      "name": "test_is_even",
+      "difficulty": "easy",
+      "prompt": "Write pytest unit tests for this Python function:\n\ndef is_even(n: int) -> bool:\n    return n % 2 == 0\n\nWrite at least 4 test cases covering: positive even, positive odd, zero, negative numbers.",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "is_even"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "tests-002",
+      "name": "test_clamp",
+      "difficulty": "easy",
+      "prompt": "Write pytest unit tests for this Python function:\n\ndef clamp(value: float, min_val: float, max_val: float) -> float:\n    return max(min_val, min(value, max_val))\n\nCover: value within range, value below min, value above max, value equal to min, value equal to max.",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "clamp"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "tests-003",
+      "name": "test_word_count",
+      "difficulty": "easy",
+      "prompt": "Write pytest unit tests for this Python function:\n\ndef word_count(text: str) -> dict:\n    counts = {}\n    for word in text.lower().split():\n        counts[word] = counts.get(word, 0) + 1\n    return counts\n\nCover: empty string, single word, repeated words, mixed case.",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "word_count"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "tests-004",
+      "name": "test_stack",
+      "difficulty": "medium",
+      "prompt": "Write pytest unit tests for this Python class:\n\nclass Stack:\n    def __init__(self):\n        self._items = []\n    def push(self, item):\n        self._items.append(item)\n    def pop(self):\n        if not self._items:\n            raise IndexError('pop from empty stack')\n        return self._items.pop()\n    def peek(self):\n        if not self._items:\n            raise IndexError('peek at empty stack')\n        return self._items[-1]\n    def is_empty(self):\n        return len(self._items) == 0\n\nCover: push/pop, peek, pop from empty stack (expect IndexError), is_empty.",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "Stack",
+        "IndexError"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "tests-005",
+      "name": "test_parse_date",
+      "difficulty": "medium",
+      "prompt": "Write pytest unit tests for this Python function:\n\nfrom datetime import date\n\ndef parse_date(s: str) -> date:\n    \"\"\"Parse a date string in YYYY-MM-DD format.\"\"\"\n    parts = s.split('-')\n    if len(parts) != 3:\n        raise ValueError(f'Invalid date format: {s}')\n    return date(int(parts[0]), int(parts[1]), int(parts[2]))\n\nCover: valid date, wrong format (expect ValueError), invalid month (expect ValueError).",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "parse_date",
+        "ValueError"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "tests-006",
+      "name": "test_chunk_list",
+      "difficulty": "medium",
+      "prompt": "Write pytest unit tests for this Python function:\n\ndef chunk_list(lst: list, size: int) -> list:\n    \"\"\"Split lst into chunks of at most `size` elements.\"\"\"\n    if size <= 0:\n        raise ValueError('size must be positive')\n    return [lst[i:i+size] for i in range(0, len(lst), size)]\n\nCover: even split, uneven last chunk, empty list, size larger than list, size=1, size<=0 (expect ValueError).",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "chunk_list",
+        "ValueError"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "tests-007",
+      "name": "test_merge_dicts",
+      "difficulty": "easy",
+      "prompt": "Write pytest unit tests for this Python function:\n\ndef merge_dicts(*dicts: dict) -> dict:\n    \"\"\"Merge multiple dicts; later dicts override earlier ones.\"\"\"\n    result = {}\n    for d in dicts:\n        result.update(d)\n    return result\n\nCover: two dicts no overlap, two dicts with overlap (later wins), empty dict, single dict, three dicts.",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "merge_dicts"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "tests-008",
+      "name": "test_fibonacci",
+      "difficulty": "medium",
+      "prompt": "Write pytest unit tests for this Python function:\n\ndef fibonacci(n: int) -> int:\n    \"\"\"Return the nth Fibonacci number (0-indexed: fib(0)=0, fib(1)=1).\"\"\"\n    if n < 0:\n        raise ValueError('n must be non-negative')\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a\n\nCover: fib(0), fib(1), fib(10), negative n (expect ValueError), fib(20).",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "fibonacci",
+        "ValueError"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    }
+  ]
+}

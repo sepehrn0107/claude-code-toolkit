@@ -1,0 +1,94 @@
+{
+  "category": "docs",
+  "description": "Docstring generation tasks \u00e2\u20ac\u201d given a function body, write a Python docstring",
+  "tasks": [
+    {
+      "id": "docs-001",
+      "name": "docstring_paginate",
+      "difficulty": "easy",
+      "prompt": "Write a Python docstring for this function. Output only the docstring (triple-quoted string), nothing else.\n\ndef paginate(items: list, page: int, page_size: int) -> list:\n    start = (page - 1) * page_size\n    end = start + page_size\n    return items[start:end]",
+      "expected_patterns": [
+        "\"\"\"",
+        "page",
+        "items"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "docs-002",
+      "name": "docstring_slugify",
+      "difficulty": "easy",
+      "prompt": "Write a Python docstring for this function. Output only the docstring (triple-quoted string), nothing else.\n\nimport re\n\ndef slugify(text: str) -> str:\n    text = text.lower().strip()\n    text = re.sub(r'[^\\w\\s-]', '', text)\n    text = re.sub(r'[\\s_-]+', '-', text)\n    text = re.sub(r'^-+|-+$', '', text)\n    return text",
+      "expected_patterns": [
+        "\"\"\"",
+        "slug",
+        "text"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "docs-003",
+      "name": "docstring_deep_merge",
+      "difficulty": "medium",
+      "prompt": "Write a Python docstring for this function. Include Args and Returns sections. Output only the docstring, nothing else.\n\ndef deep_merge(base: dict, override: dict) -> dict:\n    result = dict(base)\n    for key, value in override.items():\n        if key in result and isinstance(result[key], dict) and isinstance(value, dict):\n            result[key] = deep_merge(result[key], value)\n        else:\n            result[key] = value\n    return result",
+      "expected_patterns": [
+        "\"\"\"",
+        "Args",
+        "Returns",
+        "dict"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "docs-004",
+      "name": "docstring_retry",
+      "difficulty": "medium",
+      "prompt": "Write a Python docstring for this function. Include Args, Returns, and Raises sections. Output only the docstring, nothing else.\n\ndef retry(func, max_attempts: int = 3, exceptions: tuple = (Exception,)):\n    last_exc = None\n    for attempt in range(max_attempts):\n        try:\n            return func()\n        except exceptions as e:\n            last_exc = e\n    raise last_exc",
+      "expected_patterns": [
+        "\"\"\"",
+        "Args",
+        "Raises",
+        "attempt"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "docs-005",
+      "name": "docstring_batch_process",
+      "difficulty": "medium",
+      "prompt": "Write a Python docstring for this function. Include Args and Yields sections (it's a generator). Output only the docstring, nothing else.\n\nfrom typing import Generator, TypeVar, Callable, Iterable\nT = TypeVar('T')\nR = TypeVar('R')\n\ndef batch_process(items: Iterable[T], batch_size: int, processor: Callable[[list[T]], list[R]]) -> Generator[R, None, None]:\n    batch = []\n    for item in items:\n        batch.append(item)\n        if len(batch) == batch_size:\n            yield from processor(batch)\n            batch = []\n    if batch:\n        yield from processor(batch)",
+      "expected_patterns": [
+        "\"\"\"",
+        "batch",
+        "Yields"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "docs-006",
+      "name": "docstring_parse_config",
+      "difficulty": "hard",
+      "prompt": "Write a Python docstring for this function. Include Args, Returns, and Raises sections with type information. Output only the docstring, nothing else.\n\nimport json\nfrom pathlib import Path\nfrom typing import Any\n\ndef parse_config(path: str, defaults: dict = None, required_keys: list = None) -> dict:\n    config_path = Path(path)\n    if not config_path.exists():\n        raise FileNotFoundError(f'Config file not found: {path}')\n    with open(config_path) as f:\n        data: dict[str, Any] = json.load(f)\n    result = {**(defaults or {}), **data}\n    if required_keys:\n        missing = [k for k in required_keys if k not in result]\n        if missing:\n            raise ValueError(f'Missing required config keys: {missing}')\n    return result",
+      "expected_patterns": [
+        "\"\"\"",
+        "Args",
+        "Returns",
+        "Raises",
+        "path"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    }
+  ]
+}

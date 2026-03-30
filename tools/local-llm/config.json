@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "base_url": "http://127.0.0.1:1234/v1",
+  "model": "qwen/qwen3.5-35b-a3b",
+  "api_key": "lm-studio",
+  "timeout_seconds": 300,
+  "max_tokens": 4096,
+  "cache_enabled": true,
+  "cache_ttl_hours": 24,
+  "fallback_on_error": false,
+  "stream": true,
+  "enable_thinking": false,
+  "models": {
+    "fast": "qwen/qwen3.5-35b-a3b",
+    "quality": "qwen/qwen3.5-35b-a3b"
+  }
+}

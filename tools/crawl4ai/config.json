@@ -1,0 +1,7 @@
+{
+  "base_url": "http://localhost:11235",
+  "timeout_seconds": 30,
+  "max_age_hours": 24,
+  "vault_cache_dir": "C:/Users/sepeh/Documents/workspace/vault/07-web-cache",
+  "priority": 10
+}

@@ -23,6 +23,8 @@
 
 !tools/
 !tools/**
+tools/local-llm/cache/
+tools/local-llm/bench-results/
 
 !.claude/
 !.claude/settings.json
