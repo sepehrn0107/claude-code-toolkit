@@ -14,7 +14,7 @@ Developers who use Claude Code regularly and want it to behave consistently acro
 
 ## Getting Started
 
-**Requirements:** Claude Code installed, Git, Python 3 (for `/index-repo` only).
+**Requirements:** Claude Code installed, Git, Python 3, Docker (for `/web-fetch` and `/local-llm`).
 
 ### 1. Clone the toolkit
 
@@ -143,6 +143,24 @@ Also offered automatically after `/implement` completes.
 5. Writes key learnings to global memory (`<workspace>/memory/`)
 
 This is how the toolkit improves itself from real work.
+
+---
+
+### `/web-fetch` — Fetch any external URL via Crawl4AI
+
+**Auto-trigger:** whenever Claude is about to use `WebFetch` to read a page's full content
+
+Routes outbound URL fetches through a local [Crawl4AI](https://github.com/unclecode/crawl4ai) container for clean markdown output and automatic caching.
+
+1. Runs `tools/crawl4ai/fetch.py --url "<URL>"` via Bash
+2. Returns clean markdown on stdout; stderr carries status messages (`cache hit`, `fetching`, etc.)
+3. Caches results in `<workspace>/vault/07-web-cache/<domain>/<path>.md` with a 24-hour TTL
+4. Falls back to the built-in `WebFetch` tool if the container is not running, with a setup reminder
+
+**Requires Docker:** start the container once with:
+```bash
+docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g unclecode/crawl4ai:latest
+```
 
 ---
 
@@ -276,16 +294,18 @@ Memory is read at the start of every session automatically — you never need to
 
 ## Model Selection
 
-When the toolkit launches a sub-agent, it picks the most cost-effective model for the task.
+When the toolkit launches a sub-agent, it picks the most cost-effective model for the task — including a Tier 0 local LLM path for mechanical tasks.
 
-| Task type | Default model |
-|-----------|---------------|
-| File search, pattern matching, simple lookups | haiku |
-| Code reading, summarization, straightforward edits | haiku |
-| Multi-step implementation, TDD, code generation | sonnet |
-| Architecture decisions, brainstorming, planning | sonnet |
-| Novel problem-solving, highly ambiguous tasks | opus |
-| Security review, high-stakes analysis | opus |
+| Tier | Task type | Model |
+|------|-----------|-------|
+| 0 | Single-function codegen, unit test scaffolding, docstrings, simple refactors, boilerplate | local LLM (LM Studio) |
+| 1 | File search, pattern matching, simple lookups | haiku |
+| 1 | Code reading, summarization, straightforward edits | haiku |
+| 2 | Multi-step implementation, TDD, code generation | sonnet |
+| 2 | Architecture decisions, brainstorming, planning | sonnet |
+| 2 | Security review, high-stakes analysis | sonnet |
+
+**Tier 0** runs fully automatically when LM Studio is running locally — no prompt shown to the user. If LM Studio is unreachable, routing falls through to haiku/sonnet as normal. See `skills/local-llm.md` for setup.
 
 ### Saving a preference
 
@@ -323,6 +343,7 @@ You don't need to remember slash commands. The toolkit detects what you're tryin
 | "switch project", "work on [repo]" | `/project` |
 | "push to git", "open a PR", "ship this" | `/git-push` |
 | "add standards for [stack]" | `/add-stack-standards` |
+| About to call `WebFetch` to read a page | `/web-fetch` |
 | Any code edit (none of the above) | loads standards, then edits |
 
 ---
