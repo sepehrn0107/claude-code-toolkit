@@ -1,0 +1,148 @@
+{
+  "category": "coding",
+  "description": "Single-function Python code generation tasks (easy \u00e2\u2020\u2019 hard)",
+  "tasks": [
+    {
+      "id": "coding-001",
+      "name": "is_prime",
+      "difficulty": "easy",
+      "prompt": "Write a Python function `is_prime(n: int) -> bool` that returns True if n is prime, False otherwise. Handle edge cases (n <= 1). No external libraries.",
+      "expected_patterns": [
+        "def is_prime",
+        "return False",
+        "return True"
+      ],
+      "forbidden_patterns": [
+        "import"
+      ],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-002",
+      "name": "reverse_string",
+      "difficulty": "easy",
+      "prompt": "Write a Python function `reverse_string(s: str) -> str` that returns the string reversed. One line body preferred.",
+      "expected_patterns": [
+        "def reverse_string",
+        "return"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-003",
+      "name": "celsius_to_fahrenheit",
+      "difficulty": "easy",
+      "prompt": "Write a Python function `celsius_to_fahrenheit(c: float) -> float` that converts Celsius to Fahrenheit.",
+      "expected_patterns": [
+        "def celsius_to_fahrenheit",
+        "return",
+        "9",
+        "5",
+        "32"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-004",
+      "name": "count_vowels",
+      "difficulty": "easy",
+      "prompt": "Write a Python function `count_vowels(s: str) -> int` that counts the number of vowels (a, e, i, o, u \u00e2\u20ac\u201d case-insensitive) in the string.",
+      "expected_patterns": [
+        "def count_vowels",
+        "return"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-005",
+      "name": "find_duplicates",
+      "difficulty": "easy",
+      "prompt": "Write a Python function `find_duplicates(lst: list) -> list` that returns a list of elements that appear more than once. Preserve order of first duplicate occurrence. No external libraries.",
+      "expected_patterns": [
+        "def find_duplicates",
+        "return"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-006",
+      "name": "binary_search",
+      "difficulty": "medium",
+      "prompt": "Write a Python function `binary_search(arr: list, target: int) -> int` that returns the index of target in a sorted array, or -1 if not found. Iterative implementation.",
+      "expected_patterns": [
+        "def binary_search",
+        "return -1",
+        "mid"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-007",
+      "name": "flatten_list",
+      "difficulty": "medium",
+      "prompt": "Write a Python function `flatten_list(nested: list) -> list` that flattens a list of arbitrarily nested lists into a flat list. Example: [[1, [2, 3]], [4]] \u00e2\u2020\u2019 [1, 2, 3, 4].",
+      "expected_patterns": [
+        "def flatten_list",
+        "return",
+        "isinstance"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-008",
+      "name": "two_sum",
+      "difficulty": "medium",
+      "prompt": "Write a Python function `two_sum(nums: list, target: int) -> list` that returns the indices [i, j] of two numbers that add up to target. Each input has exactly one solution. O(n) solution preferred.",
+      "expected_patterns": [
+        "def two_sum",
+        "return",
+        "{}"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-009",
+      "name": "retry_decorator",
+      "difficulty": "hard",
+      "prompt": "Write a Python decorator `retry(max_attempts: int, exceptions: tuple = (Exception,))` that retries the decorated function up to max_attempts times on the specified exception types. Use functools.wraps. Raise the last exception if all attempts fail.",
+      "expected_patterns": [
+        "def retry",
+        "functools.wraps",
+        "max_attempts",
+        "raise"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "coding-010",
+      "name": "group_anagrams",
+      "difficulty": "hard",
+      "prompt": "Write a Python function `group_anagrams(words: list) -> list` that groups a list of strings into sublists of anagrams. Order of groups and words within groups does not matter. Example: ['eat','tea','tan','ate','nat','bat'] \u00e2\u2020\u2019 [['eat','tea','ate'],['tan','nat'],['bat']].",
+      "expected_patterns": [
+        "def group_anagrams",
+        "return",
+        "sorted"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    }
+  ]
+}
