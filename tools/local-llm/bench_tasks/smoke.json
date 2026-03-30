@@ -1,0 +1,81 @@
+{
+  "category": "smoke",
+  "description": "Quick 5-task smoke test \u00e2\u20ac\u201d one easy task per category. Run in under 60s to verify the full pipeline.",
+  "tasks": [
+    {
+      "id": "smoke-001",
+      "name": "smoke_coding",
+      "task_type": "coding",
+      "difficulty": "easy",
+      "prompt": "Write a Python function `add(a: int, b: int) -> int` that returns the sum of two integers.",
+      "expected_patterns": [
+        "def add",
+        "return",
+        "a",
+        "b"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "smoke-002",
+      "name": "smoke_tests",
+      "task_type": "tests",
+      "difficulty": "easy",
+      "prompt": "Write two pytest unit tests for this Python function:\n\ndef double(x: int) -> int:\n    return x * 2",
+      "expected_patterns": [
+        "def test_",
+        "assert",
+        "double"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    },
+    {
+      "id": "smoke-003",
+      "name": "smoke_summarize",
+      "task_type": "summarize",
+      "difficulty": "easy",
+      "prompt": "Summarize what this function does in 2-3 sentences:\n\ndef absolute_value(n: float) -> float:\n    return n if n >= 0 else -n",
+      "expected_patterns": [
+        "value",
+        "return"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "smoke-004",
+      "name": "smoke_docs",
+      "task_type": "docs",
+      "difficulty": "easy",
+      "prompt": "Write a one-line Python docstring for this function. Output only the docstring content (no surrounding function code).\n\ndef square(x: float) -> float:\n    return x ** 2",
+      "expected_patterns": [
+        "square",
+        "x"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "smoke-005",
+      "name": "smoke_refactor",
+      "task_type": "refactor",
+      "difficulty": "easy",
+      "prompt": "Refactor this Python function to use a ternary expression. Output only the refactored function.\n\ndef sign(n: int) -> str:\n    if n >= 0:\n        return 'positive'\n    else:\n        return 'negative'",
+      "expected_patterns": [
+        "def sign",
+        "positive",
+        "negative",
+        "else"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "python",
+      "max_tokens": 4096
+    }
+  ]
+}

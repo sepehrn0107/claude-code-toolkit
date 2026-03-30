@@ -1,0 +1,92 @@
+{
+  "category": "summarize",
+  "description": "Code summarization tasks \u00e2\u20ac\u201d given a function, produce a 3-5 sentence description",
+  "tasks": [
+    {
+      "id": "summarize-001",
+      "name": "lru_cache_impl",
+      "difficulty": "medium",
+      "prompt": "Summarize what this Python function does in 3-5 sentences. Be concise and focus on behavior, not implementation details.\n\nfrom collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = OrderedDict()\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)",
+      "expected_patterns": [
+        "LRU",
+        "cache",
+        "capacity"
+      ],
+      "forbidden_patterns": [
+        "OrderedDict"
+      ],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "summarize-002",
+      "name": "rate_limiter",
+      "difficulty": "medium",
+      "prompt": "Summarize what this Python class does in 3-5 sentences.\n\nimport time\nfrom collections import deque\n\nclass RateLimiter:\n    def __init__(self, max_calls: int, period: float):\n        self.max_calls = max_calls\n        self.period = period\n        self.calls = deque()\n\n    def is_allowed(self) -> bool:\n        now = time.monotonic()\n        while self.calls and now - self.calls[0] >= self.period:\n            self.calls.popleft()\n        if len(self.calls) < self.max_calls:\n            self.calls.append(now)\n            return True\n        return False",
+      "expected_patterns": [
+        "rate",
+        "limit",
+        "calls"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "summarize-003",
+      "name": "event_emitter",
+      "difficulty": "easy",
+      "prompt": "Summarize what this Python class does in 3-5 sentences.\n\nfrom collections import defaultdict\nfrom typing import Callable\n\nclass EventEmitter:\n    def __init__(self):\n        self._listeners = defaultdict(list)\n\n    def on(self, event: str, callback: Callable) -> None:\n        self._listeners[event].append(callback)\n\n    def off(self, event: str, callback: Callable) -> None:\n        self._listeners[event] = [\n            cb for cb in self._listeners[event] if cb != callback\n        ]\n\n    def emit(self, event: str, *args, **kwargs) -> None:\n        for callback in list(self._listeners[event]):\n            callback(*args, **kwargs)",
+      "expected_patterns": [
+        "event",
+        "listener",
+        "callback"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "summarize-004",
+      "name": "trie",
+      "difficulty": "hard",
+      "prompt": "Summarize what this Python class does in 3-5 sentences.\n\nclass TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                node.children[char] = TrieNode()\n            node = node.children[char]\n        node.is_end = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                return False\n            node = node.children[char]\n        return node.is_end\n\n    def starts_with(self, prefix: str) -> bool:\n        node = self.root\n        for char in prefix:\n            if char not in node.children:\n                return False\n            node = node.children[char]\n        return True",
+      "expected_patterns": [
+        "trie",
+        "prefix",
+        "word"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "summarize-005",
+      "name": "connection_pool",
+      "difficulty": "hard",
+      "prompt": "Summarize what this Python class does in 3-5 sentences.\n\nimport threading\nfrom queue import Queue\n\nclass ConnectionPool:\n    def __init__(self, factory, max_size: int = 10):\n        self._factory = factory\n        self._pool = Queue(maxsize=max_size)\n        self._size = 0\n        self._max_size = max_size\n        self._lock = threading.Lock()\n\n    def acquire(self):\n        try:\n            return self._pool.get_nowait()\n        except Exception:\n            with self._lock:\n                if self._size < self._max_size:\n                    self._size += 1\n                    return self._factory()\n            return self._pool.get()\n\n    def release(self, conn) -> None:\n        self._pool.put(conn)",
+      "expected_patterns": [
+        "connection",
+        "pool",
+        "reuse"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    },
+    {
+      "id": "summarize-006",
+      "name": "debounce",
+      "difficulty": "medium",
+      "prompt": "Summarize what this Python function does in 3-5 sentences.\n\nimport threading\nfrom functools import wraps\n\ndef debounce(wait: float):\n    def decorator(fn):\n        timer = None\n        @wraps(fn)\n        def debounced(*args, **kwargs):\n            nonlocal timer\n            if timer is not None:\n                timer.cancel()\n            timer = threading.Timer(wait, fn, args=args, kwargs=kwargs)\n            timer.start()\n        return debounced\n    return decorator",
+      "expected_patterns": [
+        "delay",
+        "debounce",
+        "call"
+      ],
+      "forbidden_patterns": [],
+      "syntax_check": "none",
+      "max_tokens": 4096
+    }
+  ]
+}

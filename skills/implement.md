@@ -192,13 +192,36 @@ touch "/tmp/toolbox-standards-loaded-${CLAUDE_SESSION_ID:-$(pwd | md5sum | cut -
 
 Run silently via the Bash tool.
 
-### 3b. Determine component breakdown
+### 3b. Classify and route components
 
 Read `.claude/tickets/<ticket-id>/plan.md` (the "Component breakdown" section only).
-- If the plan lists multiple components: launch one implementation sub-agent per component, sequentially or in parallel if no data dependencies between them.
-- Otherwise: launch a single implementation sub-agent.
 
-### 3c. For each implementation sub-agent, use this prompt:
+For each component, classify it before deciding how to implement it:
+
+- **simple**: single file, estimated ≤ ~100 LOC, no cross-file dependencies
+- **complex**: multiple files, cross-cutting logic, or requires standards compliance at write time
+
+**For simple components** — use the local LLM + haiku review hybrid:
+
+1. Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` → this will detect Tier 0 and call `local-llm.md` automatically
+2. Build a focused prompt: function/class signature + description + constraints (< 500 tokens total — do not paste full files)
+3. Run `python3 {{TOOLBOX_PATH}}/tools/local-llm/call.py --task-type coding --prompt "<prompt>"` via Bash tool
+4. If exit code 0: take stdout as the draft code
+5. If exit code 1: skip to the complex path (haiku sub-agent handles the full task)
+6. Launch a haiku sub-agent to: apply standards compliance, write tests, and append the IMPLEMENTATION SUMMARY to `implementation.md`
+
+**For complex components** — use the standard sub-agent (Step 3c below) unchanged.
+
+If the plan has no component breakdown: treat the entire feature as a single component and apply the classification above.
+
+### Write contention note
+When multiple implementation sub-agents run in parallel, they may conflict if all try to append
+to `implementation.md` simultaneously. If an agent reports being denied write access to
+`implementation.md`, the orchestrator (main session) should append that agent's summary manually
+after it completes — ask the agent to return the summary in its output, or read the agent's last
+message and write the section directly.
+
+### 3c. For each **complex** component, use this sub-agent prompt:
 
 ```
 ROLE: You are a senior engineer implementing a component using TDD.

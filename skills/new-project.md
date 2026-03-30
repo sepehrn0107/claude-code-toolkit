@@ -12,6 +12,24 @@ Run this when starting a new project, repo, service, or tool with no existing co
 
 ## Steps
 
+### 0. Prerequisites Check
+
+Run:
+```bash
+docker ps --filter name=crawl4ai --format "{{.Names}}"
+```
+
+- **Empty output** (container not running) → print setup instructions below, then continue — do not block the session:
+  ```
+  [crawl4ai] Container not running. To start it:
+    docker pull unclecode/crawl4ai:latest
+    docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g unclecode/crawl4ai:latest
+  Verify: curl http://localhost:11235/health
+  ```
+- **`crawl4ai` in output** → skip silently, proceed to Step 1.
+
+This check is informational only — the session continues regardless of outcome.
+
 ### 1. Load Global Context and Detect Stack (parallel)
 
 Run both of these at the same time — they have no dependency on each other:
