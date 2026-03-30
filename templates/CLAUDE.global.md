@@ -39,6 +39,7 @@ Detect user intent from the first message and route automatically — do not wai
 | "check this", "review [X]", "ready to merge", "before PR"              | Read and follow `/standards-check`    |
 | "new project", "starting fresh", "scaffold this"                        | Read and follow `/new-project`        |
 | "switch project", "change project", "work on [repo]"                    | Read and follow `/project` skill      |
+| "fetch [url]", "get [url]", "read [url]", bare URL as the entire message | Read and follow `/web-fetch` skill    |
 | Any code edit request (none of the above matched)                       | Run `/load-standards` then proceed    |
 
 Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following it. Do not ask the user to run the skill — just do it.
@@ -68,6 +69,7 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /add-stack-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
 - /index-repo       → {{TOOLBOX_PATH}}/skills/index-repo.md
 - /project          → {{TOOLBOX_PATH}}/skills/project.md
+- /web-fetch        → {{TOOLBOX_PATH}}/skills/web-fetch.md
 
 ## Memory
 - Global memory: {{WORKSPACE_PATH}}/memory/MEMORY.md
