@@ -172,10 +172,10 @@ If Codex is not installed or not authenticated, the skill falls back to direct C
 **Invocation:**
 
 ```bash
-cd <project-dir> && codex --approval-policy full-auto "<prompt>"
+codex exec --full-auto -C <project-dir> "<prompt>"
 ```
 
-`--approval-policy full-auto` means Codex applies all file edits and shell commands without asking for permission.
+`--full-auto` sets sandbox to `workspace-write` and approval to `on-request`, allowing Codex to read and write files without prompting.
 
 **After Codex runs:**
 
