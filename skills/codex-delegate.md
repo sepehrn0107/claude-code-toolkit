@@ -121,11 +121,12 @@ Keep the full prompt under ~800 tokens. If the task is too large to express conc
 ### Step 4 — Invoke Codex
 
 ```bash
-cd <project-dir> && codex --approval-policy full-auto "<prompt>"
+codex exec --full-auto -C <project-dir> "<prompt>"
 ```
 
-- `--approval-policy full-auto`: applies all file edits and shell commands without asking
-- Codex reads any file within the working directory as needed
+- `--full-auto`: sets approval to on-request and sandbox to `workspace-write` — Codex can read/write files in the working directory without prompting
+- `-C <project-dir>`: sets the working root; do not `cd` before — let Codex own the directory
+- If `--full-auto` is insufficient (e.g. needs to run install scripts outside the workspace), use `--dangerously-bypass-approvals-and-sandbox` instead, but only when the task requires it
 
 **If Codex exits non-zero:**
 
