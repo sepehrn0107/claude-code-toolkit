@@ -34,6 +34,7 @@ Set up the toolbox
 ```
 
 Claude will:
+
 - Write `~/.claude/CLAUDE.md` pointing to your local clone
 - Install hooks into `~/.claude/hooks/`
 - Create `<workspace>/.claude/settings.json` with plugins and hooks config
@@ -146,6 +147,55 @@ This is how the toolkit improves itself from real work.
 
 ---
 
+### `/codex-delegate` — Hand off implementation to Codex CLI
+
+**Trigger phrases:** "delegate to codex", "let codex handle", "use codex for", "hand off to codex"
+
+**Also runs automatically** during `/implement` Phase 3 whenever Codex CLI is available.
+
+Delegates a focused coding task to OpenAI Codex CLI in fully autonomous mode, then verifies the result and falls back to direct Claude implementation if Codex is unavailable.
+
+**Connection check (always runs first):**
+
+```bash
+codex --version > /dev/null 2>&1 && echo CODEX_OK || echo CODEX_UNAVAILABLE
+```
+
+If Codex is not installed or not authenticated, the skill falls back to direct Claude implementation silently.
+
+**Context passed to Codex:**
+
+- **Touched files** — derived from `plan.md` (Files section) when called from `/implement`, or identified from the task otherwise
+- **Applicable standards** — key rules extracted from the relevant universal + stack standards (≤20 bullets, never full files)
+- **Phase 3 constraints** — TDD requirement (failing tests first, red-green-refactor), no public API changes unless planned, append implementation summary when done
+
+**Invocation:**
+
+```bash
+cd <project-dir> && codex --approval-policy full-auto "<prompt>"
+```
+
+`--approval-policy full-auto` means Codex applies all file edits and shell commands without asking for permission.
+
+**After Codex runs:**
+
+1. `git diff` is read to verify changes match the task
+2. Unexpected file changes are flagged before continuing
+3. If called from `/implement`, control returns to the orchestrator and the lifecycle continues normally
+
+**Fallback behavior:**
+
+- Codex unavailable (CLI not installed) → implement directly with Claude
+- Auth error → remind user to run `codex login`, then implement directly
+- Non-zero exit → report error, implement directly
+
+The fallback is transparent: from the user's perspective, the task completes either way.
+
+**First-time setup:**
+
+```bash
+codex         # opens browser for OpenAI OAuth — run once
+# or: set OPENAI_API_KEY as a Windows environment variable for API key auth
 ### `/web-fetch` — Fetch any external URL via Crawl4AI
 
 **Auto-trigger:** whenever Claude is about to use `WebFetch` to read a page's full content
@@ -196,6 +246,7 @@ Runs the Python indexer (`tools/indexer/indexer.py`) to produce JSON files in `.
 - `README.md` — human-readable summary with entry points and cluster descriptions
 
 Supports an optional semantic layer for similarity queries:
+
 - **none** — structural index only
 - **tfidf** — algorithmic similarity (requires scikit-learn)
 - **ollama** — local LLM embeddings via Ollama
@@ -238,17 +289,17 @@ The active choice is persisted in `<workspace>/memory/active-project.md` — fut
 
 Applied to every project regardless of stack. Located in `standards/universal/`:
 
-| File | What it covers |
-|------|----------------|
-| `architecture.md` | Separation of concerns, layer boundaries, dependency direction, module design |
-| `security.md` | Input validation, secrets management, OWASP top 10, auth patterns |
-| `testing.md` | TDD approach, what to test, test structure, coverage expectations |
-| `error-handling.md` | Fail fast, error context, validation at boundaries, retry logic, anti-patterns |
-| `debugging.md` | Scientific method for debugging, binary search, layer-specific tools, when to escalate |
-| `code-review.md` | What PR authors and reviewers should look for, how to give and receive feedback |
-| `observability.md` | Logging, metrics, health checks, distributed tracing, alerting |
-| `documentation.md` | README standards, ADRs, inline comments, API docs |
-| `git.md` | Conventional commits, branch naming, PR hygiene |
+| File                | What it covers                                                                         |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| `architecture.md`   | Separation of concerns, layer boundaries, dependency direction, module design          |
+| `security.md`       | Input validation, secrets management, OWASP top 10, auth patterns                      |
+| `testing.md`        | TDD approach, what to test, test structure, coverage expectations                      |
+| `error-handling.md` | Fail fast, error context, validation at boundaries, retry logic, anti-patterns         |
+| `debugging.md`      | Scientific method for debugging, binary search, layer-specific tools, when to escalate |
+| `code-review.md`    | What PR authors and reviewers should look for, how to give and receive feedback        |
+| `observability.md`  | Logging, metrics, health checks, distributed tracing, alerting                         |
+| `documentation.md`  | README standards, ADRs, inline comments, API docs                                      |
+| `git.md`            | Conventional commits, branch naming, PR hygiene                                        |
 
 ### Stack Standards
 
@@ -277,14 +328,14 @@ Memory is organized into layers:
 
 **Per-project memory files** (in `.claude/memory/`):
 
-| File | What's stored |
-|------|---------------|
-| `project_context.md` | What the project is, who uses it, key constraints |
-| `stack.md` | Active stack and why it was chosen |
-| `architecture.md` | High-level structure, key modules, code index summary |
-| `progress.md` | Current phase, what's done, what's next |
-| `lessons.md` | Patterns and anti-patterns discovered during development |
-| `decisions/` | ADRs — one file per architectural decision |
+| File                 | What's stored                                            |
+| -------------------- | -------------------------------------------------------- |
+| `project_context.md` | What the project is, who uses it, key constraints        |
+| `stack.md`           | Active stack and why it was chosen                       |
+| `architecture.md`    | High-level structure, key modules, code index summary    |
+| `progress.md`        | Current phase, what's done, what's next                  |
+| `lessons.md`         | Patterns and anti-patterns discovered during development |
+| `decisions/`         | ADRs — one file per architectural decision               |
 
 **Global memory** (`<workspace>/memory/`) stores cross-project learnings, model preferences, and the active project pointer.
 
@@ -305,6 +356,14 @@ When the toolkit launches a sub-agent, it picks the most cost-effective model fo
 | 2 | Architecture decisions, brainstorming, planning | sonnet |
 | 2 | Security review, high-stakes analysis | sonnet |
 
+| Task type                                          | Default model |
+| -------------------------------------------------- | ------------- |
+| File search, pattern matching, simple lookups      | haiku         |
+| Code reading, summarization, straightforward edits | haiku         |
+| Multi-step implementation, TDD, code generation    | sonnet        |
+| Architecture decisions, brainstorming, planning    | sonnet        |
+| Novel problem-solving, highly ambiguous tasks      | sonnet        |
+| Security review, high-stakes analysis              | sonnet        |
 **Tier 0** runs fully automatically when LM Studio is running locally — no prompt shown to the user. If LM Studio is unreachable, routing falls through to haiku/sonnet as normal. See `skills/local-llm.md` for setup.
 
 ### Saving a preference
@@ -334,17 +393,19 @@ Hooks are installed to `~/.claude/hooks/` during setup.
 
 You don't need to remember slash commands. The toolkit detects what you're trying to do:
 
-| You say… | What runs |
-|----------|-----------|
-| "add [X]", "implement [X]", "build [X]" | `/implement` |
-| "fix [X]", "debug [X]", "not working" | `superpowers:systematic-debugging` |
-| "check this", "review", "ready to merge" | `/standards-check` |
-| "new project", "starting fresh", "scaffold" | `/new-project` |
-| "switch project", "work on [repo]" | `/project` |
-| "push to git", "open a PR", "ship this" | `/git-push` |
-| "add standards for [stack]" | `/add-stack-standards` |
-| About to call `WebFetch` to read a page | `/web-fetch` |
-| Any code edit (none of the above) | loads standards, then edits |
+| You say…                                                 | What runs                                                |
+| -------------------------------------------------------- | -------------------------------------------------------- |
+| "add [X]", "implement [X]", "build [X]"                  | `/implement`                                             |
+| "fix [X]", "debug [X]", "not working"                    | `superpowers:systematic-debugging`                       |
+| "check this", "review", "ready to merge"                 | `/standards-check`                                       |
+| "new project", "starting fresh", "scaffold"              | `/new-project`                                           |
+| "switch project", "work on [repo]"                       | `/project`                                               |
+| "push to git", "open a PR", "ship this"                  | `/git-push`                                              |
+| "add standards for [stack]"                              | `/add-stack-standards`                                   |
+| "delegate to codex", "let codex handle", "use codex for" | `/codex-delegate`                                        |
+| `/implement` Phase 3 (automatic)                         | tries `/codex-delegate` first, falls back to direct impl |
+| About to call `WebFetch` to read a page                  | `/web-fetch`                                             |
+| Any code edit (none of the above)                        | loads standards, then edits                              |
 
 ---
 
