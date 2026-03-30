@@ -57,6 +57,16 @@ When the user says "set up the toolbox":
 12. Create `{{WORKSPACE_PATH}}/memory/` if it does not exist, and write `templates/memory/MEMORY.md` to `{{WORKSPACE_PATH}}/memory/MEMORY.md`
 13. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
 
+## When Creating or Modifying a Skill
+
+Whenever a new skill file is added to `skills/` or an existing one is changed in a way that affects routing or the lifecycle skills list, **also update `templates/CLAUDE.global.md`**:
+
+1. If the skill has an auto-trigger condition → add a row to the `## Automatic Skill Routing` table
+2. If it is a named lifecycle skill → add an entry under `## Lifecycle Skills`
+3. Keep both sections in sync with `~/.claude/CLAUDE.md` (the installed version)
+
+This ensures the template stays canonical so that a fresh `"set up the toolbox"` produces a correct install.
+
 ## Always Apply
 
 - **Before touching any file**: checkout a new branch. Never commit to master directly.

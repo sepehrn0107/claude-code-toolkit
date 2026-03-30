@@ -39,6 +39,16 @@ Detect user intent from the first message and route automatically — do not wai
 | "check this", "review [X]", "ready to merge", "before PR"              | Read and follow `/standards-check`    |
 | "new project", "starting fresh", "scaffold this"                        | Read and follow `/new-project`        |
 | "switch project", "change project", "work on [repo]"                    | Read and follow `/project` skill      |
+| "create skill", "make a skill", "new skill", "improve skill", "edit skill", "optimize skill", "skill for [X]" | Invoke `skill-creator:skill-creator` system skill |
+| "push to git", "push this", "commit and push", "push my changes", "send to github", "open a PR", "create a PR", "push these changes", "ship this", "just push it", "lets push" | Read and follow `/git-push` skill |
+| Claude is about to use `WebFetch` or follow a URL to read page content  | Read and follow `/web-fetch` skill    |
+| Claude is about to run multiple git commands (status, log, diff, branch) | Read and follow `/git-ctx` skill     |
+| Claude is about to read `git diff` to understand what changed or draft a commit/PR | Read and follow `/diff-summary` skill |
+| Claude needs to read one function, class, or section from a file >100 lines | Read and follow `/read-section` skill |
+| Claude needs package version, types, license, or popularity for an npm/PyPI package | Read and follow `/pkg-info` skill  |
+| Claude needs runtime versions, running ports, Docker state, or .env presence | Read and follow `/env-check` skill  |
+| Claude is about to search code with Grep or search tools               | Read and follow `/grep` skill         |
+| Claude is about to write or append to any memory file                  | Read and follow `/memory-sync` skill  |
 | Any code edit request (none of the above matched)                       | Run `/load-standards` then proceed    |
 
 Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following it. Do not ask the user to run the skill — just do it.
@@ -62,12 +72,21 @@ When preparing to push code or open a PR — even if the user does not ask — a
 Skills are loaded from the local toolbox clone. Read the skill file before following it.
 
 - /new-project      → {{TOOLBOX_PATH}}/skills/new-project.md
-- /implement      → {{TOOLBOX_PATH}}/skills/implement.md
+- /implement        → {{TOOLBOX_PATH}}/skills/implement.md
 - /standards-check  → {{TOOLBOX_PATH}}/skills/standards-check.md
 - /retrospective    → {{TOOLBOX_PATH}}/skills/retrospective.md
 - /add-stack-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
 - /index-repo       → {{TOOLBOX_PATH}}/skills/index-repo.md
 - /project          → {{TOOLBOX_PATH}}/skills/project.md
+- /git-push         → {{TOOLBOX_PATH}}/skills/git-push.md
+- /web-fetch        → {{TOOLBOX_PATH}}/skills/web-fetch.md
+- /git-ctx          → {{TOOLBOX_PATH}}/skills/git-ctx.md
+- /diff-summary     → {{TOOLBOX_PATH}}/skills/diff-summary.md
+- /read-section     → {{TOOLBOX_PATH}}/skills/read-section.md
+- /pkg-info         → {{TOOLBOX_PATH}}/skills/pkg-info.md
+- /grep             → {{TOOLBOX_PATH}}/skills/grep.md
+- /env-check        → {{TOOLBOX_PATH}}/skills/env-check.md
+- /memory-sync      → {{TOOLBOX_PATH}}/skills/memory-sync.md
 
 ## Memory
 - Global memory: {{WORKSPACE_PATH}}/memory/MEMORY.md
