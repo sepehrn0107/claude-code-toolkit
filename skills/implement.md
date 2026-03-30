@@ -198,6 +198,13 @@ Read `.claude/tickets/<ticket-id>/plan.md` (the "Component breakdown" section on
 - If the plan lists multiple components: launch one implementation sub-agent per component, sequentially or in parallel if no data dependencies between them.
 - Otherwise: launch a single implementation sub-agent.
 
+### Write contention note
+When multiple implementation sub-agents run in parallel, they may conflict if all try to append
+to `implementation.md` simultaneously. If an agent reports being denied write access to
+`implementation.md`, the orchestrator (main session) should append that agent's summary manually
+after it completes — ask the agent to return the summary in its output, or read the agent's last
+message and write the section directly.
+
 ### 3c. For each implementation sub-agent, use this prompt:
 
 ```

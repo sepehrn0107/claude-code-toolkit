@@ -103,6 +103,39 @@ await db.transaction(async (tx) => {
 })
 ```
 
+## Circular Foreign Keys
+
+Drizzle cannot represent a circular FK (Table A references Table B, Table B references Table A) using `.references()` on both sides simultaneously — it causes a runtime error during schema introspection.
+
+**Pattern:** Declare the primary FK with `.references()`. Declare the back-reference as a plain `uuid` column (no `.references()`). Add the constraint as raw SQL in the migration file after both tables exist.
+
+```ts
+// schema/content.ts — galleries.coverPhotoId references photos, photos.galleryId references galleries
+export const galleries = pgTable('galleries', {
+  id:           uuid('id').primaryKey().defaultRandom(),
+  coverPhotoId: uuid('cover_photo_id'),             // ← no .references() here
+  // ... other columns
+})
+
+export const photos = pgTable('photos', {
+  id:        uuid('id').primaryKey().defaultRandom(),
+  galleryId: uuid('gallery_id').references(() => galleries.id), // ← FK declared here
+  // ... other columns
+})
+```
+
+In the generated migration, manually add:
+```sql
+ALTER TABLE photos ADD CONSTRAINT photos_gallery_id_fk
+  FOREIGN KEY (gallery_id) REFERENCES galleries(id);
+
+ALTER TABLE galleries ADD CONSTRAINT galleries_cover_photo_id_fk
+  FOREIGN KEY (cover_photo_id) REFERENCES photos(id)
+  DEFERRABLE INITIALLY DEFERRED;   -- deferred so inserts don't fail before cover is set
+```
+
+> **Rule:** Document every hand-edited migration in a comment at the top of the SQL file. Never silently edit generated files — note `-- MANUAL: circular FK constraint` on the added lines.
+
 ## Rules
 - All DB access goes through the service layer — never query directly in route handlers
 - Use `db.query.*` (relational API) for reads with relations; use core API for writes

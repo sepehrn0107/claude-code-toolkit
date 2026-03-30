@@ -1,4 +1,51 @@
-# Auth.js v5 (NextAuth) Standards (Next.js)
+# Auth.js / NextAuth Standards (Next.js)
+
+> **Version warning:** This file documents Auth.js **v5 (beta)**. If your project uses
+> `next-auth@^4` (stable), the APIs are incompatible — `auth()`, `handlers`, and
+> `DrizzleAdapter` do not exist in v4. Always check your project's ADR before applying
+> these patterns.
+>
+> **next-auth v4 quick reference** (JWT strategy, no adapter tables):
+> ```ts
+> // auth.ts
+> import type { NextAuthOptions } from 'next-auth'
+> import CredentialsProvider from 'next-auth/providers/credentials'
+> export const authOptions: NextAuthOptions = {
+>   session: { strategy: 'jwt' },
+>   providers: [CredentialsProvider({ ... })],
+>   callbacks: {
+>     async jwt({ token, user }) {
+>       if (user) { token.id = user.id; token.role = user.role; }
+>       return token;
+>     },
+>     async session({ session, token }) {
+>       session.user.id = token.id as string;
+>       session.user.role = token.role as 'customer' | 'admin';
+>       return session;
+>     },
+>   },
+> }
+>
+> // app/api/auth/[...nextauth]/route.ts
+> import NextAuth from 'next-auth'
+> import { authOptions } from '@/lib/auth/config'
+> const handler = NextAuth(authOptions)
+> export { handler as GET, handler as POST }
+>
+> // middleware.ts
+> import { withAuth } from 'next-auth/middleware'
+> export default withAuth(fn, { callbacks: { authorized: ({ token }) => !!token } })
+>
+> // Server helpers
+> import { getServerSession } from 'next-auth/next'
+> const session = await getServerSession(authOptions)  // NOT auth()
+> ```
+>
+> v4 advantages: stable release, no sessions/accounts/verificationTokens tables (JWT is
+> stateless), edge middleware reads JWT without DB hit. Tradeoff: no server-side session
+> revocation without a token blocklist.
+
+## Auth.js v5 (NextAuth beta)
 
 ## Package
 Use `next-auth@beta` (v5, App Router compatible) + `@auth-kit/drizzle-adapter` or the built-in Drizzle adapter.
