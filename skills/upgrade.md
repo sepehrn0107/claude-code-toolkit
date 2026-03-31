@@ -158,6 +158,28 @@ Patches `~/.claude/CLAUDE.md` to replace the soft web-fetch routing rule with an
 
 ---
 
+#### v1.5.0 — Multi-Session Isolation and Auto-Switch
+
+Installs session-scoped project state (so parallel Claude Code windows don't conflict) and
+mid-session project auto-detection (so Claude switches context when you reference another repo).
+
+**Steps:**
+
+1. Copy `{{TOOLBOX_PATH}}/templates/hooks/session-start.sh`
+   → `~/.claude/hooks/session-start.sh`
+   Then run: `chmod +x ~/.claude/hooks/session-start.sh`
+
+2. Resolve tokens and write `{{TOOLBOX_PATH}}/templates/CLAUDE.global.md` → `~/.claude/CLAUDE.md`:
+   - Replace `{{TOOLBOX_PATH}}` with the resolved toolbox path
+   - Replace `{{WORKSPACE_PATH}}` with the resolved workspace path
+   - (Use the same Python token-substitution logic as the original setup flow)
+
+3. Output:
+   > Session isolation and auto-switch installed. Each terminal window now maintains its own
+   > active project. Mid-session context switches are detected automatically.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`

@@ -8,8 +8,9 @@ description: Workspace-level project context switcher for managing which repo is
 Workspace-level project context switcher. Use when Claude Code is open at the workspace root
 (`{{WORKSPACE_PATH}}/`) and you need to load, inspect, or change the active project context.
 
-Active project is persisted at `{{WORKSPACE_PATH}}/memory/active-project.md` and is shared across
-all sessions — switching in one chat means the next chat auto-loads the new choice.
+Active project is persisted at `{{WORKSPACE_PATH}}/memory/active-project.md` (global, shared across
+sessions) and at `/tmp/toolbox-session-${CLAUDE_SESSION_ID}.md` (session-local, this window only).
+The session file takes precedence within a session; the global file seeds new sessions.
 
 ---
 
@@ -26,12 +27,18 @@ Switch which repo is the active project for this and future sessions.
    ```
 2. Read current active from `{{WORKSPACE_PATH}}/memory/active-project.md` (field `active:`)
 3. Show the list to the user and ask which to switch to (mark current active)
-4. Write the choice:
-   ```
-   active: <chosen-repo>
-   updated: <YYYY-MM-DD>
-   ```
-   to `{{WORKSPACE_PATH}}/memory/active-project.md`
+4. Write the choice to both files:
+   a. Global file `{{WORKSPACE_PATH}}/memory/active-project.md`:
+      ```
+      active: <chosen-repo>
+      updated: <YYYY-MM-DD>
+      ```
+   b. Session file (if `CLAUDE_SESSION_ID` is available — run via Bash):
+      ```bash
+      SESSION_KEY="${CLAUDE_SESSION_ID:-}"
+      TODAY=$(date +%Y-%m-%d)
+      [ -n "$SESSION_KEY" ] && printf "active: <chosen-repo>\nupdated: %s\n" "$TODAY" > "/tmp/toolbox-session-${SESSION_KEY}.md"
+      ```
 5. Load the new project's memory files in parallel (if they exist):
    - `{{WORKSPACE_PATH}}/<chosen>/.claude/memory/project_context.md`
    - `{{WORKSPACE_PATH}}/<chosen>/.claude/memory/stack.md`

@@ -13,14 +13,27 @@ if [ -f "memory/MEMORY.md" ] && [ ! -f ".claude/memory/MEMORY.md" ]; then
   ACTIVE=$(grep -m1 "^active:" memory/active-project.md 2>/dev/null \
            | awk '{print $2}' | grep -v "^(none)$" || echo "")
 
+  # Write or read session-scoped active project file (isolates parallel sessions)
+  SESSION_KEY="${CLAUDE_SESSION_ID:-}"
+  if [ -n "$SESSION_KEY" ]; then
+    SESSION_FILE="/tmp/toolbox-session-${SESSION_KEY}.md"
+    if [ ! -f "$SESSION_FILE" ]; then
+      # Seed session file from global (only on first hook run for this session)
+      [ -n "$ACTIVE" ] && printf "active: %s\nupdated: %s\n" "$ACTIVE" "$(date +%Y-%m-%d)" > "$SESSION_FILE"
+    else
+      # Session file already exists — a mid-session switch may have updated it; use it
+      ACTIVE=$(grep -m1 "^active:" "$SESSION_FILE" 2>/dev/null | awk '{print $2}' || echo "$ACTIVE")
+    fi
+  fi
+
   echo "---"
   if [ -n "$ACTIVE" ]; then
-    # Machine-readable tag + human hint on one line
-    echo "WORKSPACE_MODE:ACTIVE=${ACTIVE} | Projects: ${PROJECTS}"
+    # Machine-readable tag + human hint on one line; SESSION_ID lets Claude construct the session file path
+    echo "WORKSPACE_MODE:ACTIVE=${ACTIVE} | Projects: ${PROJECTS} | SESSION_ID=${CLAUDE_SESSION_ID}"
     echo "Active project: ${ACTIVE} — reply 'switch project' to change."
   else
     # Machine-readable tag first, then a human-readable selection list
-    echo "WORKSPACE_MODE:CHOOSE | Projects: ${PROJECTS}"
+    echo "WORKSPACE_MODE:CHOOSE | Projects: ${PROJECTS} | SESSION_ID=${CLAUDE_SESSION_ID}"
     echo ""
     echo "Which project are you working on? Reply with the name to load its context:"
     N=1
@@ -30,6 +43,7 @@ if [ -f "memory/MEMORY.md" ] && [ ! -f ".claude/memory/MEMORY.md" ]; then
       N=$((N+1))
     done
   fi
+  echo "Toolbox: active | Skills: ready | Standards: auto-load on first edit"
   echo "---"
   exit 0
 fi
