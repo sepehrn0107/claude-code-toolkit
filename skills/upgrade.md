@@ -108,6 +108,49 @@ Installs a VS Code extension that shows Claude Code session stats (directory, mo
 
 ---
 
+#### v1.2.0 — Claude Sessions Extension
+
+Installs a VS Code extension that lets you browse your local Claude Code session history from the Activity Bar.
+
+**Steps:**
+
+1. Create `~/.vscode/extensions/sepehrn.claude-sessions-0.1.0/` if it does not exist.
+
+2. Copy all files from `{{TOOLBOX_PATH}}/templates/claude-sessions/`
+   → `~/.vscode/extensions/sepehrn.claude-sessions-0.1.0/`
+   (copy `package.json`, `media/`, and `out/` recursively)
+
+3. Register the extension in `~/.vscode/extensions/extensions.json`:
+   - Read the file (or start from `[]` if absent)
+   - Skip if an entry with `"relativeLocation": "sepehrn.claude-sessions-0.1.0"` already exists
+   - Otherwise append this entry (replace `<HOME_POSIX>` with the user's home in POSIX format):
+     ```json
+     {
+       "identifier": {"id": "sepehrn.claude-sessions"},
+       "version": "0.1.0",
+       "location": {
+         "$mid": 1,
+         "path": "<HOME_POSIX>/.vscode/extensions/sepehrn.claude-sessions-0.1.0",
+         "scheme": "file"
+       },
+       "relativeLocation": "sepehrn.claude-sessions-0.1.0",
+       "metadata": {
+         "isApplicationScoped": false,
+         "isMachineScoped": false,
+         "isBuiltin": false,
+         "installedTimestamp": <current_unix_ms>,
+         "pinned": false,
+         "source": "gallery"
+       }
+     }
+     ```
+   - Use the same Python path-construction pattern from v1.1.0 for `<HOME_POSIX>`.
+
+4. Output:
+   > Claude Sessions extension installed. Restart VS Code to activate — look for the chat icon in the Activity Bar.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
