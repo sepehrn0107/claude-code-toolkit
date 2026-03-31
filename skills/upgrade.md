@@ -180,6 +180,34 @@ mid-session project auto-detection (so Claude switches context when you referenc
 
 ---
 
+#### v1.6.0 — Modular CLAUDE sections
+
+Splits the monolithic `~/.claude/CLAUDE.md` into modular section files, making `~/.claude/CLAUDE.md` user-owned (one @import line) so upgrades never overwrite custom content.
+
+**Steps:**
+
+1. Resolve `TOOLBOX_PATH`, `WORKSPACE_PATH`, and `CLAUDE_PATH` (= `~/.claude` absolute path).
+
+2. Create `<CLAUDE_PATH>/toolbox-sections/` if it does not exist.
+
+3. For each of the 9 section templates in `<TOOLBOX_PATH>/templates/sections/`:
+   - Read the template, replace `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`
+   - Write rendered file to `<CLAUDE_PATH>/toolbox-sections/<filename>.md`
+
+4. Read `<TOOLBOX_PATH>/templates/CLAUDE.global.md`, replace all 3 tokens, write to `<CLAUDE_PATH>/CLAUDE.global.md`.
+
+5. Migrate `<CLAUDE_PATH>/CLAUDE.md`:
+   - If it contains `## Session Start (automatic)` (old monolithic format): replace the entire file content with the single @import line: `@<CLAUDE_PATH>/CLAUDE.global.md`
+     (Any content after a `# User` heading or `<!-- user content -->` comment is preserved after the @import line)
+   - If the @import line is already present: do nothing
+   - If neither: prepend `@<CLAUDE_PATH>/CLAUDE.global.md` followed by a blank line
+
+6. Output:
+   > Modular CLAUDE sections installed. ~/.claude/CLAUDE.md now contains a single @import line.
+   > Your custom content (if any) is preserved. Section files are in ~/.claude/toolbox-sections/.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
