@@ -5,6 +5,7 @@ Detect user intent from the first message and route automatically — do not wai
 | User says…                                                              | Auto-trigger                          |
 |-------------------------------------------------------------------------|---------------------------------------|
 | "add [X]", "implement [X]", "build [X]", "create [feature]", "work on [ticket]", "ticket [X]" | Read and follow `/implement` skill  |
+| "brainstorm [X]", "plan mode", "let's plan", "think through [X]", "help me plan", "/brainstorm" | Invoke `superpowers:brainstorming` skill |
 | "fix [X]", "debug [X]", "something is broken", "not working"            | Invoke `superpowers:systematic-debugging` |
 | "check this", "review [X]", "ready to merge", "before PR"              | Read and follow `/standards-check`    |
 | "new project", "starting fresh", "scaffold this"                        | Read and follow `/new-project`        |
