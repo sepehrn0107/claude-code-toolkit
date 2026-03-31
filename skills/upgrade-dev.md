@@ -45,8 +45,12 @@ For each of the 9 section templates in `<TOOLBOX_PATH>/templates/sections/`:
 Do for each:
 1. Read the template file
 2. Replace every occurrence of `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, and `{{CLAUDE_PATH}}` with their resolved values
-3. Write the rendered content to `<CLAUDE_PATH>/toolbox-sections/<filename>.md`
-   (create `<CLAUDE_PATH>/toolbox-sections/` if it does not exist)
+3. **Before writing any file**, ensure the directory exists:
+   ```bash
+   mkdir -p <CLAUDE_PATH>/toolbox-sections
+   ```
+   This is required on first run — the directory does not exist by default.
+4. Write the rendered content to `<CLAUDE_PATH>/toolbox-sections/<filename>.md`
 
 ### 3. Render CLAUDE.global.md
 
