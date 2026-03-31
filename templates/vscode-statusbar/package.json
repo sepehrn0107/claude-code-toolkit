@@ -1,11 +1,18 @@
 {
   "name": "claude-statusbar",
   "displayName": "Claude Status Bar",
-  "description": "Shows Claude Code session status in the VS Code status bar",
-  "version": "0.0.1",
+  "description": "Shows Claude Code session status in the VS Code status bar and a multi-session dashboard",
+  "version": "0.2.0",
   "publisher": "local",
   "engines": { "vscode": "^1.60.0" },
-  "activationEvents": ["*"],
+  "activationEvents": ["onStartupFinished"],
   "main": "./extension.js",
-  "contributes": {}
+  "contributes": {
+    "commands": [
+      {
+        "command": "claudeStatusbar.showDashboard",
+        "title": "Claude: Show Session Dashboard"
+      }
+    ]
+  }
 }
