@@ -353,7 +353,7 @@ A cross-repo development assistant built on Claude Code. It brings coding standa
 ### 1. Clone the toolbox
 
 ```bash
-git clone https://github.com/sepehrn0107/toolbox ~/Documents/toolbox
+git clone https://github.com/sepehrn0107/claude-code-toolkit ~/Documents/workspace/toolbox
 ```
 
 ### 2. Run setup
