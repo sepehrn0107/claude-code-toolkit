@@ -82,6 +82,10 @@ ROLE: You are a senior engineer doing ideation for a feature.
 INPUT — read this file first:
   .claude/tickets/<ticket-id>/context.md
 
+FETCH RULE — if you need to read any external URL, do not call WebFetch directly. Run:
+  python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
+  Read stdout as page content. Fall back to WebFetch only if stderr says "not reachable".
+
 If INDEX_AVAILABLE is true:
   - Read {{TOOLBOX_PATH}}/skills/query-index.md
   - Launch sub-agents (haiku model) for:
@@ -137,6 +141,10 @@ ROLE: You are a senior architect producing an implementation plan.
 INPUT — read these files first:
   .claude/tickets/<ticket-id>/context.md
   .claude/tickets/<ticket-id>/ideation.md
+
+FETCH RULE — if you need to read any external URL, do not call WebFetch directly. Run:
+  python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
+  Read stdout as page content. Fall back to WebFetch only if stderr says "not reachable".
 
 STANDARDS — read these files in full before planning:
   {{TOOLBOX_PATH}}/standards/universal/architecture.md
@@ -232,6 +240,10 @@ INPUT — read these files first:
 
 YOUR COMPONENT: <component name / file group from plan>
 
+FETCH RULE — if you need to read any external URL, do not call WebFetch directly. Run:
+  python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
+  Read stdout as page content. Fall back to WebFetch only if stderr says "not reachable".
+
 STANDARDS — read these files in full before writing any code:
   {{TOOLBOX_PATH}}/standards/universal/architecture.md
   {{TOOLBOX_PATH}}/standards/universal/testing.md
@@ -282,6 +294,10 @@ INPUT — read these files first:
   .claude/tickets/<ticket-id>/context.md
   .claude/tickets/<ticket-id>/plan.md
   .claude/tickets/<ticket-id>/implementation.md
+
+FETCH RULE — if you need to read any external URL, do not call WebFetch directly. Run:
+  python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
+  Read stdout as page content. Fall back to WebFetch only if stderr says "not reachable".
 
 STANDARDS — read these files before verifying:
   {{TOOLBOX_PATH}}/standards/universal/testing.md
