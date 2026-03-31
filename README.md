@@ -1,569 +1,246 @@
-# claude-code-toolkit
+<div align="center">
+  <img src="logo.svg" width="80" alt="claude-code-toolkit" />
 
-Standards, memory, and lifecycle skills for Claude Code — loads automatically across every project.
+  # claude-code-toolkit
 
-Every Claude Code session starts cold: no memory of your stack, your decisions, or what you built last week. This toolkit fixes that. It loads your coding standards, reads project memory so you never repeat context, and guides each phase of development with the right workflow. You run one command; it handles the rest.
+  Give Claude Code a permanent memory, consistent rules, and a structured way to work —<br>across every project, every session.
+
+  ![License](https://img.shields.io/badge/license-MIT-green)
+  ![Version](https://img.shields.io/badge/version-1.7.0-purple)
+  ![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-blue)
+</div>
 
 ---
 
-## Who Is This For
+## The problem
 
-Developers who use Claude Code regularly and want it to behave consistently across projects — following the same standards, remembering past decisions, and running the right workflow for each task (new feature, bug fix, PR review) without being told each time.
+Every Claude Code session starts cold.
+
+It doesn't know your project, your tech stack, your past decisions, or how you like to work. You re-explain everything. Every time. And the moment you close the window, it's gone.
 
 ---
 
-## Getting Started
+## The fix
 
-**Requirements:** Claude Code installed, Git, Python 3, Docker (for `/web-fetch` and `/local-llm`), [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) (for Codex delegation — optional but recommended).
+This toolkit installs once and runs silently in the background every time you open Claude Code.
 
-### 1. Create a workspace folder and clone the toolkit
+It gives Claude:
+- **A persistent memory** — reads your project context, stack, and past decisions at the start of every session automatically
+- **Rules it always follows** — coding standards, security practices, git hygiene — loaded per project, never forgotten
+- **A built-in workflow** — the right process for every task, triggered by plain English
 
-Create a **new, empty folder** with any name — this becomes your workspace root. The toolkit must live directly inside it as a subfolder named `toolbox`. Memory and Claude settings are installed at the workspace level (not inside the repo), so the parent folder must be dedicated to this workspace.
+You open a project. Claude already knows what it is, what stack it uses, and what you were working on. No setup. No re-explaining.
+
+---
+
+## Who is this for?
+
+| | |
+|---|---|
+| **🙋 I don't write code** | You use Claude to help you write, research, plan, or build things — and you're tired of explaining your project from scratch every session. This toolkit makes Claude remember. Setup takes 5 minutes and you never touch it again. |
+| **👩‍💻 I'm a developer** | You use Claude Code daily but work without structured workflows — no consistent standards, no memory between sessions, no automatic routing to the right process. This toolkit fixes all three. One install, every project. |
+
+---
+
+## See it in action
+
+> **Session without the toolkit:**
+> You: *"I'm working on a Next.js app with Drizzle ORM, here's what we built last time..."*
+> *(re-explains the whole project, every single session)*
+
+> **Session with the toolkit:**
+> Claude: *"Active project: my-app | Stack: Next.js + Drizzle + TypeScript | Last session: implemented auth middleware, next up: dashboard route. Ready to continue."*
+> You: *"add the dashboard route"*
+> Claude: *(reads plan, loads Next.js standards, runs TDD implementation, opens PR — no prompting)*
+
+---
+
+## Install
+
+**Requirements:** [Claude Code](https://claude.ai/code), Git, Python 3
 
 ```bash
+# 1. Create a workspace folder and clone
 mkdir -p ~/Documents/workspace
 git clone https://github.com/sepehrn0107/claude-code-toolkit ~/Documents/workspace/toolbox
-```
 
-The folder name (`workspace` above) is just an example — name it whatever you like. Setup infers the workspace path automatically from where the repo is cloned; nothing is hardcoded.
-
-> **Already cloned?** If you already have the repo on your machine, skip the commands above. Just make sure the repo folder sits inside an otherwise-empty parent folder, then go to step 3.
-
-### 2. Install the Codex plugin (optional)
-
-The toolkit uses [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) to delegate implementation tasks to the Codex CLI during Phase 3 of `/implement`.
-
-**Install the Codex CLI:**
-
-```bash
-npm install -g @openai/codex
-```
-
-**If `codex --version` says "not recognized" after installing:**
-
-The npm global bin directory is not in your PATH. Fix it for your platform:
-
-**macOS / Linux:**
-
-Add to your shell profile (`~/.zshrc`, `~/.bashrc`, or `~/.bash_profile`):
-
-```bash
-export PATH="$PATH:$(npm root -g)/../bin"
-```
-
-Then reload your shell (`source ~/.zshrc`) and reopen VS Code.
-
-**Windows:**
-
-The toolkit's `codex:setup` check uses `cmd.exe` internally (via `shell: true` in Node). Unlike bash, `cmd.exe` reads PATH from the **Windows registry**, not from your shell profile — so adding the path to `~/.bashrc` or `~/.zshrc` will not help.
-
-You must add it to the **Windows Environment Variables**:
-
-1. Press `Win + R`, type `sysdm.cpl`, go to **Advanced → Environment Variables**
-2. Under **User variables**, find `Path` → click **Edit → New**
-3. Add: `%APPDATA%\npm` (typically `C:\Users\<you>\AppData\Roaming\npm`)
-4. Click OK to close all dialogs
-5. **Fully quit and reopen VS Code** — "Reload Window" is not sufficient; environment variables are only read on a full process restart
-
-Confirm the fix by opening a new `cmd.exe` window (outside VS Code) and running `where codex`. If it returns a path, the restart will make `codex:setup` detect it correctly.
-
-**Authenticate:**
-
-```bash
-codex   # opens browser for OpenAI OAuth — run once
-# or: set OPENAI_API_KEY as an environment variable for API key auth
-```
-
-**Verify:**
-
-```bash
-codex --version   # should print codex-cli x.y.z
-```
-
-If the plugin is not installed or authentication fails, all tasks fall back to direct Claude implementation transparently. The toolkit's `codex:setup` check runs before every delegation and gracefully handles PATH issues and missing auth.
-
-### 3. Run setup
-
-Open the toolbox directory in Claude Code and say:
-
-```
+# 2. Open the toolbox folder in Claude Code, then say:
 Set up the toolbox
 ```
 
-Claude will:
+That's it. Claude handles the rest — it writes the config files, installs the hooks, and sets up your memory system.
 
-- Write a single `@import` line into `~/.claude/CLAUDE.md` pointing to the toolbox (your own content in that file is never touched)
-- Render the full configuration into `~/.claude/CLAUDE.global.md` and `~/.claude/toolbox-sections/` (9 modular section files)
-- Install hooks into `~/.claude/hooks/`
-- Create `<workspace>/.claude/settings.json` with plugins and hooks config
-- Create `<workspace>/memory/` for global cross-project memory
-
-That's the only manual step.
-
-### 4. Start using it
-
-In any project directory, open Claude Code and use the skills below.
+> **Already have a workspace?** Clone the toolkit as a subfolder named `toolbox` inside your existing workspace folder, then say `Set up the toolbox`.
 
 ---
 
-## How Subagent Reliability Works
+## What it does
 
-The toolkit uses two mechanisms to ensure every agent and sub-agent (spawned via the `Agent` tool during `/implement`, code reviews, etc.) follows the same standards and skills:
+### Claude remembers your project
 
-**1. Global `~/.claude/CLAUDE.md`**
+At the start of every session, the toolkit reads your project's memory files — what the project is, what stack you're using, what decisions you've made, and what you were working on last time. You never re-explain.
 
-Loaded automatically for every Claude Code session, including sub-agents. Contains a single `@import` line that pulls in `~/.claude/CLAUDE.global.md`, which in turn `@imports` nine modular section files from `~/.claude/toolbox-sections/`. This means `~/.claude/CLAUDE.md` is **user-owned** — upgrades and `/upgrade-dev` runs never overwrite your custom content.
+**Example:**
+> You open Claude Code in your project
+> Claude: *"Loaded: my-app | Stack: Python + FastAPI | Last session: finished user auth, next: build the API endpoints for profiles"*
 
-The section files hold the full routing table, skill list, and session rules. Sub-agents see a guard at the top of the Session Start section so they skip session-initialization and proceed directly to their task — no wasted context, no confusion.
+---
 
-**2. Per-project `CLAUDE.md`**
+### Say what you want — it knows what to do
 
-Created by `/new-project` in the project root from `templates/CLAUDE.md.template`. Loaded automatically for every agent running in that project directory. Contains the **four rules every agent must follow**, stated as direct commands (not references to skills):
+You don't need to know slash commands or workflows. The toolkit detects your intent and routes to the right process automatically.
 
-| Rule | What it does |
+| You say | What happens |
 |---|---|
-| Read project context | Loads `.claude/memory/` before any task |
-| Load standards before code edits | Reads `load-standards.md` and waits for the confirmation |
-| Use Crawl4AI for URL fetches | Runs `fetch.py` instead of the built-in `WebFetch` tool |
-| Follow memory-sync before writing memory | Keeps memory files consistent |
+| `"add [feature]"` | Full implementation workflow: brainstorm → plan → TDD → PR |
+| `"fix [bug]"` | Systematic debugging process |
+| `"push this"` | Groups commits logically, writes conventional commit messages, opens PR |
+| `"new project"` | Full scaffold: memory files, stack detection, design system, git init |
+| `"review this"` | Standards check across architecture, security, testing, git hygiene |
+| `"switch project"` | Loads a different repo from your workspace |
 
-This is the most reliable mechanism: it works for all agents regardless of how they were spawned, without requiring any explicit context injection in the prompt.
+---
 
-**For existing projects** that predate this setup, add the file manually:
+### Coding standards, automatically
+
+The toolkit ships with standards for common stacks. When you work on a project, the right standards load automatically — your code is reviewed against them before every commit.
+
+**Available stacks:** TypeScript + React, Next.js, Go, Python + FastAPI, Drizzle + PostgreSQL
+
+**What standards cover:** architecture patterns, naming conventions, security rules, testing expectations, git hygiene
+
+> No more *"Claude, please follow our naming conventions"* — it just does.
+
+Add standards for a new stack anytime: say `"add standards for [stack]"`.
+
+---
+
+### Full feature implementation, start to finish
+
+Say `"add [feature]"` and the toolkit runs a 5-phase workflow end to end:
+
+| Phase | What happens |
+|---|---|
+| **1. Understand** | Reads your memory and standards, writes a context doc |
+| **2. Plan** | Brainstorms scope, risks, edge cases; produces a file-level plan |
+| **3. Build** | TDD implementation, red-green-refactor, follows your stack standards |
+| **4. Verify** | Checks tests pass, edge cases covered, error paths handled |
+| **5. Ship** | Standards check, conventional commit, opens PR via GitHub CLI |
+
+All state saves to `.claude/tickets/` — if interrupted, it resumes from where it left off.
+
+---
+
+### Code index for large projects
+
+Run `/index-repo` once and the toolkit builds a structural map of your codebase — every file, its symbols, imports, and call relationships. Claude uses this map automatically instead of grepping, keeping searches fast and context usage low.
+
+---
+
+### Web design audit
+
+Before any PR that touches UI, the toolkit automatically audits your design for 9 areas: design tokens, typography, spacing, color contrast, accessibility (WCAG 2.1 AA), responsive layout, page flow, component consistency, and token adherence. Outputs a prioritized fix list with exact file references.
+
+---
+
+### Fetch any URL cleanly
+
+Routes web fetches through a local [Crawl4AI](https://github.com/unclecode/crawl4ai) container — clean markdown output, 24-hour cache. Never fetches the same page twice in a day. Requires Docker.
+
+---
+
+### Delegate to Codex (optional)
+
+When [Codex CLI](https://github.com/openai/codex-plugin-cc) is installed, implementation tasks in Phase 3 are automatically delegated to it. Falls back to direct Claude silently if unavailable.
+
+---
+
+## Memory
+
+The toolkit remembers things in two places:
+
+**Per-project memory** (`.claude/memory/` in each project):
+
+| File | What's stored |
+|---|---|
+| `project_context.md` | What the project is and who it's for |
+| `stack.md` | Tech stack and why it was chosen |
+| `architecture.md` | High-level structure, key modules |
+| `progress.md` | What's done, what's next |
+| `lessons.md` | Patterns and anti-patterns discovered |
+
+**Global memory** (`<workspace>/memory/`): cross-project learnings, model preferences, active project pointer.
+
+Memory is read at the start of every session. It's written at the end. It grows as you work.
+
+---
+
+## How it works (for developers)
+
+Four layers load in order:
+
+```
+~/.claude/CLAUDE.md              ← your global config (a single @import — never overwritten by upgrades)
+~/.claude/CLAUDE.global.md       ← toolbox routing, skills, session rules
+<workspace>/toolbox/standards/   ← universal + stack-specific coding standards
+<project>/.claude/memory/        ← project context, loaded each session
+```
+
+Two shell hooks run automatically:
+- **`session-start.sh`** — detects the active project, prints status, loads context
+- **`pre-tool-standards-gate.sh`** — blocks file edits until standards are loaded for the session
+
+Sub-agents spawned during `/implement`, code reviews, etc. inherit all rules automatically via the global `CLAUDE.md` — no explicit context injection needed.
+
+### Stack standards included
+
+| Stack | What's covered |
+|---|---|
+| `typescript-react` | Components, naming, styling, testing, TypeScript conventions |
+| `typescript-nextjs` | Routing, rendering (SSR/SSG/ISR), API routes — inherits React standards |
+| `go` | Package design, error handling, testing, toolchain |
+| `python-fastapi` | Route structure, dependency injection, validation, testing |
+| `drizzle-postgres` | Schema design, migrations, query patterns, type safety |
+
+---
+
+## Optional setup
+
+### Codex delegation
 
 ```bash
-# from your project root
-cp <toolbox-path>/templates/CLAUDE.md.template CLAUDE.md
-# then fill in {{PROJECT_NAME}}, {{STACK}}, {{TOOLBOX_PATH}}, {{WORKSPACE_PATH}}
+npm install -g @openai/codex
+codex   # authenticate once via browser
 ```
 
-**3. Explicit FETCH RULE injection in `implement.md`**
+Implementation tasks in `/implement` Phase 3 are then delegated to Codex automatically. Falls back to direct Claude if Codex is unavailable.
 
-All four phase prompts in `/implement` include an explicit fetch rule so sub-agents never fall back to the built-in `WebFetch` even mid-task when attention drifts from the project-level CLAUDE.md.
+### Web fetching via Crawl4AI
 
----
-
-## How It Works
-
-The toolkit is organized as 4 layers:
-
-```
-Layer 1 — Global preferences     ~/.claude/CLAUDE.md            (user-owned, single @import)
-                                  ~/.claude/CLAUDE.global.md     (toolbox-rendered index)
-                                  ~/.claude/toolbox-sections/    (9 modular section files)
-                                  <workspace>/memory/
-Layer 2 — Stack standards        <workspace>/toolbox/standards/
-Layer 3 — Project context        <project>/.claude/memory/
-Layer 4 — Session context        progress.md (written each session)
-```
-
-**Standards** live in `standards/universal/` (applies everywhere) and `standards/stacks/<stack>/` (loaded per project automatically).
-
-**Skills** in `skills/` orchestrate the right workflow for each phase of development. They chain together Claude Code superpowers skills — brainstorming, TDD, code review, etc. — so the right process is always followed without you having to ask.
-
-**Memory** persists context across sessions — project goals, stack decisions, architectural choices, lessons learned. Nothing is re-explained from scratch.
-
----
-
-## Skills
-
-Skills are triggered by saying what you want to do — the toolkit detects intent and routes to the right skill automatically. You can also invoke them directly with `/skill-name`.
-
-### `/new-project` — Start a new project from scratch
-
-**Trigger phrases:** "new project", "starting fresh", "scaffold this"
-
-Handles everything from idea to first commit:
-
-1. Reads global memory and detects stack signals (`package.json`, `go.mod`, etc.)
-2. Asks about the project — goal, users, constraints, success criteria
-3. Confirms or detects the stack; loads stack standards; drafts new standards if the stack is unknown
-4. If the project has a UI, invokes the `ui-ux-pro-max` skill to establish the design system first
-5. Runs brainstorming (`superpowers:brainstorming`) and produces an implementation plan
-6. Scaffolds `.claude/memory/` with filled templates: `project_context.md`, `stack.md`, `architecture.md`, `progress.md`, `lessons.md`
-7. Runs `git init` and makes the initial commit
-
-After this, run `/implement` to start building.
-
----
-
-### `/implement` — Add a feature to an existing project
-
-**Trigger phrases:** "add [X]", "implement [X]", "build [X]", "work on ticket [X]"
-
-Full lifecycle from ticket to open PR, orchestrated across 5 phases. Each phase runs as a focused sub-agent; the main session holds only file paths, not content.
-
-**Phase 0 — Intake:** reads memory and standards, writes `.claude/tickets/<ticket-id>/context.md`
-
-**Phase 1 — Ideate:** brainstorms the feature — scope, edge cases, risks, what's out of scope. Writes `ideation.md`. If a code index exists, queries it for relevant files.
-
-**Phase 2 — Plan:** produces a file-level implementation plan — numbered steps, test strategy, component breakdown, ADR draft if needed. Writes `plan.md`.
-
-**Phase 3 — Implement:** TDD implementation per component. Reads stack standards before touching any code. Follows red-green-refactor. Appends to `implementation.md`.
-
-**Phase 4 — Verify:** checks that tests pass, edge cases are covered, error paths are handled. Writes `verification.md`. If issues found, loops back to Phase 3 (max 2 retries).
-
-**Phase 5 — PR:** full standards check, conventional commit, opens PR via `gh`. Writes `pr.md` with the PR URL.
-
-All state lives in `.claude/tickets/<ticket-id>/` — if interrupted, the skill resumes from the last completed phase.
-
----
-
-### `/standards-check` — Review code before merging
-
-**Trigger phrases:** "check this", "review", "ready to merge", "before PR"
-
-Runs automatically before any push or PR — you don't need to ask. Checks:
-
-- **Architecture** — separation of concerns, clean layer boundaries, no business logic in controllers
-- **Security** — input validation at boundaries, no hardcoded secrets, no OWASP violations
-- **Git** — conventional commit messages, no secrets committed
-- **Testing** — business logic covered, tests test behavior not implementation
-- **Documentation** — README present, ADRs written for key decisions, non-obvious code commented
-
-Also invokes `code-simplifier` for a quality and clarity pass on recently changed code.
-
-If a code index exists, uses it to determine the blast radius — changed files plus their direct importers — so the review scope is accurate.
-
-Outputs a checklist with pass/fail and file references for failures. All failures must be addressed before merging.
-
----
-
-### `/retrospective` — Capture learnings and improve the toolkit
-
-**Trigger phrases:** "retrospective", "retro", "capture learnings", "what did we learn"
-
-Also offered automatically after `/implement` completes.
-
-1. Reads all project memory files and decisions
-2. Identifies what worked, what didn't, new reusable patterns, stack-specific learnings
-3. Proposes updates to the toolkit — existing standards, new stack standards, universal promotions, new skills — one at a time
-4. For each approved change: creates a branch in the toolbox clone, commits, and opens a PR to the toolkit repo
-5. Writes key learnings to global memory (`<workspace>/memory/`)
-
-This is how the toolkit improves itself from real work.
-
----
-
-### `/codex-delegate` — Hand off implementation to Codex via plugin
-
-**Trigger phrases:** "delegate to codex", "let codex handle", "use codex for", "hand off to codex"
-
-**Also runs automatically** during `/implement` Phase 3 whenever Codex is available.
-
-Delegates a focused coding task to Codex via the [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) runtime, then verifies the result and falls back to direct Claude implementation if Codex is unavailable.
-
-**Availability check (always runs first):**
-
-Invokes `codex:setup` skill — verifies CLI is installed, in PATH, and authenticated. If not ready, falls back to direct Claude implementation silently.
-
-**Context passed to Codex:**
-
-- **Touched files** — derived from `plan.md` (Files section) when called from `/implement`, or identified from the task otherwise
-- **Applicable standards** — key rules extracted from the relevant universal + stack standards (≤20 bullets, never full files)
-- **Phase 3 constraints** — TDD requirement (failing tests first, red-green-refactor), no public API changes unless planned, append implementation summary when done
-
-**Prompt shaping:**
-
-Before building the task prompt, the skill consults `codex:gpt-5-4-prompting` for guidance on framing tasks for the Codex runtime. This produces better-specified prompts with correct constraint ordering.
-
-**Invocation:**
-
-Launches a `codex:rescue` subagent (via the Agent tool with `subagent_type: codex:codex-rescue`) with the full context package. The plugin runtime manages sandboxing and file access.
-
-**After Codex runs:**
-
-1. `codex:codex-result-handling` is invoked to parse and present the result consistently
-2. `git diff` is read to verify changes match the task
-3. Unexpected file changes are flagged before continuing
-4. If called from `/implement`, control returns to the orchestrator and the lifecycle continues normally
-
-**Fallback behavior:**
-
-- `codex:setup` reports unavailable → implement directly with Claude
-- Auth error → remind user to run `codex login`, then implement directly
-- Non-zero exit → report error, implement directly
-
-The fallback is transparent: from the user's perspective, the task completes either way.
-
-**First-time setup:** see [step 2 in Getting Started](#2-install-the-codex-plugin-optional).
-
----
-
-### `/web-fetch` — Fetch any external URL via Crawl4AI
-
-**Auto-trigger:** whenever Claude is about to use `WebFetch` to read a page's full content
-
-Routes outbound URL fetches through a local [Crawl4AI](https://github.com/unclecode/crawl4ai) container for clean markdown output and automatic caching.
-
-1. Runs `tools/crawl4ai/fetch.py --url "<URL>"` via Bash
-2. Returns clean markdown on stdout; stderr carries status messages (`cache hit`, `fetching`, etc.)
-3. Caches results in `<workspace>/vault/07-web-cache/<domain>/<path>.md` with a 24-hour TTL
-4. Falls back to the built-in `WebFetch` tool if the container is not running, with a setup reminder
-
-**Requires Docker:** start the container once with:
 ```bash
 docker run -d -p 11235:11235 --name crawl4ai --shm-size=1g unclecode/crawl4ai:latest
 ```
 
----
+### Local LLM (Tier 0 — zero API cost)
 
-### `/git-push` — Stage, commit, and open a PR
-
-**Trigger phrases:** "push to git", "push this", "commit and push", "open a PR", "ship this", "lets push"
-
-Enforces clean git hygiene:
-
-1. Inspects `git status` and `git diff`
-2. If on `main`/`master`, asks for a branch name and checks out
-3. Groups changed files into logical commits by what they accomplish together (not by file type)
-4. Shows the proposed commit grouping for confirmation if non-obvious
-5. Commits each group with a [Conventional Commits](https://www.conventionalcommits.org/) message
-6. Pushes and opens a PR with what/why/how/test-plan body
-
-Never uses `git add .` — always adds specific files. Never pushes directly to `main`/`master`.
-
----
-
-### `/index-repo` — Build a structural code index
-
-**Trigger phrases:** "index this repo", `/index-repo`
-
-Also suggested automatically when Claude is struggling to navigate a large codebase.
-
-Runs the Python indexer (`tools/indexer/indexer.py`) to produce JSON files in `.claude/index/`:
-
-- `files.json` — every file with its symbols, imports, and tags
-- `graph-imports.json` — import relationships
-- `graph-calls.json` — call relationships
-- `graph-clusters.json` — domain clusters (logical groupings of related files)
-- `README.md` — human-readable summary with entry points and cluster descriptions
-
-Supports an optional semantic layer for similarity queries:
-
-- **none** — structural index only
-- **tfidf** — algorithmic similarity (requires scikit-learn)
-- **ollama** — local LLM embeddings via Ollama
-
-Supports incremental re-runs — only changed files are re-processed.
-
-Once built, Claude uses the index automatically before falling back to grep/glob, keeping searches fast and context usage low.
-
----
-
-### `/add-stack-standards` — Add standards for a new stack
-
-**Trigger phrases:** "add standards for [stack]", "document my stack", "add [Go/TypeScript/etc] conventions"
-
-1. Detects or asks for the stack name
-2. Asks clarifying questions: state management, testing framework, styling, build tooling, team conventions
-3. Generates standards files under `standards/stacks/<stack>/` — components/modules, naming, testing, and any stack-specific topics
-4. If the stack extends another (e.g., Next.js extends React), creates `_base.md` for inheritance
-5. Commits and opens a PR to the toolkit repo
-
----
-
-### `/project` — Switch active project
-
-**Trigger phrases:** "switch project", "change project", "work on [repo]"
-
-Manages which project is active when Claude Code is opened at the workspace root.
-
-- `/project switch` — shows all repos in the workspace, lets you pick one, loads its memory
-- `/project list` — shows all repos and marks the currently active one
-- `/project status` — shows active project name, stack, current phase, and next task
-
-The active choice is persisted in `<workspace>/memory/active-project.md` — future sessions auto-load the right context.
-
----
-
-### `/web-design-audit` — Systematic design and accessibility audit
-
-**Trigger phrases:** "audit the design", "check the UI", "review the spacing", "check accessibility", "design review", "how does the page flow look", "is the typography consistent"
-
-**Also runs automatically** before any PR that touches CSS, components, or design tokens.
-
-Produces a prioritized report across 9 areas, each with file references and one-line fixes:
-
-1. **Design tokens** — completeness, hardcoded values leaking in, naming conventions, z-index gaps, spacing token usage
-2. **Typography** — type scale consistency, heading hierarchy (single H1, logical descent), line height, letter spacing, responsive type with `clamp()`
-3. **Spacing & rhythm** — vertical rhythm, section gaps, component-internal gaps, max-width containers
-4. **Color & contrast** — WCAG 2.1 AA ratios for body text, muted text, placeholders, CTA buttons, focus rings, text over images
-5. **Accessibility** — focus states (`:focus-visible`), skip link, `prefers-reduced-motion`, semantic HTML, ARIA correctness, form labels, image alt text, touch target size
-6. **Responsive layout** — breakpoint consistency, mobile-first vs desktop-first coherence, content reflow, `100vh` vs `100svh`
-7. **Page flow** — above-fold value prop, CTA placement and repetition, section sequencing, dead ends
-8. **Component consistency** — button variants, section headers, card patterns, link styling, transition uniformity
-9. **Token adherence** — components that bypass the design system with hardcoded values
-
-Output format: three severity tiers (critical / warning / suggestion) in a table with location and fix per row, followed by a prioritized fix order.
-
----
-
-### `/add-e2e-playwright` — Add Playwright E2E testing to a project
-
-**Trigger phrases:** "add E2E testing", "add Playwright", "set up Playwright", "add browser tests"
-
-Sets up both the Playwright CLI (for AI-driven navigation) and the test runner (for specs):
-
-1. Installs `@playwright/cli` globally — token-efficient CLI optimized for coding agents
-2. Runs `playwright-cli install --skills` in the project root — writes workspace-scoped skills to `.claude/skills/playwright-cli/`
-3. Installs `@playwright/test` as a dev dependency
-4. Installs the Chromium browser binary
-5. Creates `playwright.config.ts` with correct settings for the project type (dev server assumed running locally; `webServer` config for CI)
-6. Creates an `e2e/` directory with a starter spec
-7. Adds `test:e2e`, `test:e2e:ui`, and `test:e2e:debug` scripts to `package.json`
-8. Updates `vitest.config.ts` to exclude `e2e/**` so Vitest doesn't pick up Playwright specs
-
-**Key distinction:** `@playwright/cli` is installed once globally per machine; `.claude/skills/playwright-cli/` is installed once per project. Never put E2E specs inside `src/` — Vitest will find them.
-
----
-
-## Standards
-
-### Universal Standards
-
-Applied to every project regardless of stack. Located in `standards/universal/`:
-
-| File                | What it covers                                                                         |
-| ------------------- | -------------------------------------------------------------------------------------- |
-| `architecture.md`   | Separation of concerns, layer boundaries, dependency direction, module design          |
-| `security.md`       | Input validation, secrets management, OWASP top 10, auth patterns                      |
-| `testing.md`        | TDD approach, what to test, test structure, coverage expectations                      |
-| `error-handling.md` | Fail fast, error context, validation at boundaries, retry logic, anti-patterns         |
-| `debugging.md`      | Scientific method for debugging, binary search, layer-specific tools, when to escalate |
-| `code-review.md`    | What PR authors and reviewers should look for, how to give and receive feedback        |
-| `observability.md`  | Logging, metrics, health checks, distributed tracing, alerting                         |
-| `documentation.md`  | README standards, ADRs, inline comments, API docs                                      |
-| `git.md`            | Conventional commits, branch naming, PR hygiene                                        |
-
-### Stack Standards
-
-Located in `standards/stacks/<stack>/`. Currently available:
-
-- **`typescript-react`** — components, naming, styling, testing, TypeScript conventions
-- **`typescript-nextjs`** — routing, rendering (SSR/SSG/ISR), API routes, base React conventions
-- **`go`** — package design, error handling, testing, toolchain
-- **`python-fastapi`** — route structure, dependency injection, validation, testing
-- **`drizzle-postgres`** — schema design, migrations, query patterns, type safety
-
-Stacks can extend each other: `typescript-nextjs` declares `base: typescript-react` in `_base.md`, so React standards are inherited automatically.
-
-To add standards for a new stack, run `/add-stack-standards`.
-
----
-
-## Memory System
-
-Memory is organized into layers:
-
-```
-<workspace>/memory/           ← global, cross-project
-<project>/.claude/memory/    ← per-project
-```
-
-**Per-project memory files** (in `.claude/memory/`):
-
-| File                 | What's stored                                            |
-| -------------------- | -------------------------------------------------------- |
-| `project_context.md` | What the project is, who uses it, key constraints        |
-| `stack.md`           | Active stack and why it was chosen                       |
-| `architecture.md`    | High-level structure, key modules, code index summary    |
-| `progress.md`        | Current phase, what's done, what's next                  |
-| `lessons.md`         | Patterns and anti-patterns discovered during development |
-| `decisions/`         | ADRs — one file per architectural decision               |
-
-**Global memory** (`<workspace>/memory/`) stores cross-project learnings, model preferences, and the active project pointer.
-
-Memory is read at the start of every session automatically — you never need to re-explain what a project is.
-
----
-
-## Model Selection
-
-When the toolkit launches a sub-agent, it picks the most cost-effective model for the task — including a Tier 0 local LLM path for mechanical tasks.
-
-| Tier | Task type | Model |
-|------|-----------|-------|
-| 0 | Single-function codegen, unit test scaffolding, docstrings, simple refactors, boilerplate | local LLM (LM Studio) |
-| 1 | File search, pattern matching, simple lookups | haiku |
-| 1 | Code reading, summarization, straightforward edits | haiku |
-| 2 | Multi-step implementation, TDD, code generation | sonnet |
-| 2 | Architecture decisions, brainstorming, planning | sonnet |
-| 2 | Security review, high-stakes analysis | sonnet |
-
-| Task type                                          | Default model |
-| -------------------------------------------------- | ------------- |
-| File search, pattern matching, simple lookups      | haiku         |
-| Code reading, summarization, straightforward edits | haiku         |
-| Multi-step implementation, TDD, code generation    | sonnet        |
-| Architecture decisions, brainstorming, planning    | sonnet        |
-| Novel problem-solving, highly ambiguous tasks      | sonnet        |
-| Security review, high-stakes analysis              | sonnet        |
-**Tier 0** runs fully automatically when LM Studio is running locally — no prompt shown to the user. If LM Studio is unreachable, routing falls through to haiku/sonnet as normal. See `skills/local-llm.md` for setup.
-
-### Saving a preference
-
-To persist a model choice, respond to any model selection prompt with your choice and add **"save this config"**:
-
-```
-2 save this config
-```
-
-Your preference is stored in `<workspace>/memory/model-config.md` and applied to all future agent launches. To reset, delete that file.
-
----
-
-## Session Hooks
-
-Two shell hooks run automatically:
-
-- **`session-start.sh`** — runs at the start of every Claude Code session. Detects the active project (from `active-project.md`) and prints a status line so you know which project is loaded.
-- **`pre-tool-standards-gate.sh`** — blocks file edits until standards have been loaded for the session. Prevents accidental code changes that bypass standards.
-
-Hooks are installed to `~/.claude/hooks/` during setup.
-
----
-
-## Automatic Skill Routing
-
-You don't need to remember slash commands. The toolkit detects what you're trying to do:
-
-| You say…                                                         | What runs                                                |
-| ---------------------------------------------------------------- | -------------------------------------------------------- |
-| "add [X]", "implement [X]", "build [X]", "work on ticket [X]"   | `/implement`                                             |
-| "fix [X]", "debug [X]", "not working", "something is broken"    | `superpowers:systematic-debugging`                       |
-| "check this", "review", "ready to merge", "before PR"           | `/standards-check`                                       |
-| "new project", "starting fresh", "scaffold"                      | `/new-project`                                           |
-| "switch project", "work on [repo]"                               | `/project`                                               |
-| "push to git", "open a PR", "ship this", "lets push"            | `/git-push`                                              |
-| "add standards for [stack]"                                      | `/add-stack-standards`                                   |
-| "delegate to codex", "let codex handle", "use codex for"         | `/codex-delegate`                                        |
-| "audit the design", "check the UI", "check accessibility"        | `/web-design-audit`                                      |
-| "add E2E testing", "add Playwright", "add browser tests"         | `/add-e2e-playwright`                                    |
-| "create skill", "new skill", "improve skill", "optimize skill"   | `skill-creator:skill-creator`                            |
-| `/implement` Phase 3 (automatic)                                 | tries `/codex-delegate` first, falls back to direct impl |
-| About to call `WebFetch` to read a page                          | `/web-fetch`                                             |
-| About to read `git diff` to draft a commit or PR                 | `/diff-summary` (auto)                                   |
-| About to run multiple git commands (status, log, diff, branch)   | `/git-ctx` (auto)                                        |
-| Reading one function/section from a file > 100 lines             | `/read-section` (auto)                                   |
-| Checking package version, types, license, or popularity          | `/pkg-info` (auto)                                       |
-| Checking runtime versions, ports, Docker state, or `.env`        | `/env-check` (auto)                                      |
-| About to write or append to any memory file                      | `/memory-sync` (auto)                                    |
-| Any code edit (none of the above)                                | loads standards, then edits                              |
+Routes mechanical tasks (boilerplate, docstrings, simple refactors) to a local LLM via LM Studio. See [`skills/local-llm.md`](skills/local-llm.md).
 
 ---
 
 ## Contributing
 
-All changes go through GitHub PRs — nothing is committed to `master` directly.
-
-The `/retrospective` skill handles this automatically: it creates a branch, commits the proposed change, and opens a PR for review.
+All changes go through PRs. The `/retrospective` skill handles this automatically — it creates a branch, commits the proposed change, and opens a PR from within Claude Code.
 
 To contribute manually:
 
 ```bash
-git checkout -b feat/<your-feature>
-# make changes
+git checkout -b feat/your-feature
 git commit -m "feat: description"
 gh pr create
 ```
+
+---
+
+## License
+
+MIT
