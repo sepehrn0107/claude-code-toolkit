@@ -39,20 +39,33 @@ The toolkit uses [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) to
 npm install -g @openai/codex
 ```
 
-**Windows — add the npm global bin to PATH:**
+**If `codex --version` says "not recognized" after installing:**
 
-After installing, verify that `codex --version` works in a new terminal. If it says "not recognized", add the npm global bin directory to your system PATH:
+The npm global bin directory is not in your PATH. Fix it for your platform:
 
-1. Open **System Properties → Environment Variables**
-2. Under **User variables**, find `Path` and click **Edit**
-3. Add: `%APPDATA%\npm` (typically `C:\Users\<you>\AppData\Roaming\npm`)
-4. Restart your terminal and Claude Code
+**macOS / Linux:**
 
-Alternatively, set the path in your shell profile (`~/.bashrc`, `~/.zshrc`) so it applies to all sessions:
+Add to your shell profile (`~/.zshrc`, `~/.bashrc`, or `~/.bash_profile`):
 
 ```bash
-export PATH="$PATH:$APPDATA/npm"
+export PATH="$PATH:$(npm root -g)/../bin"
 ```
+
+Then reload your shell (`source ~/.zshrc`) and reopen VS Code.
+
+**Windows:**
+
+The toolkit's `codex:setup` check uses `cmd.exe` internally (via `shell: true` in Node). Unlike bash, `cmd.exe` reads PATH from the **Windows registry**, not from your shell profile — so adding the path to `~/.bashrc` or `~/.zshrc` will not help.
+
+You must add it to the **Windows Environment Variables**:
+
+1. Press `Win + R`, type `sysdm.cpl`, go to **Advanced → Environment Variables**
+2. Under **User variables**, find `Path` → click **Edit → New**
+3. Add: `%APPDATA%\npm` (typically `C:\Users\<you>\AppData\Roaming\npm`)
+4. Click OK to close all dialogs
+5. **Fully quit and reopen VS Code** — "Reload Window" is not sufficient; environment variables are only read on a full process restart
+
+Confirm the fix by opening a new `cmd.exe` window (outside VS Code) and running `where codex`. If it returns a path, the restart will make `codex:setup` detect it correctly.
 
 **Authenticate:**
 
