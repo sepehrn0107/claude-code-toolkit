@@ -54,6 +54,17 @@ Two modes depending on context:
   `{{TOOLBOX_PATH}}/skills/load-standards.md` and wait for the confirmation line.
   This is a blocking requirement — do not proceed without it.
 
+## Fetching URLs (applies to all agents and sub-agents)
+
+Do not call the built-in `WebFetch` tool directly. Instead run:
+
+```bash
+python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
+```
+
+Read stdout as the page content (clean markdown). Fall back to `WebFetch` only if stderr
+contains "not reachable" (container not running).
+
 ## Always Apply
 
 - Read project memory before starting any task

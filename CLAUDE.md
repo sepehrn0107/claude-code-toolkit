@@ -34,11 +34,20 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 - /retrospective    → `skills/retrospective.md`
 - /add-stack-standards → `skills/add-stack-standards.md`
 - /index-repo       → `skills/index-repo.md`
+- /upgrade          → `skills/upgrade.md`
 
 ## Memory
 
 - Global memory (Layer 1): `../memory/MEMORY.md` (lives in the workspace root, outside this repo)
 - Project memory (Layer 3): `.claude/memory/MEMORY.md` (when present in a project)
+
+## Prerequisites
+
+- Claude Code installed
+- Git
+- Python 3
+- Docker (for `/web-fetch` and `/local-llm`)
+- [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) — optional; enables Codex delegation in `/implement` Phase 3. If not installed, all tasks fall back to direct Claude implementation.
 
 ## Setup Skill
 
@@ -55,7 +64,13 @@ When the user says "set up the toolbox":
 10. Read `~/.claude/settings.json` (or start from `{}` if absent), merge in the `hooks` block from `templates/workspace-settings.json`, and write it back
 11. Write `templates/workspace-settings.json` to `{{WORKSPACE_PATH}}/.claude/settings.json` (create `{{WORKSPACE_PATH}}/.claude/` if it does not exist)
 12. Create `{{WORKSPACE_PATH}}/memory/` if it does not exist, and write `templates/memory/MEMORY.md` to `{{WORKSPACE_PATH}}/memory/MEMORY.md`
-13. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
+13. Read `templates/workspace-CLAUDE.md`, replace every `{{TOOLBOX_PATH}}` and `{{WORKSPACE_PATH}}`, and write the result to `{{WORKSPACE_PATH}}/CLAUDE.md` — this file is auto-loaded by Claude Code for every session in the workspace and states the always-on defaults (Crawl4AI for fetches, Codex for delegation).
+14. Create `~/.vscode/extensions/claude-statusbar-0.0.1/` if it does not exist. Copy `templates/vscode-statusbar/extension.js` and `templates/vscode-statusbar/package.json` into it.
+15. Copy `templates/statusline-command.sh` to `~/.claude/statusline-command.sh` and run `chmod +x ~/.claude/statusline-command.sh`
+16. In `~/.claude/settings.json`, also merge `"statusLine": {"type": "command", "command": "bash ~/.claude/statusline-command.sh"}` (alongside the hooks block from step 10)
+17. Register the extension in `~/.vscode/extensions/extensions.json` — read the file (or start from `[]`), skip if `"relativeLocation": "claude-statusbar-0.0.1"` already present, otherwise append the entry. Use Python for JSON operations; see `/upgrade` skill for the exact entry format and path construction.
+18. Read `{{TOOLBOX_PATH}}/VERSION` and write its contents to `~/.claude/toolbox-version.txt`
+19. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
 
 ## When Creating or Modifying a Skill
 

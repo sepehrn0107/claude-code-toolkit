@@ -82,6 +82,10 @@ ROLE: You are a senior engineer doing ideation for a feature.
 INPUT — read this file first:
   .claude/tickets/<ticket-id>/context.md
 
+FETCH RULE — if you need to read any external URL, do not call WebFetch directly. Run:
+  python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
+  Read stdout as page content. Fall back to WebFetch only if stderr says "not reachable".
+
 If INDEX_AVAILABLE is true:
   - Read {{TOOLBOX_PATH}}/skills/query-index.md
   - Launch sub-agents (haiku model) for:
@@ -137,6 +141,10 @@ ROLE: You are a senior architect producing an implementation plan.
 INPUT — read these files first:
   .claude/tickets/<ticket-id>/context.md
   .claude/tickets/<ticket-id>/ideation.md
+
+FETCH RULE — if you need to read any external URL, do not call WebFetch directly. Run:
+  python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
+  Read stdout as page content. Fall back to WebFetch only if stderr says "not reachable".
 
 STANDARDS — read these files in full before planning:
   {{TOOLBOX_PATH}}/standards/universal/architecture.md
@@ -232,6 +240,10 @@ INPUT — read these files first:
 
 YOUR COMPONENT: <component name / file group from plan>
 
+FETCH RULE — if you need to read any external URL, do not call WebFetch directly. Run:
+  python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
+  Read stdout as page content. Fall back to WebFetch only if stderr says "not reachable".
+
 STANDARDS — read these files in full before writing any code:
   {{TOOLBOX_PATH}}/standards/universal/architecture.md
   {{TOOLBOX_PATH}}/standards/universal/testing.md
@@ -271,48 +283,19 @@ After all components complete, announce: "Phase 3 complete. Starting Phase 4 —
 
 Goal: confirm the implementation is correct and complete before PR.
 
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Verification and quality check of implementation."
+Read and follow `{{TOOLBOX_PATH}}/skills/codex-review.md`.
 
-Launch a sub-agent with this prompt:
+Pass the following context to the skill:
+- Ticket ID: `<ticket-id>`
+- Project directory: `<project-dir>`
+- Stack: from `context.md`
+- Review scope: changed files from `git diff --name-only main` + ticket state files
 
-```
-ROLE: You are a QA engineer verifying an implementation before PR.
+The skill handles Codex delegation (with file paths), fallback to Claude, user notification when Codex is unavailable, and writes `verification.md`.
 
-INPUT — read these files first:
-  .claude/tickets/<ticket-id>/context.md
-  .claude/tickets/<ticket-id>/plan.md
-  .claude/tickets/<ticket-id>/implementation.md
+Wait for the skill to return the verdict before continuing.
 
-STANDARDS — read these files before verifying:
-  {{TOOLBOX_PATH}}/standards/universal/testing.md
-  {{TOOLBOX_PATH}}/standards/universal/error-handling.md
-
-YOUR TASK:
-  Invoke superpowers:verification-before-completion. Check:
-  - Do all tests pass?
-  - Are edge cases from the ideation report covered?
-  - Are error paths handled correctly per error-handling standards?
-  - Are there any obvious regressions?
-
-OUTPUT — write a structured VERIFICATION REPORT to:
-  .claude/tickets/<ticket-id>/verification.md
-
-  Format:
-  # Verification Report
-  ## Checklist
-  - [ ] All tests pass
-  - [ ] Edge cases covered
-  - [ ] Error paths handled
-  - [ ] No regressions
-  ## Issues found
-  <list with file + description; "none" if none>
-  ## Verdict
-  PASS or NEEDS_FIX
-
-Write the file, then return only: "Phase 4 complete. Verdict: <PASS|NEEDS_FIX>."
-```
-
-- If `NEEDS_FIX`: re-enter Phase 3 targeting only the specific issues. Limit to 2 retry loops.
+- If `NEEDS_FIX`: re-enter Phase 3 targeting only the specific issues listed in `verification.md`. Limit to 2 retry loops.
 - If `PASS`: announce "Phase 4 complete. Starting Phase 5 — PR."
 
 ---

@@ -35,10 +35,16 @@ Review relevant code against each standard area:
 - **Documentation**: README present and current, ADRs written for key decisions, non-obvious code commented
 
 ### 3. Code Review
-Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Review code against standards and best practices."
-Use the returned model for Steps 3 and 4.
 
-Invoke `superpowers:requesting-code-review` using the chosen model.
+Read and follow `{{TOOLBOX_PATH}}/skills/codex-review.md`.
+
+Pass the following context to the skill:
+- Project directory: current working directory
+- Review scope: the changed files identified in Step 1 (plus their direct importers if index is available)
+- Stack: from `.claude/memory/stack.md` or inferred
+- No ticket ID (standalone review — skip writing `verification.md`)
+
+The skill delegates to Codex (passing file paths, not content), notifies the user if Codex is unavailable, and falls back to Claude review. Use its verdict and issues list as input for Step 5.
 
 ### 4. Simplify
 Invoke `code-simplifier` using the chosen model for a quality and clarity pass on recently changed code.

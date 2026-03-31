@@ -8,14 +8,20 @@ Source: https://github.com/sepehrn0107/claude-code-toolkit (local clone: {{TOOLB
 
 ## Session Start (automatic)
 
+> **Sub-agent check:** If `WORKSPACE_MODE:` does not appear anywhere in your context, you are
+> running as a sub-agent — skip this entire block. Sub-agents do not receive session-start hook
+> output; project context is injected via the project-level `CLAUDE.md` or the orchestrator prompt.
+> Proceed directly to your task.
+
 At the start of every session, before responding to the first message, do all of this silently:
 
 1. Check if `.claude/memory/MEMORY.md` exists in the current project
 2. If yes: read all memory files in parallel — `project_context.md`, `stack.md`, `architecture.md`, `progress.md`, `lessons.md`
 3. Also read `{{WORKSPACE_PATH}}/memory/MEMORY.md` to load global cross-project learnings
 4. Note whether `.claude/index/README.md` exists — if it does, it is available for code navigation
-5. Do not announce any of this — just have the context ready before responding
-6. If the session-start hook output includes `WORKSPACE_MODE`:
+5. Invoke `codex:setup` — store the result as session flag `CODEX_AVAILABLE` (true/false). Do not re-check during the session; use this flag everywhere.
+6. Do not announce any of this — just have the context ready before responding
+7. If the session-start hook output includes `WORKSPACE_MODE`:
    - If the line starts with `WORKSPACE_MODE:ACTIVE=<name>`: silently load
      `{{WORKSPACE_PATH}}/<name>/.claude/memory/` files in parallel
      (project_context.md, stack.md, architecture.md, progress.md, lessons.md — skip missing).
@@ -41,6 +47,9 @@ Detect user intent from the first message and route automatically — do not wai
 | "switch project", "change project", "work on [repo]"                    | Read and follow `/project` skill      |
 | "create skill", "make a skill", "new skill", "improve skill", "edit skill", "optimize skill", "skill for [X]" | Invoke `skill-creator:skill-creator` system skill |
 | "push to git", "push this", "commit and push", "push my changes", "send to github", "open a PR", "create a PR", "push these changes", "ship this", "just push it", "lets push" | Read and follow `/git-push` skill |
+| "upgrade toolbox", "update toolbox", "run upgrade", "/upgrade"               | Read and follow `/upgrade` skill      |
+| "delegate to codex", "let codex handle", "use codex for", "hand off to codex" | Read and follow `/codex-delegate` skill |
+| "review with codex", "codex review", "let codex review", "delegate review" | Read and follow `/codex-review` skill |
 | Claude is about to use `WebFetch` or follow a URL to read page content  | Read and follow `/web-fetch` skill    |
 | Claude is about to run multiple git commands (status, log, diff, branch) | Read and follow `/git-ctx` skill     |
 | Claude is about to read `git diff` to understand what changed or draft a commit/PR | Read and follow `/diff-summary` skill |
@@ -87,6 +96,27 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /grep             → {{TOOLBOX_PATH}}/skills/grep.md
 - /env-check        → {{TOOLBOX_PATH}}/skills/env-check.md
 - /memory-sync      → {{TOOLBOX_PATH}}/skills/memory-sync.md
+- /codex-delegate   → {{TOOLBOX_PATH}}/skills/codex-delegate.md
+- /codex-review     → {{TOOLBOX_PATH}}/skills/codex-review.md
+- /upgrade          → {{TOOLBOX_PATH}}/skills/upgrade.md
+
+## Codex Integration (automatic)
+
+When in `/implement` Phase 3 (or any direct code-edit task), always attempt Codex first:
+
+1. Check the `CODEX_AVAILABLE` flag set at session start — do not re-invoke `codex:setup`
+2. If `CODEX_AVAILABLE` is true: read and follow `/codex-delegate` — pass the full context package (touched files from plan.md, applicable standards, TDD requirement, implement phase context)
+3. If false or Codex exits non-zero: fall back to direct Claude implementation silently — do not announce the failure unless the task itself fails
+4. After Codex completes: verify with `git diff` and continue the implement lifecycle as normal
+
+This applies to every Phase 3 component invocation in `/implement`. The fallback must be transparent to the user.
+
+When in `/implement` Phase 4 (or any review/verify task), always use `/codex-review`:
+
+1. Check the `CODEX_AVAILABLE` flag
+2. If true: read and follow `/codex-review` — pass file paths (not content), ticket state paths, and stack-appropriate standards paths
+3. If false: `/codex-review` notifies the user ("Codex is not available. Continuing review with Claude.") and performs the review directly
+4. The fallback is explicit — the user is always notified when Codex is skipped for review tasks
 
 ## Memory
 - Global memory: {{WORKSPACE_PATH}}/memory/MEMORY.md

@@ -1,11 +1,11 @@
 ---
 name: codex-delegate
-description: Hand off a coding task to OpenAI Codex CLI in full-auto mode with accurate context, connection check, and fallback to direct Claude implementation
+description: Hand off a coding task to OpenAI Codex via the codex-plugin-cc with accurate context, availability check, and fallback to direct Claude implementation
 ---
 
 # /codex-delegate
 
-Delegate a focused coding task to Codex CLI. Codex runs autonomously in the target directory and edits files directly. Claude provides accurate context, verifies the result, and falls back to direct implementation if Codex is unavailable.
+Delegate a focused coding task to Codex via the `codex-plugin-cc` plugin. Codex runs autonomously in the target directory and edits files directly. Claude provides accurate context, verifies the result, and falls back to direct implementation if Codex is unavailable.
 
 ---
 
@@ -20,14 +20,14 @@ Delegate a focused coding task to Codex CLI. Codex runs autonomously in the targ
 
 ## Protocol
 
-### Step 0 — Connection check (always run first)
+### Step 0 — Availability check
 
-```bash
-codex --version > /dev/null 2>&1 && echo CODEX_OK || echo CODEX_UNAVAILABLE
-```
+Read the `CODEX_AVAILABLE` session flag set during Session Start (from `codex:setup`).
 
-- If `CODEX_UNAVAILABLE`: skip to **Fallback** immediately — do not attempt delegation
-- If `CODEX_OK`: proceed to Step 1
+- If `CODEX_AVAILABLE` is true → proceed to Step 1
+- If `CODEX_AVAILABLE` is false → skip to **Fallback** immediately
+
+Do not re-invoke `codex:setup` here. The check runs once per session at startup.
 
 ---
 
@@ -79,6 +79,8 @@ Include these constraints from Phase 3:
 
 ### Step 3 — Build the Codex prompt
 
+Before writing the final prompt, invoke `codex:gpt-5-4-prompting` to get guidance on structuring the task, constraint ordering, and output instructions for the Codex runtime. Apply that guidance when composing the prompt below.
+
 Template:
 
 ```
@@ -118,25 +120,39 @@ Keep the full prompt under ~800 tokens. If the task is too large to express conc
 
 ---
 
-### Step 4 — Invoke Codex
+### Step 4 — Invoke Codex via the plugin
 
-```bash
-codex exec --full-auto -C <project-dir> "<prompt>"
+Launch a `codex:rescue` subagent using the Agent tool:
+
+```
+Agent(
+  subagent_type: "codex:codex-rescue",
+  prompt: "<full context package: project dir + task prompt from Step 3>"
+)
 ```
 
-- `--full-auto`: sets approval to on-request and sandbox to `workspace-write` — Codex can read/write files in the working directory without prompting
-- `-C <project-dir>`: sets the working root; do not `cd` before — let Codex own the directory
-- If `--full-auto` is insufficient (e.g. needs to run install scripts outside the workspace), use `--dangerously-bypass-approvals-and-sandbox` instead, but only when the task requires it
+Pass the project directory explicitly in the prompt so the subagent knows where to operate. The plugin runtime manages sandboxing, approval mode, and file access — do not add `--full-auto` or bash flags.
 
-**If Codex exits non-zero:**
+**If the subagent exits with an error:**
 
-- Capture the error output
-- If it's an auth error: remind the user to run `codex login`, then fall back
-- Otherwise: report the error, fall back to direct Claude implementation
+- Auth error → remind the user to run `codex login` or set `OPENAI_API_KEY`, then fall back
+- Any other error → report the error, fall back to direct Claude implementation
 
 ---
 
-### Step 5 — Verify changes
+### Step 5 — Parse results
+
+Invoke `codex:codex-result-handling` to interpret the subagent's output consistently:
+
+```
+Skill("codex:codex-result-handling")
+```
+
+This ensures file change summaries, warnings, and implementation notes are presented in a standard format regardless of how Codex returns its output.
+
+---
+
+### Step 6 — Verify changes
 
 ```bash
 cd <project-dir> && git diff
@@ -153,7 +169,7 @@ If anything looks wrong: flag it to the user before continuing. Do not commit.
 
 ---
 
-### Step 6 — Report
+### Step 7 — Report
 
 Summarize what Codex changed: file name + one-line description per file. If called from `/implement`, confirm the implementation.md summary was appended and return control to the implement orchestrator.
 
@@ -163,9 +179,9 @@ Summarize what Codex changed: file name + one-line description per file. If call
 
 Use this when:
 
-- `codex --version` fails (CLI not installed or not in PATH)
-- Codex exits with an auth error
-- Codex exits non-zero after one retry
+- `codex:setup` reports CLI not installed, not in PATH, or not authenticated
+- Codex subagent exits with an auth error
+- Codex subagent exits non-zero after one retry
 - User explicitly says to skip Codex
 
 **Action:** implement the task directly using Claude, following the same context package (touched files, standards, TDD requirement) built in Step 2. If called from `/implement` Phase 3, follow the Phase 3c sub-agent prompt exactly as written in `implement.md`.
@@ -176,27 +192,28 @@ Do not tell the user "Codex failed" unless the task itself fails — just procee
 
 ## Failure handling
 
-| Situation                    | Action                                                                                           |
-| ---------------------------- | ------------------------------------------------------------------------------------------------ |
-| `codex --version` fails      | Fall back immediately; do not mention Codex to user                                              |
-| Auth error from Codex        | Remind user to run `codex login`; fall back for this task                                        |
-| Codex exits non-zero (other) | Report error; fall back                                                                          |
-| `git diff` shows no changes  | Warn user — Codex may have misunderstood; retry once with a more specific prompt, then fall back |
-| Changes in unexpected files  | Flag to user; do not commit                                                                      |
+| Situation                         | Action                                                                                           |
+| --------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `codex:setup` reports unavailable | Fall back immediately; do not mention Codex to user                                              |
+| Auth error from plugin            | Remind user to run `codex login` or set `OPENAI_API_KEY`; fall back for this task               |
+| Subagent exits non-zero (other)   | Report error; fall back                                                                          |
+| `git diff` shows no changes       | Warn user — Codex may have misunderstood; retry once with a more specific prompt, then fall back |
+| Changes in unexpected files       | Flag to user; do not commit                                                                      |
 
 ---
 
-## Authentication (first-time setup)
+## First-time setup
 
-1. Run `codex` in a terminal — it will open a browser for OpenAI OAuth
-2. After login, the session is saved; subsequent runs are headless
-3. Alternative: set `OPENAI_API_KEY` as a Windows environment variable for API key auth
+1. Install the plugin: follow the instructions at https://github.com/openai/codex-plugin-cc
+2. Run `codex` in a terminal — it will open a browser for OpenAI OAuth (one-time)
+3. Alternative: set `OPENAI_API_KEY` as an environment variable for API key auth
+4. Verify readiness: invoke `codex:setup` — it will confirm the CLI is ready and auth is valid
 
 ---
 
 ## Notes
 
-- Codex on Windows runs without a sandbox — it has full filesystem and network access. This is intentional for automation.
+- The plugin provides a runtime bridge between Claude Code and the Codex CLI — always use the plugin skills rather than invoking the CLI directly via bash.
 - Codex works best on focused, well-specified tasks. For large multi-file refactors, break into smaller sequential delegate calls.
 - Always verify with `git diff` before committing — Codex may make stylistic changes beyond the stated task.
-- The connection check runs every time — there is no persistent "Codex is available" state carried across calls.
+- The availability check (`codex:setup`) runs every time — there is no persistent "Codex is available" state carried across calls.
