@@ -13,19 +13,21 @@ Source: https://github.com/sepehrn0107/claude-code-toolkit (local clone: {{TOOLB
 > output; project context is injected via the project-level `CLAUDE.md` or the orchestrator prompt.
 > Proceed directly to your task.
 
-At the start of every session, before responding to the first message, do all of this silently:
+At the start of every session, before responding to the first message, do all of this:
 
 1. Check if `.claude/memory/MEMORY.md` exists in the current project
 2. If yes: read all memory files in parallel — `project_context.md`, `stack.md`, `architecture.md`, `progress.md`, `lessons.md`
 3. Also read `{{WORKSPACE_PATH}}/memory/MEMORY.md` to load global cross-project learnings
 4. Note whether `.claude/index/README.md` exists — if it does, it is available for code navigation
 5. Invoke `codex:setup` — store the result as session flag `CODEX_AVAILABLE` (true/false). Do not re-check during the session; use this flag everywhere.
-6. Do not announce any of this — just have the context ready before responding
+6. Output a single status line (before answering the user's message) in this format:
+   `Toolbox: active | Skills: ready | Standards: auto-load on first edit`
+   Then, if a project is loaded, append on the same line: ` | Project: <name> | Stack: <stack>`
 7. If the session-start hook output includes `WORKSPACE_MODE`:
-   - If the line starts with `WORKSPACE_MODE:ACTIVE=<name>`: silently load
+   - If the line starts with `WORKSPACE_MODE:ACTIVE=<name>`: load
      `{{WORKSPACE_PATH}}/<name>/.claude/memory/` files in parallel
      (project_context.md, stack.md, architecture.md, progress.md, lessons.md — skip missing).
-     Do not output anything — the hook already printed the "Active project" line.
+     Output: `Active project: <name>. Context loaded.`
    - If the line starts with `WORKSPACE_MODE:CHOOSE`: the hook has already shown a numbered list.
      Treat the user's FIRST message as their project choice (name or number).
      Resolve number → name using the `Projects:` list in the hook line.
@@ -48,8 +50,6 @@ Detect user intent from the first message and route automatically — do not wai
 | "create skill", "make a skill", "new skill", "improve skill", "edit skill", "optimize skill", "skill for [X]" | Invoke `skill-creator:skill-creator` system skill |
 | "push to git", "push this", "commit and push", "push my changes", "send to github", "open a PR", "create a PR", "push these changes", "ship this", "just push it", "lets push" | Read and follow `/git-push` skill |
 | "upgrade toolbox", "update toolbox", "run upgrade", "/upgrade"               | Read and follow `/upgrade` skill      |
-| "delegate to codex", "let codex handle", "use codex for", "hand off to codex" | Read and follow `/codex-delegate` skill |
-| "review with codex", "codex review", "let codex review", "delegate review" | Read and follow `/codex-review` skill |
 | Claude is about to use `WebFetch` or follow a URL to read page content  | Read and follow `/web-fetch` skill    |
 | Claude is about to run multiple git commands (status, log, diff, branch) | Read and follow `/git-ctx` skill     |
 | Claude is about to read `git diff` to understand what changed or draft a commit/PR | Read and follow `/diff-summary` skill |
@@ -58,6 +58,8 @@ Detect user intent from the first message and route automatically — do not wai
 | Claude needs runtime versions, running ports, Docker state, or .env presence | Read and follow `/env-check` skill  |
 | Claude is about to search code with Grep or search tools               | Read and follow `/grep` skill         |
 | Claude is about to write or append to any memory file                  | Read and follow `/memory-sync` skill  |
+| "delegate to codex", "let codex handle", "use codex for", "hand off to codex" | Read and follow `/codex-delegate` skill |
+| "review with codex", "codex review", "let codex review", "delegate review" | Read and follow `/codex-review` skill |
 | Any code edit request (none of the above matched)                       | Run `/load-standards` then proceed    |
 
 Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following it. Do not ask the user to run the skill — just do it.
@@ -100,6 +102,23 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /codex-review     → {{TOOLBOX_PATH}}/skills/codex-review.md
 - /upgrade          → {{TOOLBOX_PATH}}/skills/upgrade.md
 
+## Memory
+- Global memory: {{WORKSPACE_PATH}}/memory/MEMORY.md
+- Project memory: .claude/memory/MEMORY.md (when present)
+
+## Code Navigation
+
+When you need to find files, understand code structure, or answer questions about the codebase:
+
+1. If `.claude/index/` exists in the current project, **use it before Grep or Glob**:
+   - Read `{{TOOLBOX_PATH}}/skills/query-index.md`, then launch a **sub-agent** with the specific question
+   - The sub-agent reads only the relevant index files and returns precise, synthesized results
+   - This is faster than grep and keeps the main context clean
+2. Fall back to Grep/Glob only if:
+   - `.claude/index/` does not exist — remind the user they can run `/index-repo` to build it
+   - The question is about specific string content within a file (not structure or relations)
+3. Never re-read files that the index already summarizes — use the index answer and read source only when editing
+
 ## Codex Integration (automatic)
 
 When in `/implement` Phase 3 (or any direct code-edit task), always attempt Codex first:
@@ -117,23 +136,6 @@ When in `/implement` Phase 4 (or any review/verify task), always use `/codex-rev
 2. If true: read and follow `/codex-review` — pass file paths (not content), ticket state paths, and stack-appropriate standards paths
 3. If false: `/codex-review` notifies the user ("Codex is not available. Continuing review with Claude.") and performs the review directly
 4. The fallback is explicit — the user is always notified when Codex is skipped for review tasks
-
-## Memory
-- Global memory: {{WORKSPACE_PATH}}/memory/MEMORY.md
-- Project memory: .claude/memory/MEMORY.md (when present)
-
-## Code Navigation
-
-When you need to find files, understand code structure, or answer questions about the codebase:
-
-1. If `.claude/index/` exists in the current project, **use it before Grep or Glob**:
-   - Read `{{TOOLBOX_PATH}}/skills/query-index.md`, then launch a **sub-agent** with the specific question
-   - The sub-agent reads only the relevant index files and returns precise, synthesized results
-   - This is faster than grep and keeps the main context clean
-2. Fall back to Grep/Glob only if:
-   - `.claude/index/` does not exist — remind the user they can run `/index-repo` to build it
-   - The question is about specific string content within a file (not structure or relations)
-3. Never re-read files that the index already summarizes — use the index answer and read source only when editing
 
 ## Always Apply
 - Read project memory before starting any task

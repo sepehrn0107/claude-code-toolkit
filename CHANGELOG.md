@@ -12,11 +12,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [1.1.0] — 2026-03-31
 
 ### Added
-- `templates/vscode-statusbar/` — VS Code extension that shows Claude Code session stats (directory, model, context %, 5h rate limit) in the status bar, polled every 2 seconds
-- `templates/statusline-command.sh` — Claude Code `statusLine` command that writes terminal output and a plain-text cache file for the VS Code extension
+- `templates/claude-sessions/statusline-command.js` — Claude Code `statusLine` command that shows session stats (directory, model, context %, 5h rate limit) in the Claude Code UI and writes per-session snapshots for the Claude Sessions extension
 - `skills/upgrade.md` — `/upgrade` skill: applies pending toolbox migrations to an existing installation
 - `VERSION` — tracks the canonical toolbox version; written to `~/.claude/toolbox-version.txt` on install/upgrade
-- Setup skill (CLAUDE.md steps 14–18) now installs the VS Code extension, registers it in `extensions.json`, and writes the installed version
 
 ### How to upgrade existing installs
 1. `git pull` in the toolbox repo

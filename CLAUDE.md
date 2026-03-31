@@ -65,12 +65,10 @@ When the user says "set up the toolbox":
 11. Write `templates/workspace-settings.json` to `{{WORKSPACE_PATH}}/.claude/settings.json` (create `{{WORKSPACE_PATH}}/.claude/` if it does not exist)
 12. Create `{{WORKSPACE_PATH}}/memory/` if it does not exist, and write `templates/memory/MEMORY.md` to `{{WORKSPACE_PATH}}/memory/MEMORY.md`
 13. Read `templates/workspace-CLAUDE.md`, replace every `{{TOOLBOX_PATH}}` and `{{WORKSPACE_PATH}}`, and write the result to `{{WORKSPACE_PATH}}/CLAUDE.md` — this file is auto-loaded by Claude Code for every session in the workspace and states the always-on defaults (Crawl4AI for fetches, Codex for delegation).
-14. Create `~/.vscode/extensions/claude-statusbar-0.0.1/` if it does not exist. Copy `templates/vscode-statusbar/extension.js` and `templates/vscode-statusbar/package.json` into it.
-15. Copy `templates/statusline-command.sh` to `~/.claude/statusline-command.sh` and run `chmod +x ~/.claude/statusline-command.sh`
-16. In `~/.claude/settings.json`, also merge `"statusLine": {"type": "command", "command": "bash ~/.claude/statusline-command.sh"}` (alongside the hooks block from step 10)
-17. Register the extension in `~/.vscode/extensions/extensions.json` — read the file (or start from `[]`), skip if `"relativeLocation": "claude-statusbar-0.0.1"` already present, otherwise append the entry. Use Python for JSON operations; see `/upgrade` skill for the exact entry format and path construction.
-18. Read `{{TOOLBOX_PATH}}/VERSION` and write its contents to `~/.claude/toolbox-version.txt`
-19. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
+14. Copy `templates/claude-sessions/statusline-command.js` to `~/.claude/statusline-command.js`
+15. In `~/.claude/settings.json`, also merge `"statusLine": {"type": "command", "command": "node ~/.claude/statusline-command.js"}` (alongside the hooks block from step 10)
+16. Read the `"version"` field from `{{TOOLBOX_PATH}}/package.json` and write it (plain text, one line) to `~/.claude/toolbox-version.txt`
+17. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
 
 ## When Creating or Modifying a Skill
 
