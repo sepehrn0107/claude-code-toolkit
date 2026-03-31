@@ -71,6 +71,32 @@ Wait for confirmation if the split is non-obvious. For a single logical change, 
 
 ---
 
+## Step 3b — Version bump check
+
+Before committing, check if the project has a versioned manifest:
+
+- **`package.json`** — read the `"version"` field
+- **`pyproject.toml`** or **`setup.py`** — read the version field if present
+
+If a version field is found, ask the user:
+
+```
+Current version: X.Y.Z
+Do you want to bump the version before committing?
+  1. patch  → X.Y.(Z+1)  — bug fixes, small tweaks
+  2. minor  → X.(Y+1).0  — new features, non-breaking changes
+  3. major  → (X+1).0.0  — breaking changes
+  4. skip   — leave version as-is
+```
+
+If the user chooses a bump:
+1. Update the version field in the manifest file
+2. Add the manifest file to the most relevant commit group (the one that introduced the change, or a dedicated `chore: bump version` commit if the changes span multiple groups)
+
+If the project has no version manifest, skip this step silently.
+
+---
+
 ## Step 4 — Commit each group
 
 For each group in order:
