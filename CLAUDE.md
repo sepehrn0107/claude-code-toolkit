@@ -20,15 +20,21 @@ back directly from project sessions.
 
 ## Development Workflow
 
+### RULE: Never edit `~/.claude/CLAUDE.md` directly
+
+`~/.claude/CLAUDE.md` is a **generated file** — produced by rendering `templates/CLAUDE.global.md` with resolved path tokens. **Direct edits are forbidden** because they will be silently overwritten the next time `/upgrade` or `/upgrade-dev` runs.
+
+- All changes must be made in `templates/CLAUDE.global.md`
+- To sync the live install immediately (during development), run `/upgrade-dev`
+- To ship to other users, also add a migration in `skills/upgrade.md` and bump `"version"` in `package.json`
+
 ### For ANY change that affects installed behavior (routing, session start, skill routing table, etc.)
 
 Three steps — all required, in order:
 
-1. Edit `templates/CLAUDE.global.md` — this is the source of truth for new installs
-2. Mirror the same change to `~/.claude/CLAUDE.md` — the live install on this machine
-3. Add a migration in `skills/upgrade.md` + bump `"version"` in `package.json` — existing users
-
-Never skip step 2. The live `~/.claude/CLAUDE.md` and the template must stay in sync at all times.
+1. Edit `templates/CLAUDE.global.md` — this is the source of truth (the only file you touch)
+2. Run `/upgrade-dev` to re-render the template into `~/.claude/CLAUDE.md` — never edit that file by hand
+3. Add a migration in `skills/upgrade.md` + bump `"version"` in `package.json` — so existing users receive the change
 
 ### Upgrade migration pattern
 
