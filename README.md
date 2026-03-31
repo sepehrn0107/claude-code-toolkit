@@ -79,7 +79,8 @@ Set up the toolbox
 
 Claude will:
 
-- Write `~/.claude/CLAUDE.md` pointing to your local clone
+- Write a single `@import` line into `~/.claude/CLAUDE.md` pointing to the toolbox (your own content in that file is never touched)
+- Render the full configuration into `~/.claude/CLAUDE.global.md` and `~/.claude/toolbox-sections/` (9 modular section files)
 - Install hooks into `~/.claude/hooks/`
 - Create `<workspace>/.claude/settings.json` with plugins and hooks config
 - Create `<workspace>/memory/` for global cross-project memory
@@ -98,7 +99,9 @@ The toolkit uses two mechanisms to ensure every agent and sub-agent (spawned via
 
 **1. Global `~/.claude/CLAUDE.md`**
 
-Loaded automatically for every Claude Code session, including sub-agents. Contains the full routing table and skill list. Sub-agents see a guard at the top of the Session Start block so they skip the session-initialization steps and proceed directly to their task — no wasted context, no confusion.
+Loaded automatically for every Claude Code session, including sub-agents. Contains a single `@import` line that pulls in `~/.claude/CLAUDE.global.md`, which in turn `@imports` nine modular section files from `~/.claude/toolbox-sections/`. This means `~/.claude/CLAUDE.md` is **user-owned** — upgrades and `/upgrade-dev` runs never overwrite your custom content.
+
+The section files hold the full routing table, skill list, and session rules. Sub-agents see a guard at the top of the Session Start section so they skip session-initialization and proceed directly to their task — no wasted context, no confusion.
 
 **2. Per-project `CLAUDE.md`**
 
@@ -132,7 +135,10 @@ All four phase prompts in `/implement` include an explicit fetch rule so sub-age
 The toolkit is organized as 4 layers:
 
 ```
-Layer 1 — Global preferences     ~/.claude/CLAUDE.md + <workspace>/memory/
+Layer 1 — Global preferences     ~/.claude/CLAUDE.md            (user-owned, single @import)
+                                  ~/.claude/CLAUDE.global.md     (toolbox-rendered index)
+                                  ~/.claude/toolbox-sections/    (9 modular section files)
+                                  <workspace>/memory/
 Layer 2 — Stack standards        <workspace>/toolbox/standards/
 Layer 3 — Project context        <project>/.claude/memory/
 Layer 4 — Session context        progress.md (written each session)
