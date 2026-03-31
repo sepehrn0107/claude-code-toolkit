@@ -80,6 +80,27 @@ Whenever a new skill file is added to `skills/` or an existing one is changed in
 
 This ensures the template stays canonical so that a fresh `"set up the toolbox"` produces a correct install.
 
+## Development Workflow
+
+### For ANY change that affects installed behavior (routing, session start, skill routing table, etc.)
+Three steps — all required, in order:
+1. Edit `templates/CLAUDE.global.md` — this is the source of truth for new installs
+2. Mirror the same change to `~/.claude/CLAUDE.md` — the live install on this machine
+3. Add a migration in `skills/upgrade.md` + bump `"version"` in `package.json` — existing users
+
+Never skip step 2. The live `~/.claude/CLAUDE.md` and the template must stay in sync at all times.
+
+### Upgrade migration pattern
+- Add a new `#### vX.Y.Z — <Title>` block **above** the `### 3. Write updated version` line in `skills/upgrade.md`
+- Use Python string replacement for `.md` file patches, Python JSON ops for `settings.json` patches
+- Skip silently if the target pattern is not found (already patched or newer install)
+- Bump `"version"` in `package.json` to match the new migration version
+
+### Branch & PR
+- Default branch is `master` — PRs target `master`
+- Never commit directly to `master`
+- Commits follow Conventional Commits: `feat`, `fix`, `chore`, `docs`, `refactor`
+
 ## Always Apply
 
 - **Before touching any file**: checkout a new branch. Never commit to master directly.
