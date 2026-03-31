@@ -16,14 +16,18 @@ Developers who use Claude Code regularly and want it to behave consistently acro
 
 **Requirements:** Claude Code installed, Git, Python 3, Docker (for `/web-fetch` and `/local-llm`), [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) (for Codex delegation — optional but recommended).
 
-### 1. Clone the toolkit
+### 1. Create a workspace folder and clone the toolkit
 
-Clone into a workspace directory — the toolkit must live **one level below** the workspace root, because memory and Claude settings are installed at the workspace level (not inside the repo).
+Create a **new, empty folder** with any name — this becomes your workspace root. The toolkit must live directly inside it as a subfolder named `toolbox`. Memory and Claude settings are installed at the workspace level (not inside the repo), so the parent folder must be dedicated to this workspace.
 
 ```bash
 mkdir -p ~/Documents/workspace
 git clone https://github.com/sepehrn0107/claude-code-toolkit ~/Documents/workspace/toolbox
 ```
+
+The folder name (`workspace` above) is just an example — name it whatever you like. Setup infers the workspace path automatically from where the repo is cloned; nothing is hardcoded.
+
+> **Already cloned?** If you already have the repo on your machine, skip the commands above. Just make sure the repo folder sits inside an otherwise-empty parent folder, then go to step 3.
 
 ### 2. Install the Codex plugin (optional)
 

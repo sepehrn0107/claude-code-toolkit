@@ -5,12 +5,14 @@ Source: https://github.com/sepehrn0107/claude-code-toolkit
 
 ## Setup
 
-When someone clones this repo, they need to install it once so Claude Code uses it in every project:
+The toolbox must live inside a **dedicated workspace folder**. That folder should be empty at first — other project repos are added alongside `toolbox/` later. The folder name does not matter; setup infers `WORKSPACE_PATH` from the parent of wherever this repo is cloned.
+
+Once the repo is cloned into the workspace folder, install it so Claude Code uses it in every project:
 
 1. Open the toolbox directory in Claude Code
 2. Tell Claude: **"Set up the toolbox"**
 
-Claude will detect the current directory, substitute the correct path into `templates/CLAUDE.global.md`, and write it to `~/.claude/CLAUDE.md`. That's the only manual step.
+Claude will detect the current directory, substitute the correct path into `templates/CLAUDE.global.md`, and write it to `~/.claude/CLAUDE.md`. That's the only manual step — no re-cloning or path configuration needed.
 
 ## What This Is
 
@@ -82,10 +84,11 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 
 ## Setup Skill
 
-When the user says "set up the toolbox":
+When the user opens the toolbox directory in Claude Code and says "set up the toolbox":
 
 1. `TOOLBOX_PATH` is the absolute path to the directory containing **this CLAUDE.md file** — not the shell's current working directory, not the workspace root. Resolve it by finding where this file lives (e.g. if this file is at `/home/alice/workspace/toolbox/CLAUDE.md`, then `TOOLBOX_PATH = /home/alice/workspace/toolbox`).
-2. `WORKSPACE_PATH` is the **parent directory** of `TOOLBOX_PATH` (e.g. `/home/alice/workspace`).
+2. `WORKSPACE_PATH` is the **parent directory** of `TOOLBOX_PATH` (e.g. `/home/alice/workspace`). The workspace folder name is inferred from this path — it is never hardcoded and can be anything the user chose when creating the folder.
+2a. Warn (but do not abort) if `WORKSPACE_PATH` looks like a home directory (`~`, `/home/<user>`, `C:\Users\<user>`) or a system path — the toolbox should be one level inside a dedicated workspace folder, not cloned directly into the home directory.
 3. Read `templates/CLAUDE.global.md`
 4. Replace every `{{TOOLBOX_PATH}}` with the detected path and every `{{WORKSPACE_PATH}}` with the detected workspace path
 5. Write the result to `~/.claude/CLAUDE.md`
