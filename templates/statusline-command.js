@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Claude Code status line — reads session JSON from stdin, writes terminal output
-// and per-session snapshot files for the VS Code dashboard.
+// and per-session snapshot files for the Claude Sessions extension.
 //
 // Configured in ~/.claude/settings.json as:
 //   "statusLine": { "type": "command", "command": "node ~/.claude/statusline-command.js" }
@@ -65,16 +65,7 @@ process.stdin.on('end', () => {
   // Terminal output (ANSI colored)
   process.stdout.write(out + '\n');
 
-  // Status bar cache — ANSI stripped, for the VS Code extension to poll
-  const plain = out.replace(/\x1b\[[0-9;]*m/g, '');
-  try {
-    fs.writeFileSync(
-      path.join(os.homedir(), '.claude', 'statusline-cache.txt'),
-      plain + '\n'
-    );
-  } catch { /* ignore write failures */ }
-
-  // Per-session snapshot — used by the VS Code dashboard to show all sessions.
+  // Per-session snapshot — used by the Claude Sessions extension to show all sessions.
   // process.ppid is the Claude Code process PID, matching ~/.claude/sessions/<pid>.json
   const ppid = process.ppid;
   if (ppid && ppid > 0) {

@@ -41,70 +41,22 @@ No migration steps. This is the retroactive baseline for all installs before ver
 
 ---
 
-#### v1.1.0 — VS Code Status Bar
+#### v1.1.0 — Status Line Command
 
-Installs a VS Code extension that shows Claude Code session stats (directory, model, context %, 5h rate limit) in the VS Code status bar, polled every 2 seconds from a cache file written by Claude Code's status line command.
+Installs the Claude Code status line command that shows session stats (directory, model, context %, 5h rate limit) in the Claude Code UI.
 
 **Steps:**
 
-1. Create `~/.vscode/extensions/claude-statusbar-0.0.1/` if it does not exist.
+1. Copy `{{TOOLBOX_PATH}}/templates/statusline-command.js`
+   → `~/.claude/statusline-command.js`
 
-2. Copy `{{TOOLBOX_PATH}}/templates/vscode-statusbar/extension.js`
-   → `~/.vscode/extensions/claude-statusbar-0.0.1/extension.js`
-
-3. Copy `{{TOOLBOX_PATH}}/templates/vscode-statusbar/package.json`
-   → `~/.vscode/extensions/claude-statusbar-0.0.1/package.json`
-
-4. Copy `{{TOOLBOX_PATH}}/templates/statusline-command.sh`
-   → `~/.claude/statusline-command.sh`
-   Then run: `chmod +x ~/.claude/statusline-command.sh`
-
-5. Add `statusLine` to `~/.claude/settings.json`:
+2. Add `statusLine` to `~/.claude/settings.json`:
    - Read `~/.claude/settings.json` (or start from `{}` if absent)
-   - Set `settings["statusLine"] = {"type": "command", "command": "bash ~/.claude/statusline-command.sh"}`
+   - Set `settings["statusLine"] = {"type": "command", "command": "node ~/.claude/statusline-command.js"}`
    - Write back (use Python for JSON operations)
 
-6. Register the extension in `~/.vscode/extensions/extensions.json`:
-   - Read the file (or start from `[]` if absent)
-   - Skip if an entry with `"relativeLocation": "claude-statusbar-0.0.1"` already exists
-   - Otherwise append this entry (replace `<HOME_POSIX>` with the user's home in POSIX format, e.g. `/c:/Users/alice` on Windows, `/home/alice` on Linux/Mac):
-     ```json
-     {
-       "identifier": {"id": "local.claude-statusbar"},
-       "version": "0.0.1",
-       "location": {
-         "$mid": 1,
-         "path": "<HOME_POSIX>/.vscode/extensions/claude-statusbar-0.0.1",
-         "scheme": "file"
-       },
-       "relativeLocation": "claude-statusbar-0.0.1",
-       "metadata": {
-         "isApplicationScoped": false,
-         "isMachineScoped": false,
-         "isBuiltin": false,
-         "installedTimestamp": <current_unix_ms>,
-         "pinned": false,
-         "source": "gallery"
-       }
-     }
-     ```
-   - Use Python to detect home, construct the POSIX path, and write back the JSON.
-   - Sample Python snippet for path construction:
-     ```python
-     import pathlib
-     home = pathlib.Path.home()
-     # On Windows: home = WindowsPath('C:/Users/alice')
-     # POSIX form for VS Code: /c:/Users/alice
-     parts = home.as_posix()  # gives 'C:/Users/alice' on Windows
-     if len(parts) >= 2 and parts[1] == ':':
-         posix_path = '/' + parts[0].lower() + parts[2:]  # -> /c:/Users/alice
-     else:
-         posix_path = parts  # already POSIX on Linux/Mac
-     ext_path = posix_path + '/.vscode/extensions/claude-statusbar-0.0.1'
-     ```
-
-7. Output:
-   > VS Code status bar installed. Restart VS Code to activate.
+3. Output:
+   > Status line command installed.
 
 ---
 
