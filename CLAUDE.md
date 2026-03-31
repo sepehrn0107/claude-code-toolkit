@@ -67,7 +67,7 @@ When the user says "set up the toolbox":
 13. Read `templates/workspace-CLAUDE.md`, replace every `{{TOOLBOX_PATH}}` and `{{WORKSPACE_PATH}}`, and write the result to `{{WORKSPACE_PATH}}/CLAUDE.md` — this file is auto-loaded by Claude Code for every session in the workspace and states the always-on defaults (Crawl4AI for fetches, Codex for delegation).
 14. Copy `templates/claude-sessions/statusline-command.js` to `~/.claude/statusline-command.js`
 15. In `~/.claude/settings.json`, also merge `"statusLine": {"type": "command", "command": "node ~/.claude/statusline-command.js"}` (alongside the hooks block from step 10)
-16. Read `{{TOOLBOX_PATH}}/VERSION` and write its contents to `~/.claude/toolbox-version.txt`
+16. Read the `"version"` field from `{{TOOLBOX_PATH}}/package.json` and write it (plain text, one line) to `~/.claude/toolbox-version.txt`
 17. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
 
 ## When Creating or Modifying a Skill

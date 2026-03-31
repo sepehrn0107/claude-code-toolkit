@@ -3,7 +3,7 @@
 !.gitignore
 !CLAUDE.md
 !CHANGELOG.md
-!VERSION
+!package.json
 !development.md
 !README.md
 

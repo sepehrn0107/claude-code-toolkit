@@ -14,7 +14,7 @@ Always `git pull` the toolbox repo before running this skill.
 
 ### 1. Determine versions
 
-Read `{{TOOLBOX_PATH}}/VERSION` → `TARGET_VERSION`
+Read the `"version"` field from `{{TOOLBOX_PATH}}/package.json` → `TARGET_VERSION`
 
 Read `~/.claude/toolbox-version.txt` → `INSTALLED_VERSION`
 - If the file does not exist, treat `INSTALLED_VERSION` as `0.0.0` (pre-versioning install)
@@ -139,3 +139,10 @@ Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
 
 Output:
 > Toolbox upgraded to v`TARGET_VERSION`. ✓
+
+---
+
+## Adding a new version (for toolbox maintainers)
+
+When releasing a new version, bump the `"version"` field in `package.json` (the single source of truth).
+Then add a new `#### vX.Y.Z — <Title>` migration block above the "Write updated version" step.
