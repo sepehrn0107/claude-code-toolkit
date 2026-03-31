@@ -40,6 +40,14 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 - Global memory (Layer 1): `../memory/MEMORY.md` (lives in the workspace root, outside this repo)
 - Project memory (Layer 3): `.claude/memory/MEMORY.md` (when present in a project)
 
+## Prerequisites
+
+- Claude Code installed
+- Git
+- Python 3
+- Docker (for `/web-fetch` and `/local-llm`)
+- [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) — optional; enables Codex delegation in `/implement` Phase 3. If not installed, all tasks fall back to direct Claude implementation.
+
 ## Setup Skill
 
 When the user says "set up the toolbox":
@@ -55,7 +63,8 @@ When the user says "set up the toolbox":
 10. Read `~/.claude/settings.json` (or start from `{}` if absent), merge in the `hooks` block from `templates/workspace-settings.json`, and write it back
 11. Write `templates/workspace-settings.json` to `{{WORKSPACE_PATH}}/.claude/settings.json` (create `{{WORKSPACE_PATH}}/.claude/` if it does not exist)
 12. Create `{{WORKSPACE_PATH}}/memory/` if it does not exist, and write `templates/memory/MEMORY.md` to `{{WORKSPACE_PATH}}/memory/MEMORY.md`
-13. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
+13. Read `templates/workspace-CLAUDE.md`, replace every `{{TOOLBOX_PATH}}` and `{{WORKSPACE_PATH}}`, and write the result to `{{WORKSPACE_PATH}}/CLAUDE.md` — this file is auto-loaded by Claude Code for every session in the workspace and states the always-on defaults (Crawl4AI for fetches, Codex for delegation).
+14. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
 
 ## When Creating or Modifying a Skill
 

@@ -14,7 +14,7 @@ Developers who use Claude Code regularly and want it to behave consistently acro
 
 ## Getting Started
 
-**Requirements:** Claude Code installed, Git, Python 3, Docker (for `/web-fetch` and `/local-llm`).
+**Requirements:** Claude Code installed, Git, Python 3, Docker (for `/web-fetch` and `/local-llm`), [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) (for Codex delegation — optional but recommended).
 
 ### 1. Clone the toolkit
 
@@ -25,7 +25,47 @@ mkdir -p ~/Documents/workspace
 git clone https://github.com/sepehrn0107/claude-code-toolkit ~/Documents/workspace/toolbox
 ```
 
-### 2. Run setup
+### 2. Install the Codex plugin (optional)
+
+The toolkit uses [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) to delegate implementation tasks to the Codex CLI during Phase 3 of `/implement`.
+
+**Install the Codex CLI:**
+
+```bash
+npm install -g @openai/codex
+```
+
+**Windows — add the npm global bin to PATH:**
+
+After installing, verify that `codex --version` works in a new terminal. If it says "not recognized", add the npm global bin directory to your system PATH:
+
+1. Open **System Properties → Environment Variables**
+2. Under **User variables**, find `Path` and click **Edit**
+3. Add: `%APPDATA%\npm` (typically `C:\Users\<you>\AppData\Roaming\npm`)
+4. Restart your terminal and Claude Code
+
+Alternatively, set the path in your shell profile (`~/.bashrc`, `~/.zshrc`) so it applies to all sessions:
+
+```bash
+export PATH="$PATH:$APPDATA/npm"
+```
+
+**Authenticate:**
+
+```bash
+codex   # opens browser for OpenAI OAuth — run once
+# or: set OPENAI_API_KEY as an environment variable for API key auth
+```
+
+**Verify:**
+
+```bash
+codex --version   # should print codex-cli x.y.z
+```
+
+If the plugin is not installed or authentication fails, all tasks fall back to direct Claude implementation transparently. The toolkit's `codex:setup` check runs before every delegation and gracefully handles PATH issues and missing auth.
+
+### 3. Run setup
 
 Open the toolbox directory in Claude Code and say:
 
@@ -42,9 +82,44 @@ Claude will:
 
 That's the only manual step.
 
-### 3. Start using it
+### 4. Start using it
 
 In any project directory, open Claude Code and use the skills below.
+
+---
+
+## How Subagent Reliability Works
+
+The toolkit uses two mechanisms to ensure every agent and sub-agent (spawned via the `Agent` tool during `/implement`, code reviews, etc.) follows the same standards and skills:
+
+**1. Global `~/.claude/CLAUDE.md`**
+
+Loaded automatically for every Claude Code session, including sub-agents. Contains the full routing table and skill list. Sub-agents see a guard at the top of the Session Start block so they skip the session-initialization steps and proceed directly to their task — no wasted context, no confusion.
+
+**2. Per-project `CLAUDE.md`**
+
+Created by `/new-project` in the project root from `templates/CLAUDE.md.template`. Loaded automatically for every agent running in that project directory. Contains the **four rules every agent must follow**, stated as direct commands (not references to skills):
+
+| Rule | What it does |
+|---|---|
+| Read project context | Loads `.claude/memory/` before any task |
+| Load standards before code edits | Reads `load-standards.md` and waits for the confirmation |
+| Use Crawl4AI for URL fetches | Runs `fetch.py` instead of the built-in `WebFetch` tool |
+| Follow memory-sync before writing memory | Keeps memory files consistent |
+
+This is the most reliable mechanism: it works for all agents regardless of how they were spawned, without requiring any explicit context injection in the prompt.
+
+**For existing projects** that predate this setup, add the file manually:
+
+```bash
+# from your project root
+cp <toolbox-path>/templates/CLAUDE.md.template CLAUDE.md
+# then fill in {{PROJECT_NAME}}, {{STACK}}, {{TOOLBOX_PATH}}, {{WORKSPACE_PATH}}
+```
+
+**3. Explicit FETCH RULE injection in `implement.md`**
+
+All four phase prompts in `/implement` include an explicit fetch rule so sub-agents never fall back to the built-in `WebFetch` even mid-task when attention drifts from the project-level CLAUDE.md.
 
 ---
 
@@ -147,21 +222,17 @@ This is how the toolkit improves itself from real work.
 
 ---
 
-### `/codex-delegate` — Hand off implementation to Codex CLI
+### `/codex-delegate` — Hand off implementation to Codex via plugin
 
 **Trigger phrases:** "delegate to codex", "let codex handle", "use codex for", "hand off to codex"
 
-**Also runs automatically** during `/implement` Phase 3 whenever Codex CLI is available.
+**Also runs automatically** during `/implement` Phase 3 whenever Codex is available.
 
-Delegates a focused coding task to OpenAI Codex CLI in fully autonomous mode, then verifies the result and falls back to direct Claude implementation if Codex is unavailable.
+Delegates a focused coding task to Codex via the [codex-plugin-cc](https://github.com/openai/codex-plugin-cc) runtime, then verifies the result and falls back to direct Claude implementation if Codex is unavailable.
 
-**Connection check (always runs first):**
+**Availability check (always runs first):**
 
-```bash
-codex --version > /dev/null 2>&1 && echo CODEX_OK || echo CODEX_UNAVAILABLE
-```
-
-If Codex is not installed or not authenticated, the skill falls back to direct Claude implementation silently.
+Invokes `codex:setup` skill — verifies CLI is installed, in PATH, and authenticated. If not ready, falls back to direct Claude implementation silently.
 
 **Context passed to Codex:**
 
@@ -169,33 +240,33 @@ If Codex is not installed or not authenticated, the skill falls back to direct C
 - **Applicable standards** — key rules extracted from the relevant universal + stack standards (≤20 bullets, never full files)
 - **Phase 3 constraints** — TDD requirement (failing tests first, red-green-refactor), no public API changes unless planned, append implementation summary when done
 
+**Prompt shaping:**
+
+Before building the task prompt, the skill consults `codex:gpt-5-4-prompting` for guidance on framing tasks for the Codex runtime. This produces better-specified prompts with correct constraint ordering.
+
 **Invocation:**
 
-```bash
-codex exec --full-auto -C <project-dir> "<prompt>"
-```
-
-`--full-auto` sets sandbox to `workspace-write` and approval to `on-request`, allowing Codex to read and write files without prompting.
+Launches a `codex:rescue` subagent (via the Agent tool with `subagent_type: codex:codex-rescue`) with the full context package. The plugin runtime manages sandboxing and file access.
 
 **After Codex runs:**
 
-1. `git diff` is read to verify changes match the task
-2. Unexpected file changes are flagged before continuing
-3. If called from `/implement`, control returns to the orchestrator and the lifecycle continues normally
+1. `codex:codex-result-handling` is invoked to parse and present the result consistently
+2. `git diff` is read to verify changes match the task
+3. Unexpected file changes are flagged before continuing
+4. If called from `/implement`, control returns to the orchestrator and the lifecycle continues normally
 
 **Fallback behavior:**
 
-- Codex unavailable (CLI not installed) → implement directly with Claude
+- `codex:setup` reports unavailable → implement directly with Claude
 - Auth error → remind user to run `codex login`, then implement directly
 - Non-zero exit → report error, implement directly
 
 The fallback is transparent: from the user's perspective, the task completes either way.
 
-**First-time setup:**
+**First-time setup:** see [step 2 in Getting Started](#2-install-the-codex-plugin-optional).
 
-```bash
-codex         # opens browser for OpenAI OAuth — run once
-# or: set OPENAI_API_KEY as a Windows environment variable for API key auth
+---
+
 ### `/web-fetch` — Fetch any external URL via Crawl4AI
 
 **Auto-trigger:** whenever Claude is about to use `WebFetch` to read a page's full content
@@ -280,6 +351,47 @@ Manages which project is active when Claude Code is opened at the workspace root
 - `/project status` — shows active project name, stack, current phase, and next task
 
 The active choice is persisted in `<workspace>/memory/active-project.md` — future sessions auto-load the right context.
+
+---
+
+### `/web-design-audit` — Systematic design and accessibility audit
+
+**Trigger phrases:** "audit the design", "check the UI", "review the spacing", "check accessibility", "design review", "how does the page flow look", "is the typography consistent"
+
+**Also runs automatically** before any PR that touches CSS, components, or design tokens.
+
+Produces a prioritized report across 9 areas, each with file references and one-line fixes:
+
+1. **Design tokens** — completeness, hardcoded values leaking in, naming conventions, z-index gaps, spacing token usage
+2. **Typography** — type scale consistency, heading hierarchy (single H1, logical descent), line height, letter spacing, responsive type with `clamp()`
+3. **Spacing & rhythm** — vertical rhythm, section gaps, component-internal gaps, max-width containers
+4. **Color & contrast** — WCAG 2.1 AA ratios for body text, muted text, placeholders, CTA buttons, focus rings, text over images
+5. **Accessibility** — focus states (`:focus-visible`), skip link, `prefers-reduced-motion`, semantic HTML, ARIA correctness, form labels, image alt text, touch target size
+6. **Responsive layout** — breakpoint consistency, mobile-first vs desktop-first coherence, content reflow, `100vh` vs `100svh`
+7. **Page flow** — above-fold value prop, CTA placement and repetition, section sequencing, dead ends
+8. **Component consistency** — button variants, section headers, card patterns, link styling, transition uniformity
+9. **Token adherence** — components that bypass the design system with hardcoded values
+
+Output format: three severity tiers (critical / warning / suggestion) in a table with location and fix per row, followed by a prioritized fix order.
+
+---
+
+### `/add-e2e-playwright` — Add Playwright E2E testing to a project
+
+**Trigger phrases:** "add E2E testing", "add Playwright", "set up Playwright", "add browser tests"
+
+Sets up both the Playwright CLI (for AI-driven navigation) and the test runner (for specs):
+
+1. Installs `@playwright/cli` globally — token-efficient CLI optimized for coding agents
+2. Runs `playwright-cli install --skills` in the project root — writes workspace-scoped skills to `.claude/skills/playwright-cli/`
+3. Installs `@playwright/test` as a dev dependency
+4. Installs the Chromium browser binary
+5. Creates `playwright.config.ts` with correct settings for the project type (dev server assumed running locally; `webServer` config for CI)
+6. Creates an `e2e/` directory with a starter spec
+7. Adds `test:e2e`, `test:e2e:ui`, and `test:e2e:debug` scripts to `package.json`
+8. Updates `vitest.config.ts` to exclude `e2e/**` so Vitest doesn't pick up Playwright specs
+
+**Key distinction:** `@playwright/cli` is installed once globally per machine; `.claude/skills/playwright-cli/` is installed once per project. Never put E2E specs inside `src/` — Vitest will find them.
 
 ---
 
@@ -393,19 +505,28 @@ Hooks are installed to `~/.claude/hooks/` during setup.
 
 You don't need to remember slash commands. The toolkit detects what you're trying to do:
 
-| You say…                                                 | What runs                                                |
-| -------------------------------------------------------- | -------------------------------------------------------- |
-| "add [X]", "implement [X]", "build [X]"                  | `/implement`                                             |
-| "fix [X]", "debug [X]", "not working"                    | `superpowers:systematic-debugging`                       |
-| "check this", "review", "ready to merge"                 | `/standards-check`                                       |
-| "new project", "starting fresh", "scaffold"              | `/new-project`                                           |
-| "switch project", "work on [repo]"                       | `/project`                                               |
-| "push to git", "open a PR", "ship this"                  | `/git-push`                                              |
-| "add standards for [stack]"                              | `/add-stack-standards`                                   |
-| "delegate to codex", "let codex handle", "use codex for" | `/codex-delegate`                                        |
-| `/implement` Phase 3 (automatic)                         | tries `/codex-delegate` first, falls back to direct impl |
-| About to call `WebFetch` to read a page                  | `/web-fetch`                                             |
-| Any code edit (none of the above)                        | loads standards, then edits                              |
+| You say…                                                         | What runs                                                |
+| ---------------------------------------------------------------- | -------------------------------------------------------- |
+| "add [X]", "implement [X]", "build [X]", "work on ticket [X]"   | `/implement`                                             |
+| "fix [X]", "debug [X]", "not working", "something is broken"    | `superpowers:systematic-debugging`                       |
+| "check this", "review", "ready to merge", "before PR"           | `/standards-check`                                       |
+| "new project", "starting fresh", "scaffold"                      | `/new-project`                                           |
+| "switch project", "work on [repo]"                               | `/project`                                               |
+| "push to git", "open a PR", "ship this", "lets push"            | `/git-push`                                              |
+| "add standards for [stack]"                                      | `/add-stack-standards`                                   |
+| "delegate to codex", "let codex handle", "use codex for"         | `/codex-delegate`                                        |
+| "audit the design", "check the UI", "check accessibility"        | `/web-design-audit`                                      |
+| "add E2E testing", "add Playwright", "add browser tests"         | `/add-e2e-playwright`                                    |
+| "create skill", "new skill", "improve skill", "optimize skill"   | `skill-creator:skill-creator`                            |
+| `/implement` Phase 3 (automatic)                                 | tries `/codex-delegate` first, falls back to direct impl |
+| About to call `WebFetch` to read a page                          | `/web-fetch`                                             |
+| About to read `git diff` to draft a commit or PR                 | `/diff-summary` (auto)                                   |
+| About to run multiple git commands (status, log, diff, branch)   | `/git-ctx` (auto)                                        |
+| Reading one function/section from a file > 100 lines             | `/read-section` (auto)                                   |
+| Checking package version, types, license, or popularity          | `/pkg-info` (auto)                                       |
+| Checking runtime versions, ports, Docker state, or `.env`        | `/env-check` (auto)                                      |
+| About to write or append to any memory file                      | `/memory-sync` (auto)                                    |
+| Any code edit (none of the above)                                | loads standards, then edits                              |
 
 ---
 
