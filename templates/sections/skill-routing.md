@@ -28,3 +28,10 @@ Detect user intent from the first message and route automatically — do not wai
 | Any code edit request (none of the above matched)                       | Run `/load-standards` then proceed    |
 
 Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following it. Do not ask the user to run the skill — just do it.
+
+<!-- superpowers skill reference (installed at ~/.claude/plugins/cache/claude-plugins-official/superpowers/)
+     Known skills: superpowers:brainstorming, superpowers:systematic-debugging,
+     superpowers:subagent-driven-development, superpowers:executing-plans,
+     superpowers:requesting-code-review, superpowers:receiving-code-review,
+     superpowers:finishing-a-development-branch, superpowers:dispatching-parallel-agents
+     Note: /brainstorm command is deprecated — use superpowers:brainstorming skill instead -->
