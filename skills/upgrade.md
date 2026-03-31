@@ -47,7 +47,7 @@ Installs the Claude Code status line command that shows session stats (directory
 
 **Steps:**
 
-1. Copy `{{TOOLBOX_PATH}}/templates/statusline-command.js`
+1. Copy `{{TOOLBOX_PATH}}/templates/claude-sessions/statusline-command.js`
    → `~/.claude/statusline-command.js`
 
 2. Add `statusLine` to `~/.claude/settings.json`:

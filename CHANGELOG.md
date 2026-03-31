@@ -12,7 +12,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [1.1.0] — 2026-03-31
 
 ### Added
-- `templates/statusline-command.js` — Claude Code `statusLine` command that shows session stats (directory, model, context %, 5h rate limit) in the Claude Code UI
+- `templates/claude-sessions/statusline-command.js` — Claude Code `statusLine` command that shows session stats (directory, model, context %, 5h rate limit) in the Claude Code UI and writes per-session snapshots for the Claude Sessions extension
 - `skills/upgrade.md` — `/upgrade` skill: applies pending toolbox migrations to an existing installation
 - `VERSION` — tracks the canonical toolbox version; written to `~/.claude/toolbox-version.txt` on install/upgrade
 
