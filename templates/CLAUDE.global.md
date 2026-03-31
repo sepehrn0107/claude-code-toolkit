@@ -47,7 +47,9 @@ Detect user intent from the first message and route automatically — do not wai
 | "switch project", "change project", "work on [repo]"                    | Read and follow `/project` skill      |
 | "create skill", "make a skill", "new skill", "improve skill", "edit skill", "optimize skill", "skill for [X]" | Invoke `skill-creator:skill-creator` system skill |
 | "push to git", "push this", "commit and push", "push my changes", "send to github", "open a PR", "create a PR", "push these changes", "ship this", "just push it", "lets push" | Read and follow `/git-push` skill |
+| "upgrade toolbox", "update toolbox", "run upgrade", "/upgrade"               | Read and follow `/upgrade` skill      |
 | "delegate to codex", "let codex handle", "use codex for", "hand off to codex" | Read and follow `/codex-delegate` skill |
+| "review with codex", "codex review", "let codex review", "delegate review" | Read and follow `/codex-review` skill |
 | Claude is about to use `WebFetch` or follow a URL to read page content  | Read and follow `/web-fetch` skill    |
 | Claude is about to run multiple git commands (status, log, diff, branch) | Read and follow `/git-ctx` skill     |
 | Claude is about to read `git diff` to understand what changed or draft a commit/PR | Read and follow `/diff-summary` skill |
@@ -95,6 +97,8 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /env-check        → {{TOOLBOX_PATH}}/skills/env-check.md
 - /memory-sync      → {{TOOLBOX_PATH}}/skills/memory-sync.md
 - /codex-delegate   → {{TOOLBOX_PATH}}/skills/codex-delegate.md
+- /codex-review     → {{TOOLBOX_PATH}}/skills/codex-review.md
+- /upgrade          → {{TOOLBOX_PATH}}/skills/upgrade.md
 
 ## Codex Integration (automatic)
 
@@ -106,6 +110,13 @@ When in `/implement` Phase 3 (or any direct code-edit task), always attempt Code
 4. After Codex completes: verify with `git diff` and continue the implement lifecycle as normal
 
 This applies to every Phase 3 component invocation in `/implement`. The fallback must be transparent to the user.
+
+When in `/implement` Phase 4 (or any review/verify task), always use `/codex-review`:
+
+1. Check the `CODEX_AVAILABLE` flag
+2. If true: read and follow `/codex-review` — pass file paths (not content), ticket state paths, and stack-appropriate standards paths
+3. If false: `/codex-review` notifies the user ("Codex is not available. Continuing review with Claude.") and performs the review directly
+4. The fallback is explicit — the user is always notified when Codex is skipped for review tasks
 
 ## Memory
 - Global memory: {{WORKSPACE_PATH}}/memory/MEMORY.md

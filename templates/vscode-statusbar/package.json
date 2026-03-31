@@ -1,0 +1,11 @@
+{
+  "name": "claude-statusbar",
+  "displayName": "Claude Status Bar",
+  "description": "Shows Claude Code session status in the VS Code status bar",
+  "version": "0.0.1",
+  "publisher": "local",
+  "engines": { "vscode": "^1.60.0" },
+  "activationEvents": ["*"],
+  "main": "./extension.js",
+  "contributes": {}
+}
