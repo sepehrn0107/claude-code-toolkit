@@ -56,6 +56,7 @@ Detect user intent from the first message and route automatically — do not wai
 | "create skill", "make a skill", "new skill", "improve skill", "edit skill", "optimize skill", "skill for [X]" | Invoke `skill-creator:skill-creator` system skill |
 | "push to git", "push this", "commit and push", "push my changes", "send to github", "open a PR", "create a PR", "push these changes", "ship this", "just push it", "lets push" | Read and follow `/git-push` skill |
 | "upgrade toolbox", "update toolbox", "run upgrade", "/upgrade"               | Read and follow `/upgrade` skill      |
+| "upgrade-dev", "/upgrade-dev", "apply template", "sync live install", "render template" | Read and follow `/upgrade-dev` skill |
 | Claude is about to use `WebFetch` or follow a URL to read page content  | **BLOCKING REQUIREMENT**: Read and follow `/web-fetch` skill BEFORE calling `WebFetch`. Never call the `WebFetch` tool directly — always route through `/web-fetch` first. |
 | Claude is about to run multiple git commands (status, log, diff, branch) | Read and follow `/git-ctx` skill     |
 | Claude is about to read `git diff` to understand what changed or draft a commit/PR | Read and follow `/diff-summary` skill |
@@ -107,6 +108,7 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /codex-delegate   → {{TOOLBOX_PATH}}/skills/codex-delegate.md
 - /codex-review     → {{TOOLBOX_PATH}}/skills/codex-review.md
 - /upgrade          → {{TOOLBOX_PATH}}/skills/upgrade.md
+- /upgrade-dev      → {{TOOLBOX_PATH}}/skills/upgrade-dev.md
 - /auto-switch      → {{TOOLBOX_PATH}}/skills/auto-switch.md
 
 ## Memory
