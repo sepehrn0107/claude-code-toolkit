@@ -50,7 +50,7 @@ Detect user intent from the first message and route automatically — do not wai
 | "create skill", "make a skill", "new skill", "improve skill", "edit skill", "optimize skill", "skill for [X]" | Invoke `skill-creator:skill-creator` system skill |
 | "push to git", "push this", "commit and push", "push my changes", "send to github", "open a PR", "create a PR", "push these changes", "ship this", "just push it", "lets push" | Read and follow `/git-push` skill |
 | "upgrade toolbox", "update toolbox", "run upgrade", "/upgrade"               | Read and follow `/upgrade` skill      |
-| Claude is about to use `WebFetch` or follow a URL to read page content  | Read and follow `/web-fetch` skill    |
+| Claude is about to use `WebFetch` or follow a URL to read page content  | **BLOCKING REQUIREMENT**: Read and follow `/web-fetch` skill BEFORE calling `WebFetch`. Never call the `WebFetch` tool directly — always route through `/web-fetch` first. |
 | Claude is about to run multiple git commands (status, log, diff, branch) | Read and follow `/git-ctx` skill     |
 | Claude is about to read `git diff` to understand what changed or draft a commit/PR | Read and follow `/diff-summary` skill |
 | Claude needs to read one function, class, or section from a file >100 lines | Read and follow `/read-section` skill |

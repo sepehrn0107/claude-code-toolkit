@@ -18,6 +18,31 @@ When working in this repo, you are maintaining the standards, skills, and templa
 that power all other projects. All changes go through GitHub PRs — nothing is written
 back directly from project sessions.
 
+## Development Workflow
+
+### For ANY change that affects installed behavior (routing, session start, skill routing table, etc.)
+
+Three steps — all required, in order:
+
+1. Edit `templates/CLAUDE.global.md` — this is the source of truth for new installs
+2. Mirror the same change to `~/.claude/CLAUDE.md` — the live install on this machine
+3. Add a migration in `skills/upgrade.md` + bump `"version"` in `package.json` — existing users
+
+Never skip step 2. The live `~/.claude/CLAUDE.md` and the template must stay in sync at all times.
+
+### Upgrade migration pattern
+
+- Add a new `#### vX.Y.Z — <Title>` block **above** the `### 3. Write updated version` line in `skills/upgrade.md`
+- Use Python string replacement for `.md` file patches, Python JSON ops for `settings.json` patches
+- Skip silently if the target pattern is not found (already patched or newer install)
+- Bump `"version"` in `package.json` to match the new migration version
+
+### Branch & PR
+
+- Default branch is `master` — PRs target `master`
+- Never commit directly to `master`
+- Commits follow Conventional Commits: `feat`, `fix`, `chore`, `docs`, `refactor`
+
 ## Standards
 
 - Universal: `standards/universal/`
@@ -28,13 +53,13 @@ back directly from project sessions.
 Read each skill file before following it. The `{{TOOLBOX_PATH}}` placeholder in skill
 files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 
-- /new-project      → `skills/new-project.md`
-- /implement      → `skills/implement.md`
-- /standards-check  → `skills/standards-check.md`
-- /retrospective    → `skills/retrospective.md`
+- /new-project → `skills/new-project.md`
+- /implement → `skills/implement.md`
+- /standards-check → `skills/standards-check.md`
+- /retrospective → `skills/retrospective.md`
 - /add-stack-standards → `skills/add-stack-standards.md`
-- /index-repo       → `skills/index-repo.md`
-- /upgrade          → `skills/upgrade.md`
+- /index-repo → `skills/index-repo.md`
+- /upgrade → `skills/upgrade.md`
 
 ## Memory
 
@@ -52,6 +77,7 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 ## Setup Skill
 
 When the user says "set up the toolbox":
+
 1. `TOOLBOX_PATH` is the absolute path to the directory containing **this CLAUDE.md file** — not the shell's current working directory, not the workspace root. Resolve it by finding where this file lives (e.g. if this file is at `/home/alice/workspace/toolbox/CLAUDE.md`, then `TOOLBOX_PATH = /home/alice/workspace/toolbox`).
 2. `WORKSPACE_PATH` is the **parent directory** of `TOOLBOX_PATH` (e.g. `/home/alice/workspace`).
 3. Read `templates/CLAUDE.global.md`

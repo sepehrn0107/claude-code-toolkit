@@ -133,6 +133,31 @@ Installs the stop hook that prompts the user to run `/retrospective` when `lesso
 
 ---
 
+#### v1.4.0 — Enforce web-fetch skill as blocking requirement
+
+Patches `~/.claude/CLAUDE.md` to replace the soft web-fetch routing rule with an explicit blocking requirement that prevents direct `WebFetch` tool calls.
+
+**Steps:**
+
+1. Read `~/.claude/CLAUDE.md` into memory.
+
+2. Replace the old routing row (if present):
+   ```
+   | Claude is about to use `WebFetch` or follow a URL to read page content  | Read and follow `/web-fetch` skill    |
+   ```
+   with:
+   ```
+   | Claude is about to use `WebFetch` or follow a URL to read page content  | **BLOCKING REQUIREMENT**: Read and follow `/web-fetch` skill BEFORE calling `WebFetch`. Never call the `WebFetch` tool directly — always route through `/web-fetch` first. |
+   ```
+   Use Python string replacement — match the exact old string, write the file back only if a replacement was made.
+
+3. If no match was found (user has a newer install or already patched), skip silently.
+
+4. Output:
+   > web-fetch skill enforced as blocking requirement in ~/.claude/CLAUDE.md.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`

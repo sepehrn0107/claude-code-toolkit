@@ -22,7 +22,7 @@ Layer 4 — Session context        auto-written to progress.md each session
 ```
 
 ### Distribution model
-- The `toolbox/` repo is the **source of truth** — hosted at `https://github.com/sepehrn0107/toolbox`
+- The `toolbox/` repo is the **source of truth** — hosted at `https://github.com/sepehrn0107/claude-code-toolkit`
 - Each user clones their own copy; skills are loaded from their local clone path
 - Projects pull templates from it at bootstrap time
 - Nothing is written back to the toolbox directly — all changes go through GitHub PRs
@@ -141,7 +141,7 @@ Run at project completion, a significant milestone, or automatically prompted on
 2. Extract: what worked, what didn't, new patterns, stack-specific learnings
 3. Draft proposed changes: updated standards, new skills, or promoted universal patterns
 4. User approves each proposed change
-5. For each approved change: create a branch in the local toolbox clone, commit the content, and open a PR to `https://github.com/sepehrn0107/toolbox` with a detailed description of what was learned and why it's being proposed
+5. For each approved change: create a branch in the local toolbox clone, commit the content, and open a PR to `https://github.com/sepehrn0107/claude-code-toolkit` with a detailed description of what was learned and why it's being proposed
 6. Write summary to toolbox global memory (Layer 1)
 
 ### Superpowers integration map
@@ -241,7 +241,7 @@ This file makes the toolbox available in every repo automatically. It is maintai
 # Toolbox
 
 Standards, memory, and lifecycle skills for all projects.
-Source: https://github.com/sepehrn0107/toolbox (local clone: C:/Users/<you>/Documents/toolbox)
+Source: https://github.com/sepehrn0107/claude-code-toolkit (local clone: C:/Users/<you>/Documents/workspace/toolbox)
 
 ## Standards
 - Universal: C:/Users/<you>/Documents/toolbox/standards/universal/
