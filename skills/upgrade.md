@@ -151,6 +151,36 @@ Installs a VS Code extension that lets you browse your local Claude Code session
 
 ---
 
+#### v1.3.0 — Stop Hook (Retrospective Nudge)
+
+Installs the stop hook that prompts the user to run `/retrospective` when `lessons.md` was updated during a session.
+
+**Steps:**
+
+1. Copy `{{TOOLBOX_PATH}}/templates/hooks/stop-hook.sh`
+   → `~/.claude/stop-hook-git-check.sh`
+   Then run: `chmod +x ~/.claude/stop-hook-git-check.sh`
+
+2. Add the `Stop` hook to `~/.claude/settings.json`:
+   - Read `~/.claude/settings.json` (or start from `{}` if absent)
+   - If `settings["hooks"]["Stop"]` does not already contain an entry with command `~/.claude/stop-hook-git-check.sh`, append:
+     ```json
+     {
+       "hooks": [
+         {
+           "type": "command",
+           "command": "~/.claude/stop-hook-git-check.sh"
+         }
+       ]
+     }
+     ```
+   - Write back using Python for JSON safety.
+
+3. Output:
+   > Stop hook installed. You'll be nudged to run /retrospective when lessons.md is updated during a session.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
