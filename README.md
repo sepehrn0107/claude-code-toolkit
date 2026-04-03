@@ -68,7 +68,9 @@ git clone https://github.com/sepehrn0107/claude-code-toolkit ~/Documents/workspa
 Set up the toolbox
 ```
 
-That's it. Claude handles the rest — it writes the config files, installs the hooks, and sets up your memory system.
+That's it. Claude writes the config files, installs the hooks, and sets up your memory system.
+
+Then run `/upgrade-dev` once to configure your vault path — Claude will prompt you for the folder where memory, plans, and specs should be stored (any directory works; an [Obsidian](https://obsidian.md) vault is a good choice).
 
 > **Already have a workspace?** Clone the toolkit as a subfolder named `toolbox` inside your existing workspace folder, then say `Set up the toolbox`.
 
@@ -98,6 +100,7 @@ You don't need to know slash commands or workflows. The toolkit detects your int
 | `"new project"` | Full scaffold: memory files, stack detection, design system, git init |
 | `"review this"` | Standards check across architecture, security, testing, git hygiene |
 | `"switch project"` | Loads a different repo from your workspace |
+| `"set vault"` | Updates the vault path and re-renders all config files |
 
 ---
 
@@ -159,7 +162,7 @@ When [Codex CLI](https://github.com/openai/codex-plugin-cc) is installed, implem
 
 The toolkit remembers things in two places:
 
-**Per-project memory** (`.claude/memory/` in each project):
+**Per-project memory** (`vault/02-projects/<project>/memory/`):
 
 | File | What's stored |
 |---|---|
@@ -169,9 +172,13 @@ The toolkit remembers things in two places:
 | `progress.md` | What's done, what's in progress, what's next |
 | `lessons.md` | Patterns and anti-patterns discovered during development |
 
-**Architectural Decision Records** (`.claude/memory/decisions/`): a separate file per decision, written during `/retrospective` or `/implement` Phase 5 when the plan flagged a decision worth recording. Each ADR is named `YYYY-MM-DD-<slug>.md` and follows the template at `templates/ADR.md`. They are read during `/retrospective` to feed the self-improvement cycle.
+**Architectural Decision Records** (`vault/02-projects/<project>/memory/decisions/`): a separate file per decision, written during `/retrospective` or `/implement` Phase 5 when the plan flagged a decision worth recording. Each ADR is named `YYYY-MM-DD-<slug>.md` and follows the template at `templates/ADR.md`. They are read during `/retrospective` to feed the self-improvement cycle.
 
-**Global memory** (`<workspace>/memory/`): cross-project learnings, model preferences, active project pointer. Organized as topic files (one file per concern) indexed by `MEMORY.md`.
+**Global memory** (`vault/05-areas/claude-memory/`): cross-project learnings, model preferences, active project pointer. Organized as topic files (one file per concern) indexed by `MEMORY.md`.
+
+**Specs and plans** (`vault/02-projects/<project>/specs/` and `plans/`): brainstorming output and implementation plans are written here instead of inside the project repo. They live alongside the memory files and survive project re-clones.
+
+> **What is "vault"?** Any folder you choose — an [Obsidian](https://obsidian.md) vault, a plain directory, a synced folder. Set the path once with `/upgrade-dev` and all agent output routes there automatically. Change it anytime with `/set-vault`.
 
 ### Session lifecycle
 
@@ -209,7 +216,8 @@ Four layers load in order:
 ~/.claude/CLAUDE.md              ← your global config (a single @import — never overwritten by upgrades)
 ~/.claude/CLAUDE.global.md       ← toolbox routing, skills, session rules
 <workspace>/toolbox/standards/   ← universal + stack-specific coding standards
-<project>/.claude/memory/        ← project context, loaded each session
+<vault>/02-projects/<name>/      ← project memory, plans, specs — loaded each session
+<vault>/05-areas/claude-memory/  ← global cross-project learnings and active project pointer
 ```
 
 Two shell hooks run automatically:
@@ -455,7 +463,7 @@ This is not a bulk operation — each learning becomes its own branch and PR, so
 
 ### Personal learnings (no PR)
 
-Cross-project learnings that are personal — model preferences, workspace-level conventions, observations about your own workflow — are written directly to global memory (`<workspace>/memory/`) via the memory-sync protocol. These don't require a PR and take effect immediately in the next session.
+Cross-project learnings that are personal — model preferences, workspace-level conventions, observations about your own workflow — are written directly to global memory (`vault/05-areas/claude-memory/`) via the memory-sync protocol. These don't require a PR and take effect immediately in the next session.
 
 ### The compounding effect
 
