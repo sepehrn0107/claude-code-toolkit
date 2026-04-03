@@ -35,7 +35,7 @@ If any paths are already known from the current session context (e.g. from `CLAU
 
 ### 2. Render section files
 
-For each of the 9 section templates in `<TOOLBOX_PATH>/templates/sections/`:
+For each of the 10 section templates in `<TOOLBOX_PATH>/templates/sections/`:
 
 - `session-start.md`
 - `skill-routing.md`
