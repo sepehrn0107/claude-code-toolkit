@@ -88,7 +88,7 @@ Create the following structure:
 
 Replace all `{{PLACEHOLDER}}` values in CLAUDE.md with actual project details.
 Replace `{{TOOLBOX_PATH}}` with the actual toolbox path from `~/.claude/CLAUDE.md`.
-Replace `{{VAULT_PATH}}` with the literal vault path from the current session context.
+Do NOT replace `$VAULT` — it is a portable variable defined in the user's global CLAUDE.md and must stay as-is.
 
 ### 6. Initialize Git
 If no git repo exists:
