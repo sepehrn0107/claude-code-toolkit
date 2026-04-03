@@ -9,12 +9,12 @@
 
 Read these before starting any task:
 
-- `.claude/memory/project_context.md` — project goals, stakeholders, constraints
-- `.claude/memory/stack.md` — stack choice and rationale
-- `.claude/memory/architecture.md` — structure and key components
-- `.claude/memory/progress.md` — current phase, done, next
-- `.claude/memory/lessons.md` — what's working, what isn't
-- `.claude/memory/decisions/` — architectural decision records
+- `{{VAULT_PATH}}/02-projects/{{PROJECT_SLUG}}/memory/project_context.md` — project goals, stakeholders, constraints
+- `{{VAULT_PATH}}/02-projects/{{PROJECT_SLUG}}/memory/stack.md` — stack choice and rationale
+- `{{VAULT_PATH}}/02-projects/{{PROJECT_SLUG}}/memory/architecture.md` — structure and key components
+- `{{VAULT_PATH}}/02-projects/{{PROJECT_SLUG}}/memory/progress.md` — current phase, done, next
+- `{{VAULT_PATH}}/02-projects/{{PROJECT_SLUG}}/memory/lessons.md` — what's working, what isn't
+- `{{VAULT_PATH}}/02-projects/{{PROJECT_SLUG}}/memory/decisions/` — architectural decision records
 
 ## Standards
 
@@ -69,5 +69,5 @@ contains "not reachable" (container not running).
 
 - Read project memory before starting any task
 - Follow active stack standards throughout
-- Write session summary to `.claude/memory/progress.md` when stopping
+- Write session summary to `{{VAULT_PATH}}/02-projects/{{PROJECT_SLUG}}/memory/progress.md` when stopping
 - Run `/standards-check` before opening any PR

@@ -28,6 +28,11 @@ Derive `WORKSPACE_PATH` = the parent directory of `TOOLBOX_PATH`.
 
 If any paths are already known from the current session context (e.g. from `CLAUDE.md`), use those directly.
 
+`VAULT_PATH` = the user's vault directory. Derive as follows:
+- If `VAULT_PATH` is already known from the current session context (e.g. from a rendered `vault-paths.md` section in CLAUDE.md), use that value directly.
+- Otherwise, prompt the user: "Enter your vault path (absolute path, forward slashes):"
+- Wait for their input before proceeding.
+
 ### 2. Render section files
 
 For each of the 9 section templates in `<TOOLBOX_PATH>/templates/sections/`:
@@ -41,10 +46,11 @@ For each of the 9 section templates in `<TOOLBOX_PATH>/templates/sections/`:
 - `code-navigation.md`
 - `codex-integration.md`
 - `always-apply.md`
+- `vault-paths.md`
 
 Do for each:
 1. Read the template file
-2. Replace every occurrence of `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, and `{{CLAUDE_PATH}}` with their resolved values
+2. Replace every occurrence of `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, and `{{VAULT_PATH}}` with their resolved values
 3. **Before writing any file**, ensure the directory exists:
    ```bash
    mkdir -p <CLAUDE_PATH>/toolbox-sections
@@ -69,9 +75,31 @@ The expected @import line is:
 - If it exists and already contains the @import line: do nothing
 - If it exists but does **not** contain the @import line: **prepend** the line followed by a blank line — do not overwrite any existing content
 
-### 5. Output
+### 5. Scaffold vault structure (first-time only)
+
+If `<VAULT_PATH>/05-areas/claude-memory/` does not exist:
+```bash
+mkdir -p "<VAULT_PATH>/05-areas/claude-memory"
+```
+Copy starter files from `<TOOLBOX_PATH>/templates/memory/global/` into `<VAULT_PATH>/05-areas/claude-memory/`:
+- `MEMORY.md`
+- `active-project.md`
+
+If the files already exist, skip silently — do not overwrite.
+
+If `<WORKSPACE_PATH>/memory/` exists and contains `.md` files (migration case), print:
+```
+[upgrade-dev] Found existing global memory at <WORKSPACE_PATH>/memory/.
+To migrate to vault, run:
+  cp <WORKSPACE_PATH>/memory/*.md <VAULT_PATH>/05-areas/claude-memory/
+Then verify the vault files look correct before deleting the originals.
+```
+Do NOT automatically delete or overwrite the old `workspace/memory/` — the user migrates manually.
+
+### 6. Output
 
 > Live install updated. Section files written to `~/.claude/toolbox-sections/`.
+> Vault path set to: `<VAULT_PATH>`
 > To ship this change to other users: add a migration in `skills/upgrade.md` and bump `"version"` in `package.json`.
 
 ---
