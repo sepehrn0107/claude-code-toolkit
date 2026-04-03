@@ -33,7 +33,7 @@ files changes, `/update-docs` will find and update this doc automatically.
 
 - Write in second person, imperative voice: "Run this command", not "The user should run"
 - Include one concrete example per concept — never introduce a concept without showing it
-- No placeholders: `TBD` or empty sections cause `/standards-check` to block the PR
+- No placeholders: `TBD`, `TODO`, or empty sections cause `/standards-check` to block the PR
 - One level of list nesting maximum
 - Use code blocks for all commands, file paths, config snippets, and output
 - Write skill names in backtick code: `` `/implement` `` not "the implement skill"
@@ -48,12 +48,14 @@ Stale docs block PRs.
   `last-updated` for any docs it touches.
 - **Manual:** if you edit a skill or standard directly (outside `/implement`), update
   `last-updated` in the corresponding doc before committing.
+  For example, change `last-updated: 2026-01-15` to `last-updated: 2026-04-03` in the
+  doc's frontmatter before committing.
 
 ## Adding a New Doc
 
 When a new skill, standard, or tool is created:
 
-1. Create the doc file at the correct path under `docs/`
+1. Create the doc file at the correct path under `docs/` (see [Where Docs Live](#where-docs-live) below)
 2. Add complete frontmatter including `skills-affected` pointing at the new item
 3. Write content following the rules above
 4. Add a link to `docs/README.md` under the correct section
@@ -63,6 +65,8 @@ automatically — you only need to fill in the content and remove the `needs-con
 flag before merging.
 
 ## Where Docs Live
+
+The paths below are the target structure. Create the directory if it does not exist yet.
 
 | Content | Path |
 |---|---|
