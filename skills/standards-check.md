@@ -34,6 +34,37 @@ Review relevant code against each standard area:
 - **Testing**: business logic covered, tests test behavior not implementation, regression test for recent bugs
 - **Documentation**: README present and current, ADRs written for key decisions, non-obvious code commented
 
+### 2.5 Docs Check
+
+For each file changed in this PR that lives under `skills/`, `standards/`, or `tools/`:
+
+1. Run:
+   ```bash
+   grep -rl "skills-affected:.*\b<base-name>\b" {{TOOLBOX_PATH}}/docs/ --include="*.md"
+   ```
+   to find which doc files cover it (via `skills-affected` frontmatter).
+
+2. For each found doc file, read its `last-updated` field and compare it to the file's
+   last git commit date:
+   ```bash
+   git log -1 --format="%as" -- toolbox/skills/<name>.md
+   ```
+
+3. If `last-updated` is **older** than the file's last commit date, the doc is stale.
+
+4. If any stale docs are found, **block the PR**:
+   ```
+   [ ] Docs — stale: docs/skills/lifecycle.md covers 'implement' (last-updated: 2026-01-01,
+       skill last changed: 2026-03-15). Run `/update-docs` or update manually before merging.
+   ```
+
+5. If no stale docs are found (or no docs cover the changed files), mark as pass:
+   ```
+   [x] Docs — pass
+   ```
+
+Add the docs result to the output checklist in Step 5.
+
 ### 3. Code Review
 
 Read and follow `{{TOOLBOX_PATH}}/skills/codex-review.md`.
@@ -60,6 +91,7 @@ Standards Check Results
 [x] Git               — pass
 [ ] Testing           — no tests for UserService.createUser
 [x] Documentation     — pass
+[x] Docs              — pass
 ```
 
 Address all failures before merging.
