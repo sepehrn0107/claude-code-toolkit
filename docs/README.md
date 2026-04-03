@@ -1,6 +1,6 @@
 ---
 title: "Documentation"
-section: contributing
+section: getting-started
 skills-affected: [implement, new-project, retrospective, standards-check, git-push, update-docs, memory-sync, project, auto-switch, set-vault, read-section, grep, diff-summary, git-ctx, env-check, pkg-info, index-repo, web-fetch, upgrade, upgrade-dev, add-stack-standards, load-standards]
 last-updated: 2026-04-03
 ---

@@ -3,6 +3,10 @@ name: update-docs
 description: Updates /docs files after any skill, standard, or tool change. Invoked automatically at the end of /implement Phase 5 before the PR is opened. Can also be run manually to fix stale docs. Reads plan.md from the ticket state to find changed items, maps them to docs via skills-affected frontmatter, makes surgical edits, and writes a docs.md artifact to the ticket state.
 ---
 
+> **Path resolution:** `{{TOOLBOX_PATH}}` in this skill refers to the toolbox installation
+> path. Before running any bash command that contains `{{TOOLBOX_PATH}}`, resolve it to
+> the actual path using: `git rev-parse --show-toplevel`
+
 # /update-docs
 
 Keeps `/docs` in sync with skills, standards, and tools after every change.

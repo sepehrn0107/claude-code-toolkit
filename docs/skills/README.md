@@ -1,7 +1,7 @@
 ---
 title: "Skills Reference"
 section: skills
-skills-affected: [implement, new-project, retrospective, standards-check, git-push, memory-sync, project, auto-switch, set-vault, read-section, grep, diff-summary, git-ctx, env-check, pkg-info, index-repo, web-fetch, update-docs, upgrade, upgrade-dev, add-stack-standards]
+skills-affected: [implement, new-project, retrospective, standards-check, git-push, memory-sync, project, auto-switch, set-vault, read-section, grep, diff-summary, git-ctx, env-check, pkg-info, index-repo, web-fetch, update-docs, upgrade, upgrade-dev, add-stack-standards, load-standards]
 last-updated: 2026-04-03
 ---
 
@@ -36,6 +36,7 @@ sequence of steps — tool calls, sub-agent prompts, output formats, and fallbac
 
 | Skill | Trigger | Purpose |
 |---|---|---|
+| `/load-standards` | auto (before first code edit in session) | Load universal + stack standards into context |
 | `/read-section` | auto (one symbol from file > 100 lines) | Extract one function/class/section |
 | `/grep` | auto (before any code search) | Two-phase search: paths first, then content |
 | `/diff-summary` | auto (before reading git diff) | Structured diff summary for commits/PRs |
