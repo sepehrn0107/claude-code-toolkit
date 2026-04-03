@@ -143,6 +143,10 @@
       "source": "local:skills/standards-check.md"
     },
     {
+      "name": "update-docs",
+      "source": "local:skills/update-docs.md"
+    },
+    {
       "name": "upgrade-dev",
       "source": "local:skills/upgrade-dev.md"
     },
