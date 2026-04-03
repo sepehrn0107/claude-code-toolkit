@@ -33,3 +33,7 @@ tools/local-llm/bench-results/
 !.claude/settings.json
 !logo.svg
 !og-image.png
+
+!mkdocs.yml
+!.github/
+!.github/**

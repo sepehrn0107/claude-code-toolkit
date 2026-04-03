@@ -247,6 +247,37 @@ Adds `$WORKSPACE` and `$VAULT` variable definitions to `~/.claude/toolbox-sectio
 
 ---
 
+#### v1.9.0 — Add /update-docs skill routing
+
+```python
+import pathlib
+
+routing_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "skill-routing.md"
+
+lifecycle_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "lifecycle-skills.md"
+
+routing_content = routing_path.read_text(encoding="utf-8")
+if "update-docs" not in routing_content:
+    routing_content = routing_content.replace(
+        "| Any code edit request",
+        '| "update docs", "docs are stale", "fix stale docs", "/update-docs" | Read and follow `/update-docs` skill |\n| Any code edit request'
+    )
+    routing_path.write_text(routing_content, encoding="utf-8")
+    print("Applied: add /update-docs routing row")
+else:
+    print("Skipped: /update-docs routing already present")
+
+lifecycle_content = lifecycle_path.read_text(encoding="utf-8")
+if "update-docs" not in lifecycle_content:
+    lifecycle_content = lifecycle_content.rstrip() + "\n- /update-docs      → {{TOOLBOX_PATH}}/skills/update-docs.md\n"
+    lifecycle_path.write_text(lifecycle_content, encoding="utf-8")
+    print("Applied: add /update-docs lifecycle entry")
+else:
+    print("Skipped: /update-docs lifecycle already present")
+```
+
+---
+
 #### v2.0.0 — Skill Manager Bootstrap
 
 Installs the skill manager into the toolbox: downloads `skills/skills.md`, generates the initial `skills.json` and `skills.lock.json` from the current installed state, creates `~/.claude/skills-user.json`, and registers `/skills` in the routing table.
@@ -366,6 +397,7 @@ else:
 import pathlib
 
 routing_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "skill-routing.md"
+
 content = routing_path.read_text(encoding="utf-8")
 if "skills" not in content:
     content = content.replace(
