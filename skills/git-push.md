@@ -32,11 +32,10 @@ Hold:
 ## Step 2 — Branch guard
 
 If `CURRENT_BRANCH` is `main` or `master`:
-1. Ask the user: "You're on `main`. What should the branch be named?" (suggest one based on the changes if obvious)
-2. Run: `git checkout -b <branch-name>`
-3. Update `CURRENT_BRANCH`
+- If the user **explicitly asked to push to main/master** (said "push to master", "push to main", "push directly", "no PR", etc.): proceed directly — skip branching and PR creation (go to Step 4).
+- Otherwise: ask the user: "You're on `main`. What should the branch be named?" (suggest one based on the changes if obvious), run `git checkout -b <branch-name>`, and update `CURRENT_BRANCH`.
 
-If already on a feature branch, continue. Never push to `main`/`master` directly — not even if the user explicitly asks. Explain the rule and redirect.
+If already on a feature branch, continue.
 
 ---
 
@@ -165,7 +164,7 @@ After the PR is created, output the URL.
 
 ## Rules (non-negotiable)
 
-- Never push directly to `main` or `master`
+- Never push directly to `main` or `master` unless the user explicitly requested it (see Step 2)
 - Never use `git add .` or `git add -A`
 - Every commit message must follow Conventional Commits
 - One logical change per commit — don't mix unrelated things
