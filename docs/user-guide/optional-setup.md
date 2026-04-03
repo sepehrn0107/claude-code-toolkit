@@ -43,5 +43,3 @@ to a local model via LM Studio. Results are cached for 24 hours.
 
 Claude checks LM Studio availability at session start. If unreachable, it falls back to
 a Haiku sub-agent silently.
-
-See `toolbox/skills/local-llm.md` for task routing rules.

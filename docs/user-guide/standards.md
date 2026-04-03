@@ -12,8 +12,9 @@ last-updated: 2026-04-03
 Standards are Markdown files under `toolbox/standards/` that define rules Claude follows
 when writing code. They cover architecture, naming, security, testing, git hygiene, and
 more. Claude reads the applicable standards before writing any code — this is enforced by
-a shell hook that blocks file edits until standards are loaded in projects that use the
-toolkit (those set up with `/new-project`).
+a shell hook that blocks file edits until standards are loaded. The hook is active in
+any project that has `.claude/memory/MEMORY.md` (created by `/new-project`). Projects
+without this file bypass the gate silently.
 
 ## How they load
 
