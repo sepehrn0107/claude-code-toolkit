@@ -327,6 +327,13 @@ STANDARDS — read all of these in full:
   {{TOOLBOX_PATH}}/standards/universal/observability.md
   <if stack standards exist: {{TOOLBOX_PATH}}/standards/stacks/<stack>/>
 
+STEP 0: Update docs — read and follow `{{TOOLBOX_PATH}}/skills/update-docs.md`.
+  Pass the current ticket ID so the skill can read implementation.md.
+  After it completes:
+  - If any stubs were created with `needs-content: true`, add a checklist item to the
+    PR body: "[ ] Fill doc stub at `<path>`"
+  - Continue to STEP 1 regardless of whether any docs were updated.
+
 STEP 1: Run `git diff --name-only main` to get the list of changed files.
 STEP 2: Review each changed file against the standards above.
 STEP 3: Invoke superpowers:requesting-code-review.
