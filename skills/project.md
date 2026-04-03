@@ -8,7 +8,7 @@ description: Workspace-level project context switcher for managing which repo is
 Workspace-level project context switcher. Use when Claude Code is open at the workspace root
 (`{{WORKSPACE_PATH}}/`) and you need to load, inspect, or change the active project context.
 
-Active project is persisted at `{{WORKSPACE_PATH}}/memory/active-project.md` (global, shared across
+Active project is persisted at `{{VAULT_PATH}}/05-areas/claude-memory/active-project.md` (global, shared across
 sessions) and at `/tmp/toolbox-session-${CLAUDE_SESSION_ID}.md` (session-local, this window only).
 The session file takes precedence within a session; the global file seeds new sessions.
 
@@ -25,10 +25,10 @@ Switch which repo is the active project for this and future sessions.
      [ -d "${d}.git" ] && [ "$(basename $d)" != "toolbox" ] && echo "$(basename $d)"
    done
    ```
-2. Read current active from `{{WORKSPACE_PATH}}/memory/active-project.md` (field `active:`)
+2. Read current active from `{{VAULT_PATH}}/05-areas/claude-memory/active-project.md` (field `active:`)
 3. Show the list to the user and ask which to switch to (mark current active)
 4. Write the choice to both files:
-   a. Global file `{{WORKSPACE_PATH}}/memory/active-project.md`:
+   a. Global file `{{VAULT_PATH}}/05-areas/claude-memory/active-project.md`:
       ```
       active: <chosen-repo>
       updated: <YYYY-MM-DD>
@@ -40,11 +40,11 @@ Switch which repo is the active project for this and future sessions.
       [ -n "$SESSION_KEY" ] && printf "active: <chosen-repo>\nupdated: %s\n" "$TODAY" > "/tmp/toolbox-session-${SESSION_KEY}.md"
       ```
 5. Load the new project's memory files in parallel (if they exist):
-   - `{{WORKSPACE_PATH}}/<chosen>/.claude/memory/project_context.md`
-   - `{{WORKSPACE_PATH}}/<chosen>/.claude/memory/stack.md`
-   - `{{WORKSPACE_PATH}}/<chosen>/.claude/memory/architecture.md`
-   - `{{WORKSPACE_PATH}}/<chosen>/.claude/memory/progress.md`
-   - `{{WORKSPACE_PATH}}/<chosen>/.claude/memory/lessons.md`
+   - `{{VAULT_PATH}}/02-projects/<chosen>/memory/project_context.md`
+   - `{{VAULT_PATH}}/02-projects/<chosen>/memory/stack.md`
+   - `{{VAULT_PATH}}/02-projects/<chosen>/memory/architecture.md`
+   - `{{VAULT_PATH}}/02-projects/<chosen>/memory/progress.md`
+   - `{{VAULT_PATH}}/02-projects/<chosen>/memory/lessons.md`
 6. Announce: "Switched to `<chosen>`. Context loaded. Future sessions will auto-load this project."
 
 ---
@@ -55,7 +55,7 @@ Show all available repos and which is currently active.
 
 **Steps:**
 1. Scan `{{WORKSPACE_PATH}}/` for git repos (same as switch step 1)
-2. Read `{{WORKSPACE_PATH}}/memory/active-project.md` for current active
+2. Read `{{VAULT_PATH}}/05-areas/claude-memory/active-project.md` for current active
 3. Output a formatted list:
    ```
    Projects in workspace:
@@ -70,11 +70,11 @@ Show all available repos and which is currently active.
 Show the active project and a brief context summary.
 
 **Steps:**
-1. Read `{{WORKSPACE_PATH}}/memory/active-project.md`
+1. Read `{{VAULT_PATH}}/05-areas/claude-memory/active-project.md`
 2. If no active project: output "No active project. Run /project switch to choose one."
 3. If active project set:
-   - Read `{{WORKSPACE_PATH}}/<active>/.claude/memory/progress.md` (current phase + next)
-   - Read `{{WORKSPACE_PATH}}/<active>/.claude/memory/stack.md` (primary stack line only)
+   - Read `{{VAULT_PATH}}/02-projects/<active>/memory/progress.md` (current phase + next)
+   - Read `{{VAULT_PATH}}/02-projects/<active>/memory/stack.md` (primary stack line only)
    - Output:
      ```
      Active project: <name>
