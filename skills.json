@@ -1,0 +1,162 @@
+{
+  "version": "1",
+  "skills": [
+    {
+      "name": "skill-manager",
+      "source": "github:sepehrn0107/skill-manager",
+      "version": "1.0.0"
+    },
+    {
+      "name": "codex",
+      "source": "marketplace:openai-codex/codex",
+      "version": "1.0.1"
+    },
+    {
+      "name": "frontend-design",
+      "source": "marketplace:claude-plugins-official/frontend-design",
+      "version": "unknown"
+    },
+    {
+      "name": "code-simplifier",
+      "source": "marketplace:claude-plugins-official/code-simplifier",
+      "version": "1.0.0"
+    },
+    {
+      "name": "github",
+      "source": "marketplace:claude-plugins-official/github",
+      "version": "unknown"
+    },
+    {
+      "name": "typescript-lsp",
+      "source": "marketplace:claude-plugins-official/typescript-lsp",
+      "version": "1.0.0"
+    },
+    {
+      "name": "skill-creator",
+      "source": "marketplace:claude-plugins-official/skill-creator",
+      "version": "unknown"
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "source": "marketplace:ui-ux-pro-max-skill/ui-ux-pro-max",
+      "version": "2.5.0"
+    },
+    {
+      "name": "superpowers",
+      "source": "marketplace:claude-plugins-official/superpowers",
+      "version": "5.0.7"
+    },
+    {
+      "name": "add-e2e-playwright",
+      "source": "local:skills/add-e2e-playwright.md"
+    },
+    {
+      "name": "add-stack-standards",
+      "source": "local:skills/add-stack-standards.md"
+    },
+    {
+      "name": "auto-switch",
+      "source": "local:skills/auto-switch.md"
+    },
+    {
+      "name": "codex-delegate",
+      "source": "local:skills/codex-delegate.md"
+    },
+    {
+      "name": "codex-review",
+      "source": "local:skills/codex-review.md"
+    },
+    {
+      "name": "diff-summary",
+      "source": "local:skills/diff-summary.md"
+    },
+    {
+      "name": "env-check",
+      "source": "local:skills/env-check.md"
+    },
+    {
+      "name": "git-ctx",
+      "source": "local:skills/git-ctx.md"
+    },
+    {
+      "name": "git-push",
+      "source": "local:skills/git-push.md"
+    },
+    {
+      "name": "grep",
+      "source": "local:skills/grep.md"
+    },
+    {
+      "name": "implement",
+      "source": "local:skills/implement.md"
+    },
+    {
+      "name": "index-repo",
+      "source": "local:skills/index-repo.md"
+    },
+    {
+      "name": "load-standards",
+      "source": "local:skills/load-standards.md"
+    },
+    {
+      "name": "local-llm",
+      "source": "local:skills/local-llm.md"
+    },
+    {
+      "name": "memory-sync",
+      "source": "local:skills/memory-sync.md"
+    },
+    {
+      "name": "new-project",
+      "source": "local:skills/new-project.md"
+    },
+    {
+      "name": "pkg-info",
+      "source": "local:skills/pkg-info.md"
+    },
+    {
+      "name": "project",
+      "source": "local:skills/project.md"
+    },
+    {
+      "name": "query-index",
+      "source": "local:skills/query-index.md"
+    },
+    {
+      "name": "read-section",
+      "source": "local:skills/read-section.md"
+    },
+    {
+      "name": "retrospective",
+      "source": "local:skills/retrospective.md"
+    },
+    {
+      "name": "select-model",
+      "source": "local:skills/select-model.md"
+    },
+    {
+      "name": "set-vault",
+      "source": "local:skills/set-vault.md"
+    },
+    {
+      "name": "standards-check",
+      "source": "local:skills/standards-check.md"
+    },
+    {
+      "name": "upgrade-dev",
+      "source": "local:skills/upgrade-dev.md"
+    },
+    {
+      "name": "upgrade",
+      "source": "local:skills/upgrade.md"
+    },
+    {
+      "name": "web-design-audit",
+      "source": "local:skills/web-design-audit.md"
+    },
+    {
+      "name": "web-fetch",
+      "source": "local:skills/web-fetch.md"
+    }
+  ]
+}

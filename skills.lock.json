@@ -1,0 +1,50 @@
+{
+  "version": "1",
+  "locked": {
+    "codex": {
+      "resolvedVersion": "1.0.1",
+      "gitCommitSha": "9cb4fe4099195b2587c402117a3efce6ab5aac78",
+      "lockedAt": "2026-03-31T09:20:05.199Z"
+    },
+    "frontend-design": {
+      "resolvedVersion": "unknown",
+      "gitCommitSha": "",
+      "lockedAt": "2026-03-31T14:35:54.491Z"
+    },
+    "code-simplifier": {
+      "resolvedVersion": "1.0.0",
+      "gitCommitSha": "",
+      "lockedAt": "2026-03-31T14:35:54.491Z"
+    },
+    "github": {
+      "resolvedVersion": "unknown",
+      "gitCommitSha": "",
+      "lockedAt": "2026-03-31T14:35:54.491Z"
+    },
+    "typescript-lsp": {
+      "resolvedVersion": "1.0.0",
+      "gitCommitSha": "",
+      "lockedAt": "2026-03-31T14:35:54.491Z"
+    },
+    "skill-creator": {
+      "resolvedVersion": "unknown",
+      "gitCommitSha": "",
+      "lockedAt": "2026-03-31T14:35:54.491Z"
+    },
+    "ui-ux-pro-max": {
+      "resolvedVersion": "2.5.0",
+      "gitCommitSha": "506d9230e990c611a6a67c54c4e3a938ea20559d",
+      "lockedAt": "2026-03-31T14:35:54.491Z"
+    },
+    "superpowers": {
+      "resolvedVersion": "5.0.7",
+      "gitCommitSha": "eafe962b18f6c5dc70fb7c8cc7e83e61f4cdde06",
+      "lockedAt": "2026-04-01T06:33:16.161Z"
+    },
+    "skill-manager": {
+      "resolvedVersion": "1.0.0",
+      "gitCommitSha": "",
+      "lockedAt": "2026-04-03T20:21:27.018517+00:00"
+    }
+  }
+}
