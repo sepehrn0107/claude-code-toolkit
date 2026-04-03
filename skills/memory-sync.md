@@ -12,11 +12,11 @@ Write only what's actually new. Read before you write.
 ## When This Skill Applies
 
 Apply before writing or appending to any memory file:
-- `.claude/memory/progress.md`
-- `.claude/memory/lessons.md`
-- `.claude/memory/architecture.md`
-- `.claude/memory/project_context.md`
-- `C:/Users/sepeh/Documents/workspace/memory/*.md` (global memory)
+- `{{VAULT_PATH}}/02-projects/<project>/memory/progress.md`
+- `{{VAULT_PATH}}/02-projects/<project>/memory/lessons.md`
+- `{{VAULT_PATH}}/02-projects/<project>/memory/architecture.md`
+- `{{VAULT_PATH}}/02-projects/<project>/memory/project_context.md`
+- `{{VAULT_PATH}}/05-areas/claude-memory/*.md` (global memory)
 
 ---
 
