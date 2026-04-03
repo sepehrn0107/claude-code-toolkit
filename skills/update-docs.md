@@ -20,10 +20,13 @@ Keeps `/docs` in sync with skills, standards, and tools after every change.
 
 **If called from `/implement` Phase 5 (ticket ID available):**
 
-Read `.claude/tickets/<ticket-id>/plan.md` — extract the "Files" section:
-- Any file under `skills/` that appears in "New" or "Modified" → extract the base name (e.g. `implement`)
-- Any file under `standards/` → extract the base name (e.g. `architecture`)
-- Any file under `tools/` → extract the tool folder name (e.g. `read-section`)
+Read `.claude/tickets/<ticket-id>/implementation.md` — extract all lines under
+`## Files created or modified` sections:
+- Any line mentioning a file under `skills/` → extract the base name (e.g. `implement` from `skills/implement.md`)
+- Any line mentioning a file under `standards/` → extract the base name (e.g. `architecture` from `standards/universal/architecture.md`)
+- Any line mentioning a file under `tools/` → extract the tool folder name (e.g. `read-section` from `tools/read-section/`)
+
+If `implementation.md` has no file entries or does not exist, fall back to the manual path below.
 
 Hold as `CHANGED_ITEMS`: a list of base names.
 
@@ -31,7 +34,7 @@ Hold as `CHANGED_ITEMS`: a list of base names.
 
 Run:
 ```bash
-git diff --name-only main | grep -E "^toolbox/(skills|standards|tools)/"
+git diff --name-only main | grep -E "^(skills|standards|tools)/"
 ```
 
 Extract base names from the output. Hold as `CHANGED_ITEMS`.
@@ -44,10 +47,10 @@ For each item in `CHANGED_ITEMS`:
 
 Run:
 ```bash
-grep -rl "<item-name>" toolbox/docs/ --include="*.md"
+grep -rl "skills-affected:.*\b<item-name>\b" {{TOOLBOX_PATH}}/docs/ --include="*.md"
 ```
 
-Collect all files where `skills-affected` in the frontmatter contains the item name.
+Collect all files where the `skills-affected` frontmatter field contains the item name.
 Hold as `AFFECTED_DOCS`: a list of doc file paths.
 
 ---
@@ -72,10 +75,10 @@ Create a stub doc at the correct path:
 
 | Item type | Doc path |
 |---|---|
-| New skill | `toolbox/docs/skills/<group>.md` (add a new section to the most relevant group file) |
-| New universal standard | `toolbox/docs/standards/universal.md` (add a new section) |
-| New stack standard | `toolbox/docs/standards/stacks.md` (add a new section) |
-| New tool | `toolbox/docs/tools/README.md` (add a new section) |
+| New skill | `{{TOOLBOX_PATH}}/docs/skills/<group>.md` — add a new section to the most relevant group file. Groups: `lifecycle.md` (implement, new-project, etc.), `memory-skills.md` (memory-sync, project, etc.), `code-tools.md` (grep, read-section, etc.), `upgrade.md` (upgrade, upgrade-dev, etc.) |
+| New universal standard | `{{TOOLBOX_PATH}}/docs/standards/universal.md` (add a new section) |
+| New stack standard | `{{TOOLBOX_PATH}}/docs/standards/stacks.md` (add a new section) |
+| New tool | `{{TOOLBOX_PATH}}/docs/tools/README.md` (add a new section) |
 
 Add a `needs-content: true` flag to the frontmatter of any stub:
 
