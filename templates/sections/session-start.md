@@ -13,7 +13,7 @@ At the start of every session, before responding to the first message, do all of
 4. Note whether `.claude/index/README.md` exists — if it does, it is available for code navigation
 5. Invoke `codex:setup` — store the result as session flag `CODEX_AVAILABLE` (true/false). Do not re-check during the session; use this flag everywhere.
 6. Output a single status line (before answering the user's message) in this format:
-   `Toolbox: active | Skills: ready | Standards: auto-load on first edit`
+   `Toolbox: active | Skills: ready | Codex: <available if CODEX_AVAILABLE is true, else unavailable> | Standards: auto-load on first edit`
    Then, if a project is loaded, append on the same line: ` | Project: <name> | Stack: <stack>`
 7. If the session-start hook output includes `WORKSPACE_MODE`:
    - Parse the `SESSION_ID=` field from the `WORKSPACE_MODE:` line. Store it as `CURRENT_SESSION_ID`.
