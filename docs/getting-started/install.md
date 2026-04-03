@@ -11,10 +11,10 @@ last-updated: 2026-04-03
 
 - [Claude Code](https://claude.ai/code) — CLI, desktop app, or VS Code extension
 - Git
-- Python 3
+- Python 3 — used by upgrade migrations and optional tools
 
 Optional (for specific features):
-- Docker — required for `/web-fetch` (Crawl4AI) and `/local-llm`
+- Docker — required for `/web-fetch` (Crawl4AI)
 - [Codex CLI](https://github.com/openai/codex-plugin-cc) — enables automatic Phase 3 delegation
 
 ## Step 1 — Clone
@@ -41,15 +41,16 @@ Set up the toolbox
 ```
 
 Claude detects the install path, writes `~/.claude/CLAUDE.md`, installs the session
-hooks, and sets up the global memory directory. Setup takes about 30 seconds.
+hooks, and sets up the memory directory at `workspace/memory/`. Step 3 configures the
+full vault path. Setup takes about 30 seconds.
 
 ## Step 3 — Configure vault path
 
-Run `/upgrade-dev` and follow the prompt. Claude asks for the folder where memory,
-specs, and plans should be stored. This can be any directory — an Obsidian vault,
-a plain folder, or a synced cloud directory.
+Run `/upgrade-dev` and follow the prompt. This renders the toolbox config templates
+and asks for the vault path — the folder where memory, specs, and plans are stored.
+This can be any directory — an Obsidian vault, a plain folder, or a synced cloud directory.
 
-Change the vault path anytime with `/set-vault`.
+Change the vault path anytime by saying `/set-vault`.
 
 ## Verify the install
 

@@ -56,7 +56,7 @@ directory, model, context usage %, and the 5-hour rate limit counter. This comes
 Before writing any code, Claude auto-loads the standards for your stack. You'll see:
 
 ```
-Standards loaded: universal (9 files) + typescript-nextjs (8 files)
+Standards loaded: universal (architecture, security, git, testing, documentation, error-handling, debugging, code-review, observability) + typescript-nextjs
 ```
 
 This happens once per session. After that, all edits proceed without prompting.

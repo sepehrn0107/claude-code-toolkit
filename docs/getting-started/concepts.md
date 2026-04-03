@@ -23,10 +23,10 @@ This happens automatically. You don't trigger it.
 The toolkit stores project context in Markdown files in your vault, not inside the
 project repo. There are two layers:
 
-- **Per-project** (`vault/02-projects/<project>/memory/`) — what the project is,
+- **Per-project** (`.claude/memory/` inside the project repo) — what the project is,
   what stack it uses, what's been built, what's next, and what was learned
 - **Global** (`vault/05-areas/claude-memory/`) — cross-project learnings, model
-  preferences, and the active project pointer
+  preferences, plans, specs, and the active project pointer
 
 Memory is read once at session start, in parallel. Within a session, Claude works from
 one-line summaries. Files are never re-read unless a specific section is explicitly needed.
@@ -54,8 +54,8 @@ Before Claude can write any code in a session, the standards for your stack must
 loaded. A shell hook (`pre-tool-standards-gate.sh`) enforces this — it blocks file edits
 until a session flag is set by `/load-standards`.
 
-This means it is structurally impossible to write code in a session without having
-loaded the applicable standards first.
+The gate is active in any project that has a `.claude/memory/MEMORY.md` file (created
+by `/new-project`). Projects without that file bypass the gate silently.
 
 ## Sub-agent Architecture
 
