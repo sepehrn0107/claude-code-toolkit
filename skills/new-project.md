@@ -1,6 +1,6 @@
 ---
 name: new-project
-description: Full scaffolding skill for starting any new project, repo, service, or tool from scratch. Use this when the user says "new project", "starting fresh", "scaffold this", or begins work in a directory with no existing project context. Handles stack detection, brainstorming, planning, memory scaffold creation, and git init. Always trigger this before /implement on a brand-new codebase — if there's no .claude/memory/ yet, this should run first.
+description: Full scaffolding skill for starting any new project, repo, service, or tool from scratch. Use this when the user says "new project", "starting fresh", "scaffold this", or begins work in a directory with no existing project context. Handles stack detection, brainstorming, planning, memory scaffold creation, and git init. Always trigger this before /implement on a brand-new codebase — if there's no project memory in the vault yet, this should run first.
 ---
 
 # /new-project
@@ -34,7 +34,7 @@ This check is informational only — the session continues regardless of outcome
 
 Run both of these at the same time — they have no dependency on each other:
 
-- Read `{{WORKSPACE_PATH}}/memory/MEMORY.md` — global preferences and learnings
+- Read `{{VAULT_PATH}}/05-areas/claude-memory/MEMORY.md` — global preferences and learnings
 - Read `{{TOOLBOX_PATH}}/standards/universal/` — all 5 universal standard files
 - Check working directory for stack signals: `package.json`, `go.mod`, `requirements.txt`, `Cargo.toml`, `pyproject.toml`, etc.
 
@@ -63,24 +63,32 @@ If the project has a UI — any frontend, mobile app, dashboard, landing page, o
 Invoke `superpowers:writing-plans` using the chosen model to produce the implementation plan.
 
 ### 5. Scaffold the Project
-Create the following structure in the project root:
+Create the following structure:
 
+**In the project root:**
 ```
 <project>/
-├── CLAUDE.md                      # Filled from {{TOOLBOX_PATH}}/templates/CLAUDE.md.template
-└── .claude/
-    └── memory/
-        ├── MEMORY.md              # From {{TOOLBOX_PATH}}/templates/memory/MEMORY.md
-        ├── project_context.md     # Filled with collected project info
-        ├── stack.md               # Chosen stack and why
-        ├── architecture.md        # High-level structure from brainstorm
-        ├── progress.md            # Phase = "planning", Next = first task
-        ├── lessons.md             # Empty to start
-        └── decisions/             # Empty — ADRs added as decisions are made
+└── CLAUDE.md    # Filled from {{TOOLBOX_PATH}}/templates/CLAUDE.md.template
+```
+
+**In vault:**
+```
+{{VAULT_PATH}}/02-projects/<name>/
+├── memory/
+│   ├── MEMORY.md              # From {{TOOLBOX_PATH}}/templates/memory/project/MEMORY.md
+│   ├── project_context.md     # Filled with collected project info
+│   ├── stack.md               # Chosen stack and why
+│   ├── architecture.md        # High-level structure from brainstorm
+│   ├── progress.md            # Phase = "planning", Next = first task
+│   ├── lessons.md             # Empty to start
+│   └── decisions/             # Empty — ADRs added as decisions are made
+├── plans/                     # Implementation plans written here
+└── specs/                     # Design specs written here
 ```
 
 Replace all `{{PLACEHOLDER}}` values in CLAUDE.md with actual project details.
 Replace `{{TOOLBOX_PATH}}` with the actual toolbox path from `~/.claude/CLAUDE.md`.
+Replace `{{VAULT_PATH}}` with the literal vault path from the current session context.
 
 ### 6. Initialize Git
 If no git repo exists:
