@@ -61,11 +61,11 @@ If the `active:` field matches the target project, skip steps 4–6 silently and
 ## Step 4: Load memory
 
 Load the target project's memory files in parallel (skip any that are missing):
-- `{{WORKSPACE_PATH}}/<target>/.claude/memory/project_context.md`
-- `{{WORKSPACE_PATH}}/<target>/.claude/memory/stack.md`
-- `{{WORKSPACE_PATH}}/<target>/.claude/memory/architecture.md`
-- `{{WORKSPACE_PATH}}/<target>/.claude/memory/progress.md`
-- `{{WORKSPACE_PATH}}/<target>/.claude/memory/lessons.md`
+- `{{VAULT_PATH}}/02-projects/<target>/memory/project_context.md`
+- `{{VAULT_PATH}}/02-projects/<target>/memory/stack.md`
+- `{{VAULT_PATH}}/02-projects/<target>/memory/architecture.md`
+- `{{VAULT_PATH}}/02-projects/<target>/memory/progress.md`
+- `{{VAULT_PATH}}/02-projects/<target>/memory/lessons.md`
 
 ---
 
@@ -83,7 +83,7 @@ For **explicit switches only**, also write the global file:
 active: <target>
 updated: <YYYY-MM-DD>
 ```
-to `{{WORKSPACE_PATH}}/memory/active-project.md`
+to `{{VAULT_PATH}}/05-areas/claude-memory/active-project.md`
 
 Do NOT write the global file for contextual switches.
 

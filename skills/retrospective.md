@@ -14,12 +14,12 @@ Run this: at project completion, after a significant milestone, or when prompted
 
 ### 1. Load Project Memory
 Read all of Layer 3:
-- `.claude/memory/project_context.md`
-- `.claude/memory/stack.md`
-- `.claude/memory/architecture.md`
-- `.claude/memory/progress.md`
-- `.claude/memory/lessons.md`
-- `.claude/memory/decisions/*.md`
+- `{{VAULT_PATH}}/02-projects/<active-project>/memory/project_context.md`
+- `{{VAULT_PATH}}/02-projects/<active-project>/memory/stack.md`
+- `{{VAULT_PATH}}/02-projects/<active-project>/memory/architecture.md`
+- `{{VAULT_PATH}}/02-projects/<active-project>/memory/progress.md`
+- `{{VAULT_PATH}}/02-projects/<active-project>/memory/lessons.md`
+- `{{VAULT_PATH}}/02-projects/<active-project>/memory/decisions/*.md`
 
 ### 2. Extract Learnings
 Identify from the session or project:
@@ -56,12 +56,12 @@ For each approved change:
    - Body: what was learned, from which project, why it's being proposed
 
 ### 5. Update Global Memory
-Write a summary of the session's key learnings to `{{WORKSPACE_PATH}}/memory/MEMORY.md`.
+Write a summary of the session's key learnings to `{{VAULT_PATH}}/05-areas/claude-memory/MEMORY.md`.
 This is personal memory — it does NOT require a PR.
 
-Format each entry as a new memory file in `{{WORKSPACE_PATH}}/memory/` and add a pointer to `MEMORY.md`.
+Format each entry as a new memory file in `{{VAULT_PATH}}/05-areas/claude-memory/` and add a pointer to `MEMORY.md`.
 
 ### 6. Mark Progress
-Update `.claude/memory/progress.md`:
+Update `{{VAULT_PATH}}/02-projects/<active-project>/memory/progress.md`:
 - Note retrospective was run
 - Note what was proposed or merged to toolbox

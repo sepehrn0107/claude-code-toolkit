@@ -15,3 +15,4 @@ Source: https://github.com/sepehrn0107/claude-code-toolkit (local clone: {{TOOLB
 @{{CLAUDE_PATH}}/toolbox-sections/code-navigation.md
 @{{CLAUDE_PATH}}/toolbox-sections/codex-integration.md
 @{{CLAUDE_PATH}}/toolbox-sections/always-apply.md
+@{{CLAUDE_PATH}}/toolbox-sections/vault-paths.md

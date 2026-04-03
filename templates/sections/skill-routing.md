@@ -25,6 +25,14 @@ Detect user intent from the first message and route automatically — do not wai
 | Claude is about to write or append to any memory file                  | Read and follow `/memory-sync` skill  |
 | "delegate to codex", "let codex handle", "use codex for", "hand off to codex" | Read and follow `/codex-delegate` skill |
 | "review with codex", "codex review", "let codex review", "delegate review" | Read and follow `/codex-review` skill |
+| "set vault", "change vault path", "update vault path", "/set-vault" | Read and follow `/set-vault` skill |
 | Any code edit request (none of the above matched)                       | Run `/load-standards` then proceed    |
 
 Read the skill file from `{{TOOLBOX_PATH}}/skills/<skill>.md` before following it. Do not ask the user to run the skill — just do it.
+
+<!-- superpowers skill reference (installed at ~/.claude/plugins/cache/claude-plugins-official/superpowers/)
+     Known skills: superpowers:brainstorming, superpowers:systematic-debugging,
+     superpowers:subagent-driven-development, superpowers:executing-plans,
+     superpowers:requesting-code-review, superpowers:receiving-code-review,
+     superpowers:finishing-a-development-branch, superpowers:dispatching-parallel-agents
+     Note: /brainstorm command is deprecated — use superpowers:brainstorming skill instead -->
