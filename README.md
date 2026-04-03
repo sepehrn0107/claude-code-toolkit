@@ -8,6 +8,7 @@
   ![License](https://img.shields.io/badge/license-MIT-green)
   ![Version](https://img.shields.io/badge/version-1.7.0-purple)
   ![Claude Code](https://img.shields.io/badge/Claude%20Code-compatible-blue)
+  [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://sepehrn0107.github.io/claude-code-toolkit/)
 </div>
 
 ---
@@ -46,14 +47,16 @@ Then run `/upgrade-dev` once to configure your vault path.
 
 ## Documentation
 
+Full docs at **[sepehrn0107.github.io/claude-code-toolkit](https://sepehrn0107.github.io/claude-code-toolkit/)**.
+
 | | |
 |---|---|
-| [Getting Started](docs/getting-started/install.md) | Install, vault setup, first session |
-| [User Guide](docs/user-guide/memory.md) | Memory, routing, standards, multi-project |
-| [Skills Reference](docs/skills/README.md) | All skills with trigger phrases and purpose |
-| [Standards Reference](docs/standards/README.md) | Universal and stack-specific standards |
-| [Tools Reference](docs/tools/README.md) | Python tools: purpose and invocation |
-| [Contributing](docs/contributing/overview.md) | Adding skills, standards, upgrade migrations |
+| [Getting Started](https://sepehrn0107.github.io/claude-code-toolkit/getting-started/install/) | Install, vault setup, first session |
+| [User Guide](https://sepehrn0107.github.io/claude-code-toolkit/user-guide/memory/) | Memory, routing, standards, multi-project |
+| [Skills Reference](https://sepehrn0107.github.io/claude-code-toolkit/skills/) | All skills with trigger phrases and purpose |
+| [Standards Reference](https://sepehrn0107.github.io/claude-code-toolkit/standards/) | Universal and stack-specific standards |
+| [Tools Reference](https://sepehrn0107.github.io/claude-code-toolkit/tools/) | Python tools: purpose and invocation |
+| [Contributing](https://sepehrn0107.github.io/claude-code-toolkit/contributing/overview/) | Adding skills, standards, upgrade migrations |
 
 ---
 
