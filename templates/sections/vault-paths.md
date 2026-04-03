@@ -1,3 +1,10 @@
+## Path Variables
+
+These variables can be used in any per-project `CLAUDE.md` — Claude resolves them using these definitions:
+
+- `$WORKSPACE` = `{{WORKSPACE_PATH}}`
+- `$VAULT` = `{{VAULT_PATH}}`
+
 ## Spec & Plan Output Paths
 
 When writing specs (brainstorming output) or implementation plans (writing-plans output), always use the vault paths below — these override the default `docs/superpowers/` paths specified in the superpowers plugin.

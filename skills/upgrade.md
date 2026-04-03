@@ -208,6 +208,45 @@ Splits the monolithic `~/.claude/CLAUDE.md` into modular section files, making `
 
 ---
 
+#### v1.8.0 — Path Variables in Global Config
+
+Adds `$WORKSPACE` and `$VAULT` variable definitions to `~/.claude/toolbox-sections/vault-paths.md` so per-project `CLAUDE.md` files can use portable variable names instead of hardcoded absolute paths.
+
+**Steps:**
+
+1. Read `~/.claude/toolbox-sections/vault-paths.md`.
+
+2. If the file already contains the text `$WORKSPACE` → output:
+   > Path variables already present — skipping.
+   ...and skip to the next migration.
+
+3. Otherwise, extract the vault path from the existing rendered content using Python:
+
+   ```python
+   import re, pathlib
+
+   f = pathlib.Path.home() / ".claude/toolbox-sections/vault-paths.md"
+   content = f.read_text()
+
+   m = re.search(r'`([^`\n]+)/02-projects/', content)
+   vault_path = m.group(1)
+   workspace_path = str(pathlib.Path(vault_path).parent)
+
+   prefix = (
+       "## Path Variables\n\n"
+       "These variables can be used in any per-project `CLAUDE.md` — Claude resolves them using these definitions:\n\n"
+       f"- `$WORKSPACE` = `{workspace_path}`\n"
+       f"- `$VAULT` = `{vault_path}`\n\n"
+   )
+   f.write_text(prefix + content)
+   print("done")
+   ```
+
+4. Output:
+   > Path variables added to vault-paths.md. Per-project CLAUDE.md files can now use `$VAULT` instead of hardcoded paths.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
