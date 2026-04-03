@@ -3,6 +3,17 @@
 # Outputs a project brief when opening a toolbox-enabled project.
 # Installed to ~/.claude/hooks/session-start.sh by the toolbox setup skill.
 
+# Resolve Codex companion and check real availability
+CODEX_LABEL="unavailable"
+for _mp in "${HOME}/.claude/plugins" "${HOME}/.claude/plugins/marketplaces"/*; do
+  _codex_c="${_mp}/plugins/codex/scripts/codex-companion.mjs"
+  if command -v node >/dev/null 2>&1 && [ -f "${_codex_c}" ]; then
+    _cjson=$(node "${_codex_c}" setup --json 2>/dev/null)
+    echo "${_cjson}" | grep -q '"ready":[[:space:]]*true' && CODEX_LABEL="available"
+    break
+  fi
+done
+
 # Workspace mode: detect if we're in the workspace root (has memory/ but no .claude/memory/)
 if [ -f "memory/MEMORY.md" ] && [ ! -f ".claude/memory/MEMORY.md" ]; then
   # Scan for user-facing git repos (exclude toolbox — it's infrastructure)
@@ -43,7 +54,7 @@ if [ -f "memory/MEMORY.md" ] && [ ! -f ".claude/memory/MEMORY.md" ]; then
       N=$((N+1))
     done
   fi
-  echo "Toolbox: active | Skills: ready | Standards: auto-load on first edit"
+  echo "Toolbox: active | Skills: ready | Codex: ${CODEX_LABEL} | Standards: auto-load on first edit"
   echo "---"
   exit 0
 fi
