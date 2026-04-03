@@ -247,6 +247,157 @@ Adds `$WORKSPACE` and `$VAULT` variable definitions to `~/.claude/toolbox-sectio
 
 ---
 
+#### v2.0.0 — Skill Manager Bootstrap
+
+Installs the skill manager into the toolbox: downloads `skills/skills.md`, generates the initial `skills.json` and `skills.lock.json` from the current installed state, creates `~/.claude/skills-user.json`, and registers `/skills` in the routing table.
+
+**Steps:**
+
+1. Download `skills/skills.md` from the skill-manager repo and write to `{{TOOLBOX_PATH}}/skills/skills.md`:
+
+```python
+import urllib.request, pathlib
+
+toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
+url = "https://raw.githubusercontent.com/sepehrn0107/skill-manager/main/skills/skills.md"
+with urllib.request.urlopen(url, timeout=15) as r:
+    content = r.read().decode()
+dest = toolbox_path / "skills" / "skills.md"
+dest.write_text(content, encoding="utf-8")
+print(f"Downloaded skills.md → {dest}")
+```
+
+2. Generate `{{TOOLBOX_PATH}}/skills.json` from current installed plugins + local skills:
+
+```python
+import json, pathlib
+
+home = pathlib.Path.home()
+toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
+installed_plugins_path = home / ".claude" / "plugins" / "installed_plugins.json"
+
+installed = json.loads(installed_plugins_path.read_text())
+skills = []
+
+# skill-manager itself
+skills.append({
+    "name": "skill-manager",
+    "source": "github:sepehrn0107/skill-manager",
+    "version": "1.0.0"
+})
+
+# Installed marketplace/github plugins
+for plugin_key, plugin_list in installed["plugins"].items():
+    entry = plugin_list[0]
+    name = plugin_key.split("@")[0]
+    marketplace = plugin_key.split("@")[1] if "@" in plugin_key else "unknown"
+    version = entry.get("version", "unknown")
+    skills.append({
+        "name": name,
+        "source": f"marketplace:{marketplace}/{name}",
+        "version": version
+    })
+
+# Local skills (toolbox/skills/*.md)
+skills_dir = toolbox_path / "skills"
+reserved = {"skills"}
+for skill_file in sorted(skills_dir.glob("*.md")):
+    if skill_file.stem not in reserved:
+        skills.append({
+            "name": skill_file.stem,
+            "source": f"local:skills/{skill_file.name}"
+        })
+
+manifest = {"version": "1", "skills": skills}
+out = toolbox_path / "skills.json"
+out.write_text(json.dumps(manifest, indent=2))
+print(f"Written {out} with {len(skills)} skills")
+```
+
+3. Generate `{{TOOLBOX_PATH}}/skills.lock.json` from current installed plugins:
+
+```python
+import json, pathlib
+from datetime import datetime, timezone
+
+home = pathlib.Path.home()
+toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
+installed_plugins_path = home / ".claude" / "plugins" / "installed_plugins.json"
+
+installed = json.loads(installed_plugins_path.read_text())
+locked = {}
+
+for plugin_key, plugin_list in installed["plugins"].items():
+    entry = plugin_list[0]
+    name = plugin_key.split("@")[0]
+    locked[name] = {
+        "resolvedVersion": entry.get("version", "unknown"),
+        "gitCommitSha": entry.get("gitCommitSha", ""),
+        "lockedAt": entry.get("lastUpdated", datetime.now(timezone.utc).isoformat())
+    }
+
+locked["skill-manager"] = {
+    "resolvedVersion": "1.0.0",
+    "gitCommitSha": "",
+    "lockedAt": datetime.now(timezone.utc).isoformat()
+}
+
+lock = {"version": "1", "locked": locked}
+out = toolbox_path / "skills.lock.json"
+out.write_text(json.dumps(lock, indent=2))
+print(f"Written {out}")
+```
+
+4. Create `~/.claude/skills-user.json` if it does not exist:
+
+```python
+import json, pathlib
+p = pathlib.Path.home() / ".claude" / "skills-user.json"
+if not p.exists():
+    p.write_text(json.dumps({"disabled": []}, indent=2))
+    print("Created ~/.claude/skills-user.json")
+else:
+    print("~/.claude/skills-user.json already exists — skipping")
+```
+
+5. Register `/skills` in `~/.claude/toolbox-sections/skill-routing.md`:
+
+```python
+import pathlib
+
+routing_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "skill-routing.md"
+content = routing_path.read_text(encoding="utf-8")
+if "skills" not in content:
+    content = content.replace(
+        "| Any code edit request",
+        '| "`/skills`", "install skills", "list skills", "add skill", "disable skill", "enable skill", "update skill" | Read and follow `/skills` skill |\n| Any code edit request'
+    )
+    routing_path.write_text(content, encoding="utf-8")
+    print("Added /skills routing entry")
+else:
+    print("Skipped: /skills routing already present")
+```
+
+6. Register `/skills` in `~/.claude/toolbox-sections/lifecycle-skills.md`:
+
+```python
+import pathlib
+
+lifecycle_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "lifecycle-skills.md"
+content = lifecycle_path.read_text(encoding="utf-8")
+if "/skills" not in content:
+    content = content.rstrip() + "\n- /skills             → {{TOOLBOX_PATH}}/skills/skills.md\n"
+    lifecycle_path.write_text(content, encoding="utf-8")
+    print("Added /skills lifecycle entry")
+else:
+    print("Skipped: /skills lifecycle already present")
+```
+
+7. Output:
+   > Skill manager bootstrapped. Run `/skills list` to see your installed skills.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
