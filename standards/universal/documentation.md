@@ -47,11 +47,13 @@ Every `docs/` file must open with this frontmatter block:
 ```yaml
 ---
 title: "Human-readable title"
-section: getting-started | user-guide | skills | standards | tools | contributing
+section: skills
 skills-affected: [skill-name-1, skill-name-2]
 last-updated: YYYY-MM-DD
 ---
 ```
+
+`section` must be exactly one of: `getting-started`, `user-guide`, `skills`, `standards`, `tools`, `contributing`.
 
 `skills-affected` lists the skill file names (without `.md`), tool names, or standard names
 that this doc covers. The `/update-docs` skill uses this field to find which docs need
