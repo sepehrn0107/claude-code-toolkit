@@ -112,6 +112,7 @@ export const POST = createTokenHandler({
 ```typescript
 import { AgentChat } from '@21st-sdk/nextjs';
 
+// TODO: create threadId and sandboxId server-side (see deployment.md) and pass as props
 export default function Page() {
   return <AgentChat agentId="my-agent" />;
 }
