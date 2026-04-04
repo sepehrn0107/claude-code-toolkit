@@ -27,6 +27,7 @@ Detect user intent from the first message and route automatically — do not wai
 | "review with codex", "codex review", "let codex review", "delegate review" | Read and follow `/codex-review` skill |
 | "set vault", "change vault path", "update vault path", "/set-vault" | Read and follow `/set-vault` skill |
 | "update docs", "docs are stale", "fix stale docs", "/update-docs"   | Read and follow `/update-docs` skill |
+| "`/skills`", "install skills", "list skills", "add skill", "disable skill", "enable skill", "update skill" | Read and follow `/skills` skill |
 | Claude is about to write a new React/TSX component, CSS section, or UI element from scratch | Read and follow `/ui` skill (auto-trigger / Inspiration Search path) |
 | User says `/ui [X]`, "generate ui for [X]", "show me ui options for [X]" | Read and follow `/ui` skill (Magic Generate path) |
 | Any code edit request (none of the above matched)                       | Run `/load-standards` then proceed    |
