@@ -51,6 +51,98 @@ Ask the user for input in the most natural way:
 3. If stack directory exists at `{{TOOLBOX_PATH}}/standards/stacks/<stack>/` → load it
 4. If stack is new → research current best practices, draft a new standards file, get user approval, save to `{{TOOLBOX_PATH}}/standards/stacks/<new-stack>/`
 
+#### 21st-agents-sdk Detection
+
+If `@21st-sdk/agent` is found in `package.json` → auto-propose `21st-agents-sdk` stack and skip the stack selection prompt.
+
+#### Agent Project Selection
+
+If the user picks "agent" as the project type → ask which template:
+
+**Starters (minimal):**
+- `nextjs` — Next.js chat UI with AgentChat component
+- `python` — Terminal chat client
+- `go` — Terminal chat client
+
+**Use-cases (opinionated):**
+- `docs-assistant` — Q&A agent over a docs URL via llms.txt
+- `support-agent` — Docs-powered support + email escalation (Resend)
+- `lead-research` — Email lookup + Slack alerts (Exa.ai)
+- `note-taker` — Persistent notes with real-time sync (Convex)
+- `browser-scraper` — Structured data extraction (Browser Use Cloud)
+
+#### Scaffold by Template Type
+
+**Next.js templates** (`nextjs`, `docs-assistant`, `support-agent`, `lead-research`, `note-taker`, `browser-scraper`):
+
+Before scaffolding files:
+```bash
+pnpm add @21st-sdk/agent @21st-sdk/nextjs @21st-sdk/react @21st-sdk/node @ai-sdk/react ai zod
+pnpm add -D @21st-sdk/cli
+```
+
+Then create:
+
+`agents/my-agent/index.ts`:
+```typescript
+import { createAgent } from '@21st-sdk/agent';
+
+const agent = createAgent({
+  model: 'claude-sonnet-4-6',
+  systemPrompt: `You are a helpful assistant.`,
+  tools: {},
+  maxBudgetUsd: 0.50,
+  maxTurns: 10,
+  disallowedTools: [],
+});
+
+export default agent;
+```
+
+`app/api/agent-token/route.ts`:
+```typescript
+import { createTokenHandler } from '@21st-sdk/nextjs';
+
+export const POST = createTokenHandler({
+  apiKey: process.env.API_KEY_21ST!,
+});
+```
+
+`app/page.tsx`:
+```typescript
+import { AgentChat } from '@21st-sdk/nextjs';
+
+export default function Page() {
+  return <AgentChat agentId="my-agent" />;
+}
+```
+
+Copy `{{TOOLBOX_PATH}}/templates/21st-agent-CLAUDE.md.template` → project `CLAUDE.md` and fill in the agent name.
+
+---
+
+**Python template** (`python`):
+
+```bash
+pip install 21st-sdk   # verify published package name at scaffold time
+```
+
+Create `main.py` from the 21st Python starter pattern (verify current pattern at https://21st.dev/agents/docs/get-started/quickstart).
+
+Stack standard: inherit `python-fastapi` + `21st-agents-sdk` (`agent.md` and `observability.md` only — skip `deployment.md` and `frontend.md`).
+
+---
+
+**Go template** (`go`):
+
+```bash
+go get github.com/21st-dev/sdk-go   # verify module path at scaffold time
+```
+
+Create `main.go` from the 21st Go starter pattern (verify current pattern at https://21st.dev/agents/docs/get-started/quickstart).
+
+Stack standard: inherit `go` + `21st-agents-sdk` (`agent.md` and `observability.md` only — skip `deployment.md` and `frontend.md`).
+
 ### 4. Brainstorm + Plan
 
 Invoke `{{TOOLBOX_PATH}}/skills/select-model.md` with task: "Brainstorm and plan a new project."
