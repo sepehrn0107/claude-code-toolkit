@@ -430,6 +430,19 @@ else:
 
 ---
 
+#### v2.1.3 — Standards Caching for Sub-Agents
+
+The `/implement` orchestrator now pre-assembles a `standards-cache.md` in the ticket directory. Sub-agents read this single file instead of individually loading 4-8 standards files each. Saves ~3,000-5,000 tokens per parallel sub-agent.
+
+**Steps:**
+
+No installed file changes needed — this change is in the skill file only.
+
+1. Output:
+   > Standards caching enabled for /implement sub-agents. Pull latest toolbox to use.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
