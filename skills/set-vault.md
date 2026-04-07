@@ -41,6 +41,33 @@ Re-render:
 - All 10 section files in `~/.claude/toolbox-sections/` (including the new `vault-paths.md`)
 - `~/.claude/CLAUDE.global.md`
 
+### 3b. Validate rendered section files — no unresolved tokens
+
+After re-rendering, scan for any remaining `{{` tokens:
+
+```python
+import pathlib, re, sys
+
+sections_dir = pathlib.Path.home() / ".claude" / "toolbox-sections"
+broken = []
+
+for md_file in sorted(sections_dir.glob("*.md")):
+    content = md_file.read_text(encoding="utf-8")
+    if "{{" in content:
+        tokens = list(set(re.findall(r"\{\{[^}]+\}\}", content)))
+        broken.append((md_file.name, tokens))
+
+if broken:
+    print("[set-vault] ERROR: Unresolved tokens after re-render:")
+    for filename, tokens in broken:
+        print(f"  {filename}: {', '.join(tokens)}")
+    sys.exit(1)
+else:
+    print("[set-vault] All tokens resolved.")
+```
+
+If validation fails: halt and ask the user to verify their vault path input.
+
 ### 4. Confirm
 
 Output:
