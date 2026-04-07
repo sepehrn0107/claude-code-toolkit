@@ -27,8 +27,8 @@
 
 ## documentation → {{TOOLBOX_PATH}}/standards/universal/documentation.md
 - Document why, not what; code shows what — comments explain non-obvious intent
-- README must cover: what it is, setup, run, test, key decisions/caveats
-- Write an ADR for every significant architectural choice
+- README must cover: what it is, setup, run, test, key decisions/caveats; ADR for key decisions
+- Every `docs/` file needs frontmatter with `skills-affected` and `last-updated`; stale docs block PRs
 
 ## error-handling → {{TOOLBOX_PATH}}/standards/universal/error-handling.md
 - Fail fast, fail loudly; never swallow exceptions silently
