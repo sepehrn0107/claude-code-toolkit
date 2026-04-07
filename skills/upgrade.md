@@ -430,7 +430,20 @@ else:
 
 ---
 
-#### v2.1.0 — Compact Skill Routing Table
+#### v2.1.3 — Standards Caching for Sub-Agents
+
+The `/implement` orchestrator now pre-assembles a `standards-cache.md` in the ticket directory. Sub-agents read this single file instead of individually loading 4-8 standards files each. Saves ~3,000-5,000 tokens per parallel sub-agent.
+
+**Steps:**
+
+No installed file changes needed — this change is in the skill file only.
+
+1. Output:
+   > Standards caching enabled for /implement sub-agents. Pull latest toolbox to use.
+
+---
+
+#### v2.2.0 — Compact Skill Routing Table
 
 Compacts the skill routing table by ~40%, separating user-facing routes from internal auto-routes and removing verbose trigger descriptions.
 

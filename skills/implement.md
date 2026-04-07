@@ -190,7 +190,7 @@ After the sub-agent completes, announce: "Phase 2 complete. Starting Phase 3 —
 
 Goal: TDD implementation of the plan.
 
-### 3a. Standards gate (main session)
+### 3a. Standards gate + cache (main session)
 
 Set the standards-loaded flag so the PreToolUse hook allows edits in this session:
 
@@ -199,6 +199,19 @@ touch "/tmp/toolbox-standards-loaded-${CLAUDE_SESSION_ID:-$(pwd | md5sum | cut -
 ```
 
 Run silently via the Bash tool.
+
+Then, build a cached standards file so sub-agents don't each re-read the individual files:
+
+1. Read the stack from `.claude/tickets/<ticket-id>/context.md`
+2. Concatenate the relevant universal standards into `.claude/tickets/<ticket-id>/standards-cache.md`:
+   - `{{TOOLBOX_PATH}}/standards/universal/architecture.md`
+   - `{{TOOLBOX_PATH}}/standards/universal/testing.md`
+   - `{{TOOLBOX_PATH}}/standards/universal/error-handling.md`
+   - `{{TOOLBOX_PATH}}/standards/universal/observability.md`
+3. If stack standards exist at `{{TOOLBOX_PATH}}/standards/stacks/<stack>/`, append them too
+4. Write the concatenated result to `.claude/tickets/<ticket-id>/standards-cache.md`
+
+This file is written once and read by all Phase 3 sub-agents, eliminating redundant reads.
 
 ### 3b. Classify and route components
 
@@ -244,12 +257,10 @@ FETCH RULE — if you need to read any external URL, do not call WebFetch direct
   python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
   Read stdout as page content. Fall back to WebFetch only if stderr says "not reachable".
 
-STANDARDS — read these files in full before writing any code:
-  {{TOOLBOX_PATH}}/standards/universal/architecture.md
-  {{TOOLBOX_PATH}}/standards/universal/testing.md
-  {{TOOLBOX_PATH}}/standards/universal/error-handling.md
-  {{TOOLBOX_PATH}}/standards/universal/observability.md
-  <if stack standards exist: {{TOOLBOX_PATH}}/standards/stacks/<stack>/>
+STANDARDS — read this single cached file before writing any code:
+  .claude/tickets/<ticket-id>/standards-cache.md
+  (Contains architecture + testing + error-handling + observability + stack standards,
+   pre-assembled by the orchestrator.)
 
 STEP 1: Invoke {{TOOLBOX_PATH}}/skills/load-standards.md — wait for the confirmation
 line before writing any code.
@@ -316,16 +327,12 @@ INPUT — read these files first:
   .claude/tickets/<ticket-id>/implementation.md
   .claude/tickets/<ticket-id>/verification.md
 
-STANDARDS — read all of these in full:
-  {{TOOLBOX_PATH}}/standards/universal/architecture.md
+STANDARDS — read the cached standards plus review-specific files:
+  .claude/tickets/<ticket-id>/standards-cache.md
   {{TOOLBOX_PATH}}/standards/universal/security.md
   {{TOOLBOX_PATH}}/standards/universal/git.md
-  {{TOOLBOX_PATH}}/standards/universal/testing.md
   {{TOOLBOX_PATH}}/standards/universal/documentation.md
-  {{TOOLBOX_PATH}}/standards/universal/error-handling.md
   {{TOOLBOX_PATH}}/standards/universal/code-review.md
-  {{TOOLBOX_PATH}}/standards/universal/observability.md
-  <if stack standards exist: {{TOOLBOX_PATH}}/standards/stacks/<stack>/>
 
 STEP 0: Update docs — read and follow `{{TOOLBOX_PATH}}/skills/update-docs.md`.
   Pass the current ticket ID so the skill can read implementation.md.
