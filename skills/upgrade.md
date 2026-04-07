@@ -443,6 +443,19 @@ No installed file changes needed — this change is in the skill file only.
 
 ---
 
+#### v2.2.0 — Compact Skill Routing Table
+
+Compacts the skill routing table by ~40%, separating user-facing routes from internal auto-routes and removing verbose trigger descriptions.
+
+**Steps:**
+
+1. Read `{{TOOLBOX_PATH}}/templates/sections/skill-routing.md`, replace all tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`), write to `<CLAUDE_PATH>/toolbox-sections/skill-routing.md`.
+
+2. Output:
+   > Skill routing table compacted. Token savings: ~200 tokens per session.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
