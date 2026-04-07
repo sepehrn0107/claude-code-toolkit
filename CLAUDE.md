@@ -94,6 +94,7 @@ When the user opens the toolbox directory in Claude Code and says "set up the to
 5. Write the result to `~/.claude/CLAUDE.md`
 6. Create `~/.claude/hooks/` if it does not exist
 7. Copy `templates/hooks/session-start.sh` to `~/.claude/hooks/session-start.sh`
+7a. Verify that `.toolbox-marker` exists in `TOOLBOX_PATH`. If missing, create it with the standard content (see `.toolbox-marker` in the repo root). This file allows the session-start hook to identify the toolbox directory by marker rather than by name.
 8. Copy `templates/hooks/pre-tool-standards-gate.sh` to `~/.claude/hooks/pre-tool-standards-gate.sh`
 9. Run `chmod +x ~/.claude/hooks/session-start.sh ~/.claude/hooks/pre-tool-standards-gate.sh`
 10. Read `~/.claude/settings.json` (or start from `{}` if absent), merge in the `hooks` block from `templates/workspace-settings.json`, and write it back
