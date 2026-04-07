@@ -483,6 +483,35 @@ Memory files now load as one-line summaries at session start instead of full con
 
 ---
 
+#### v2.4.2 — Post-Migration Skill Path Validation
+
+Warns about ghost skill paths in `lifecycle-skills.md` introduced by any prior migration.
+Non-fatal — warns but does not abort, since prior migration steps may be irreversible.
+
+**Steps:**
+
+```python
+import pathlib, re
+
+lifecycle_file = pathlib.Path.home() / ".claude" / "toolbox-sections" / "lifecycle-skills.md"
+if lifecycle_file.exists():
+    content = lifecycle_file.read_text(encoding="utf-8")
+    pattern = re.compile(r"→\s+(.+\.md)")
+    missing = [
+        m.group(1).strip()
+        for line in content.splitlines()
+        if (m := pattern.search(line)) and not pathlib.Path(m.group(1).strip()).exists()
+    ]
+    if missing:
+        print("[upgrade] WARNING: Ghost skill paths in lifecycle-skills.md:")
+        for p in missing:
+            print(f"  MISSING: {p}")
+    else:
+        print("[upgrade] Skill path validation passed.")
+```
+
+---
+
 #### v2.5.0 — Remediate Unrendered {{VAULT_PATH}} Tokens
 
 Detects and re-renders any section file that still contains literal `{{VAULT_PATH}}` tokens.

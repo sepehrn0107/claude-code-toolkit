@@ -105,6 +105,38 @@ The expected @import line is:
 - If it exists and already contains the @import line: do nothing
 - If it exists but does **not** contain the @import line: **prepend** the line followed by a blank line — do not overwrite any existing content
 
+### 4b. Validate rendered skill paths
+
+After writing all section files, parse the rendered `lifecycle-skills.md` and verify every
+referenced skill path exists on disk:
+
+```python
+import pathlib, re, sys
+
+claude_path = pathlib.Path.home() / ".claude"
+lifecycle_file = claude_path / "toolbox-sections" / "lifecycle-skills.md"
+content = lifecycle_file.read_text(encoding="utf-8")
+pattern = re.compile(r"→\s+(.+\.md)")
+missing = []
+
+for line in content.splitlines():
+    m = pattern.search(line)
+    if m:
+        skill_path = pathlib.Path(m.group(1).strip())
+        if not skill_path.exists():
+            missing.append(str(skill_path))
+
+if missing:
+    print("[upgrade-dev] WARNING: Ghost skill paths in lifecycle-skills.md:")
+    for p in missing:
+        print(f"  MISSING: {p}")
+    sys.exit(1)
+else:
+    print("[upgrade-dev] All skill paths validated — no ghost entries found.")
+```
+
+If validation fails (exit 1): stop and report. Do not leave a broken `lifecycle-skills.md` installed.
+
 ### 5. Scaffold vault structure (first-time only)
 
 If `<VAULT_PATH>/05-areas/claude-memory/` does not exist:
