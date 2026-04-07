@@ -285,18 +285,29 @@ Installs the skill manager into the toolbox: downloads `skills/skills.md`, gener
 
 **Steps:**
 
-1. Download `skills/skills.md` from the skill-manager repo and write to `{{TOOLBOX_PATH}}/skills/skills.md`:
+1. Ensure `skills/skills.md` exists in `{{TOOLBOX_PATH}}/skills/`. The file is now bundled in the
+   repo — download is only attempted as a fallback if it is missing:
 
 ```python
 import urllib.request, pathlib
 
 toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
-url = "https://raw.githubusercontent.com/sepehrn0107/skill-manager/main/skills/skills.md"
-with urllib.request.urlopen(url, timeout=15) as r:
-    content = r.read().decode()
 dest = toolbox_path / "skills" / "skills.md"
-dest.write_text(content, encoding="utf-8")
-print(f"Downloaded skills.md → {dest}")
+
+if dest.exists():
+    print(f"skills.md already present at {dest} — skipping download")
+else:
+    url = "https://raw.githubusercontent.com/sepehrn0107/skill-manager/main/skills/skills.md"
+    try:
+        with urllib.request.urlopen(url, timeout=15) as r:
+            content = r.read().decode()
+        dest.write_text(content, encoding="utf-8")
+        print(f"Downloaded skills.md → {dest}")
+    except Exception as e:
+        print(f"ERROR: Failed to download skills.md: {e}")
+        print("ABORTING v2.0.0 migration — /skills routes will NOT be registered.")
+        print("Fix network access or ensure skills/skills.md exists in toolbox, then re-run /upgrade.")
+        raise SystemExit(1)
 ```
 
 2. Generate `{{TOOLBOX_PATH}}/skills.json` from current installed plugins + local skills:
@@ -480,6 +491,56 @@ Memory files now load as one-line summaries at session start instead of full con
 
 2. Output:
    > Lazy memory loading enabled. Memory files load as summaries at session start.
+
+---
+
+#### v2.4.1 — Remediate Ghost /skills Route
+
+Ensures `skills/skills.md` exists and registers the `/skills` lifecycle entry if missing.
+Fixes installs where the v2.0.0 download failed and the lifecycle entry was never written.
+
+**Steps:**
+
+1. Verify `{{TOOLBOX_PATH}}/skills/skills.md` exists. If missing, output:
+   > ERROR: skills.md still missing. Run `git pull` in the toolbox directory and re-run /upgrade.
+   ...and abort this migration block.
+
+2. Ensure `/skills` lifecycle entry in `~/.claude/toolbox-sections/lifecycle-skills.md`:
+
+```python
+import pathlib
+
+toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
+lifecycle_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "lifecycle-skills.md"
+content = lifecycle_path.read_text(encoding="utf-8")
+if "/skills" not in content:
+    content = content.rstrip() + f"\n- /skills             → {toolbox_path}/skills/skills.md\n"
+    lifecycle_path.write_text(content, encoding="utf-8")
+    print("Added /skills lifecycle entry")
+else:
+    print("Skipped: /skills lifecycle entry already present")
+```
+
+3. Ensure `/skills` routing row in `~/.claude/toolbox-sections/skill-routing.md`:
+
+```python
+import pathlib
+
+routing_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "skill-routing.md"
+content = routing_path.read_text(encoding="utf-8")
+if "skills" not in content:
+    content = content.replace(
+        "| Any code edit request",
+        '| "`/skills`", "install skills", "list skills", "add skill", "disable skill", "enable skill", "update skill" | Read and follow `/skills` skill |\n| Any code edit request'
+    )
+    routing_path.write_text(content, encoding="utf-8")
+    print("Added /skills routing row")
+else:
+    print("Skipped: /skills routing already present")
+```
+
+4. Output:
+   > Ghost /skills route remediated. Run `/skills list` to verify.
 
 ---
 
