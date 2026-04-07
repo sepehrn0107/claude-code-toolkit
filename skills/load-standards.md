@@ -32,19 +32,23 @@ Read `.claude/memory/stack.md` if it exists.
 - Note it for Step 4 — the base stack's standards are loaded before the detected stack's standards
 - If `_base.md` does not exist, there is no base stack — continue
 
-### 3. Read Universal Standards
+### 3. Read Relevant Universal Standards
 
-Read all files — do not skip any:
+Classify the current task into one of these categories, then load **only** the listed files:
 
-- `{{TOOLBOX_PATH}}/standards/universal/architecture.md`
-- `{{TOOLBOX_PATH}}/standards/universal/security.md`
-- `{{TOOLBOX_PATH}}/standards/universal/git.md`
-- `{{TOOLBOX_PATH}}/standards/universal/testing.md`
-- `{{TOOLBOX_PATH}}/standards/universal/documentation.md`
-- `{{TOOLBOX_PATH}}/standards/universal/error-handling.md`
-- `{{TOOLBOX_PATH}}/standards/universal/debugging.md`
-- `{{TOOLBOX_PATH}}/standards/universal/code-review.md`
-- `{{TOOLBOX_PATH}}/standards/universal/observability.md`
+| Category | Trigger | Standards to load |
+|----------|---------|-------------------|
+| **implementation** | Writing new code, adding features, building components | architecture, testing, error-handling |
+| **bugfix** | Fixing bugs, debugging issues | debugging, error-handling, testing |
+| **security** | Auth, input validation, secrets, OWASP concerns | security, architecture |
+| **review** | Code review, PR preparation, standards check | code-review, security, architecture |
+| **documentation** | Writing docs, README, ADRs | documentation, git |
+| **observability** | Logging, metrics, alerting, health checks | observability, error-handling |
+| **full** | `/standards-check`, pre-PR gate, or explicit "load all standards" | All 9 files (current behavior) |
+
+If the category is unclear, default to **implementation** (the most common case).
+
+Read only the files listed for the matched category from `{{TOOLBOX_PATH}}/standards/universal/`.
 
 ### 4. Read Stack Standards
 
