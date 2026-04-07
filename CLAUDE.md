@@ -103,7 +103,30 @@ When the user opens the toolbox directory in Claude Code and says "set up the to
 14. Copy `templates/claude-sessions/statusline-command.js` to `~/.claude/statusline-command.js`
 15. In `~/.claude/settings.json`, also merge `"statusLine": {"type": "command", "command": "node ~/.claude/statusline-command.js"}` (alongside the hooks block from step 10)
 16. Read the `"version"` field from `{{TOOLBOX_PATH}}/package.json` and write it (plain text, one line) to `~/.claude/toolbox-version.txt`
-17. Confirm: "Toolbox installed. TOOLBOX_PATH = <path>, WORKSPACE_PATH = <path>"
+17. Ask for vault path:
+   > "Enter your vault path (absolute path, forward slashes). Press Enter to use the default: `<WORKSPACE_PATH>/vault/`"
+   - Non-empty input → use as `VAULT_PATH`
+   - Empty/whitespace input → `VAULT_PATH = <WORKSPACE_PATH>/vault/`
+   - Normalize: strip trailing slashes. Do not validate existence yet.
+18. Render 10 section templates into `~/.claude/toolbox-sections/`:
+   - `mkdir -p ~/.claude/toolbox-sections`
+   - For each of the 10 files in `templates/sections/`: read, replace `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, `{{VAULT_PATH}}`, write to `~/.claude/toolbox-sections/<filename>.md`
+   - Read/render/write `templates/CLAUDE.global.md` → `~/.claude/CLAUDE.global.md`
+   - Ensure `~/.claude/CLAUDE.md` contains `@<CLAUDE_PATH>/CLAUDE.global.md` (prepend if absent; do not overwrite existing user content)
+19. Scaffold vault memory:
+   - `mkdir -p "<VAULT_PATH>/05-areas/claude-memory"`
+   - Copy `templates/memory/global/MEMORY.md` → `<VAULT_PATH>/05-areas/claude-memory/MEMORY.md` (skip if exists)
+   - Copy `templates/memory/global/active-project.md` → `<VAULT_PATH>/05-areas/claude-memory/active-project.md` (skip if exists)
+20. Confirm with a summary block:
+   ```
+   Toolbox installed.
+     TOOLBOX_PATH   = <path>
+     WORKSPACE_PATH = <path>
+     VAULT_PATH     = <path>
+   Section files written to ~/.claude/toolbox-sections/.
+   Vault memory scaffolded at <VAULT_PATH>/05-areas/claude-memory/.
+   You're ready. Open any project folder in Claude Code and start a session.
+   ```
 
 ## When Creating or Modifying a Skill
 
