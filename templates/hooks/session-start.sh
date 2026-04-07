@@ -17,9 +17,25 @@ fi
 
 # Workspace mode: detect if we're in the workspace root (has memory/ but no .claude/memory/)
 if [ -f "memory/MEMORY.md" ] && [ ! -f ".claude/memory/MEMORY.md" ]; then
+  # Detect the toolbox directory to exclude it from project listings.
+  # Priority: TOOLBOX_DIR env var > .toolbox-marker file > legacy "toolbox" name
+  _TOOLBOX_NAME=""
+  if [ -n "${TOOLBOX_DIR:-}" ]; then
+    _TOOLBOX_NAME="$TOOLBOX_DIR"
+  else
+    for d in */; do
+      if [ -f "${d}.toolbox-marker" ]; then
+        _TOOLBOX_NAME="${d%/}"
+        break
+      fi
+    done
+  fi
+  # Legacy fallback: if no marker found, exclude "toolbox" by name
+  [ -z "$_TOOLBOX_NAME" ] && _TOOLBOX_NAME="toolbox"
+
   # Scan for user-facing git repos (exclude toolbox — it's infrastructure)
   PROJECTS=$(for d in */; do
-    [ -d "${d}.git" ] && [ "${d%/}" != "toolbox" ] && printf "%s," "${d%/}"
+    [ -d "${d}.git" ] && [ "${d%/}" != "$_TOOLBOX_NAME" ] && printf "%s," "${d%/}"
   done | sed 's/,$//')
 
   ACTIVE=$(grep -m1 "^active:" memory/active-project.md 2>/dev/null \

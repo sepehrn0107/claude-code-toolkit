@@ -1,6 +1,7 @@
 # Whitelist — ignore everything, then explicitly allow toolbox content
 *
 !.gitignore
+!.toolbox-marker
 !CLAUDE.md
 !CHANGELOG.md
 !package.json

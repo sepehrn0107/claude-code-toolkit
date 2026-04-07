@@ -668,6 +668,47 @@ fully rendered (no `{{VAULT_PATH}}` literals remain).
 
 ---
 
+#### v2.6.0 — Flexible Toolbox Directory Detection
+
+Replaces the hardcoded `"toolbox"` name check in the session-start hook with marker-file
+detection (`.toolbox-marker`). Supports renamed clones, `TOOLBOX_DIR` env var overrides,
+and falls back to the legacy `"toolbox"` name for backward compatibility.
+
+**Steps:**
+
+1. Create `.toolbox-marker` in the toolbox directory if it does not already exist:
+
+```python
+import pathlib
+
+toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
+marker = toolbox_path / ".toolbox-marker"
+if not marker.exists():
+    marker.write_text(
+        "# Toolbox Marker File\n"
+        "# This file identifies this directory as the toolbox installation.\n"
+        "# It is used by the session-start hook to exclude the toolbox from\n"
+        "# workspace project listings, regardless of the directory name.\n"
+        "# Do not delete this file.\n",
+        encoding="utf-8"
+    )
+    print("Created .toolbox-marker")
+else:
+    print(".toolbox-marker already exists — skipping")
+```
+
+2. Copy the updated session-start hook:
+
+   Copy `{{TOOLBOX_PATH}}/templates/hooks/session-start.sh`
+   → `~/.claude/hooks/session-start.sh`
+   Then run: `chmod +x ~/.claude/hooks/session-start.sh`
+
+3. Output:
+   > Flexible toolbox detection installed. The session-start hook now identifies the toolbox
+   > by `.toolbox-marker` instead of directory name. Set `TOOLBOX_DIR` env var to override.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
