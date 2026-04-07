@@ -191,7 +191,8 @@ Splits the monolithic `~/.claude/CLAUDE.md` into modular section files, making `
 2. Create `<CLAUDE_PATH>/toolbox-sections/` if it does not exist.
 
 3. For each of the 9 section templates in `<TOOLBOX_PATH>/templates/sections/`:
-   - Read the template, replace `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`
+   - Read the template, replace `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, and `{{VAULT_PATH}}`
+   - To resolve `{{VAULT_PATH}}`: attempt to extract it from `<CLAUDE_PATH>/toolbox-sections/vault-paths.md` if it exists and is already rendered (look for a line matching `\$VAULT\` = `` `<path>` ``). If not found, prompt the user.
    - Write rendered file to `<CLAUDE_PATH>/toolbox-sections/<filename>.md`
 
 4. Read `<TOOLBOX_PATH>/templates/CLAUDE.global.md`, replace all 3 tokens, write to `<CLAUDE_PATH>/CLAUDE.global.md`.
@@ -479,6 +480,40 @@ Memory files now load as one-line summaries at session start instead of full con
 
 2. Output:
    > Lazy memory loading enabled. Memory files load as summaries at session start.
+
+---
+
+#### v2.5.0 — Remediate Unrendered {{VAULT_PATH}} Tokens
+
+Detects and re-renders any section file that still contains literal `{{VAULT_PATH}}` tokens.
+Fixes installs where v1.6.0 ran before `VAULT_PATH` was configured.
+
+**Steps:**
+
+1. Scan `~/.claude/toolbox-sections/` for files containing `{{VAULT_PATH}}`:
+
+```python
+import pathlib
+
+sections_dir = pathlib.Path.home() / ".claude" / "toolbox-sections"
+broken = [f for f in sorted(sections_dir.glob("*.md")) if "{{VAULT_PATH}}" in f.read_text(encoding="utf-8")]
+if broken:
+    print(f"Found {len(broken)} file(s) with unrendered {{VAULT_PATH}}: {[f.name for f in broken]}")
+else:
+    print("v2.5.0: No unrendered {{VAULT_PATH}} tokens found — skipping.")
+```
+
+If no broken files: skip the rest of this migration.
+
+2. Resolve `VAULT_PATH`:
+   - Try to extract from a rendered section file that is already correct (look for a line like `- \`$VAULT\` = \`<path>\`` in `vault-paths.md` where `<path>` contains no `{{`)
+   - If not found, prompt: "Enter your vault path (absolute path, forward slashes):"
+
+3. For each broken file, re-render it from the corresponding template in `{{TOOLBOX_PATH}}/templates/sections/`,
+   substituting all 4 tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, `{{VAULT_PATH}}`).
+
+4. Output:
+   > v2.5.0: Re-rendered N section file(s) — {{VAULT_PATH}} tokens resolved.
 
 ---
 

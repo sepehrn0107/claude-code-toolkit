@@ -58,6 +58,36 @@ Do for each:
    This is required on first run — the directory does not exist by default.
 4. Write the rendered content to `<CLAUDE_PATH>/toolbox-sections/<filename>.md`
 
+### 2b. Validate rendered section files — no unresolved tokens
+
+After writing all section files, scan each rendered file for any remaining `{{` tokens.
+These indicate a substitution was skipped (e.g. vault path was empty or a new token was added
+to the template but not wired up in the render step):
+
+```python
+import pathlib, re, sys
+
+sections_dir = pathlib.Path.home() / ".claude" / "toolbox-sections"
+broken = []
+
+for md_file in sorted(sections_dir.glob("*.md")):
+    content = md_file.read_text(encoding="utf-8")
+    if "{{" in content:
+        tokens = list(set(re.findall(r"\{\{[^}]+\}\}", content)))
+        broken.append((md_file.name, tokens))
+
+if broken:
+    print("[upgrade-dev] ERROR: Unresolved template tokens in rendered section files:")
+    for filename, tokens in broken:
+        print(f"  {filename}: {', '.join(tokens)}")
+    print("Re-run /upgrade-dev and supply all required path values.")
+    sys.exit(1)
+else:
+    print("[upgrade-dev] Token validation passed — all placeholders resolved.")
+```
+
+If validation fails (exit 1): stop and report the affected files. Do not proceed to Step 3.
+
 ### 3. Render CLAUDE.global.md
 
 1. Read `<TOOLBOX_PATH>/templates/CLAUDE.global.md`
