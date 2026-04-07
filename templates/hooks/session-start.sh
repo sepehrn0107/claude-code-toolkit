@@ -16,7 +16,8 @@ if [ -f "memory/MEMORY.md" ] && [ ! -f ".claude/memory/MEMORY.md" ]; then
   # Write or read session-scoped active project file (isolates parallel sessions)
   SESSION_KEY="${CLAUDE_SESSION_ID:-}"
   if [ -n "$SESSION_KEY" ]; then
-    SESSION_FILE="/tmp/toolbox-session-${SESSION_KEY}.md"
+    _TMPDIR="${TMPDIR:-/tmp}"
+    SESSION_FILE="${_TMPDIR}/toolbox-session-${SESSION_KEY}.md"
     if [ ! -f "$SESSION_FILE" ]; then
       # Seed session file from global (only on first hook run for this session)
       [ -n "$ACTIVE" ] && printf "active: %s\nupdated: %s\n" "$ACTIVE" "$(date +%Y-%m-%d)" > "$SESSION_FILE"
@@ -75,7 +76,10 @@ NEXT=$(grep -A2 "^## Next" .claude/memory/progress.md 2>/dev/null | grep -v "^##
 INDEX_NOTE=""
 if [ -d ".claude/index" ] && [ -f ".claude/index/manifest.json" ]; then
   LAST_COMMIT_TIME=$(git log -1 --format="%ct" 2>/dev/null || echo "0")
-  INDEX_MTIME=$(stat -c "%Y" .claude/index/manifest.json 2>/dev/null || echo "0")
+  INDEX_MTIME=$(stat -c "%Y" .claude/index/manifest.json 2>/dev/null \
+    || stat -f "%m" .claude/index/manifest.json 2>/dev/null \
+    || python3 -c "import os,sys; print(int(os.path.getmtime(sys.argv[1])))" .claude/index/manifest.json 2>/dev/null \
+    || echo "0")
   if [ "$LAST_COMMIT_TIME" -gt "$INDEX_MTIME" ]; then
     INDEX_NOTE=" | Index stale — run /index-repo to refresh"
   else
