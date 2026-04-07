@@ -18,6 +18,12 @@ Always run from within the toolbox repo directory.
 
 ## Steps
 
+> **Note for first-time users:** `/upgrade-dev` is a developer tool for re-rendering templates
+> during toolbox iteration. If you are setting up the toolbox for the first time, say
+> "Set up the toolbox" instead — it handles vault configuration in one step.
+> Only use `/upgrade-dev` when you have changed a template file and need to sync the live install.
+
+
 
 ### 0. Dependency pre-check
 

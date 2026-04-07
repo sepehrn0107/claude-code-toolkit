@@ -634,6 +634,40 @@ dependency + vault path warnings to the session-start hook.
 
 ---
 
+#### v2.5.2 — Vault Path in Initial Setup Flow
+
+Renders `~/.claude/toolbox-sections/` and scaffolds vault memory for installs that completed
+"Set up the toolbox" before v2.5.2 but never ran `/upgrade-dev`. No-ops if sections are already
+fully rendered (no `{{VAULT_PATH}}` literals remain).
+
+**Steps:**
+
+1. Check if sections are already rendered — skip if `~/.claude/toolbox-sections/vault-paths.md`
+   exists and contains no `{{VAULT_PATH}}` literal:
+   ```python
+   import pathlib
+   vp = pathlib.Path.home() / ".claude" / "toolbox-sections" / "vault-paths.md"
+   if vp.exists() and "{{VAULT_PATH}}" not in vp.read_text(encoding="utf-8"):
+       print("v2.5.2: Sections already rendered — skipping.")
+       raise SystemExit(0)
+   ```
+
+2. Prompt for vault path (same logic as Setup Step 17):
+   > "Enter your vault path (absolute path, forward slashes). Press Enter to use the default: `<WORKSPACE_PATH>/vault/`"
+   - Empty/whitespace → `VAULT_PATH = <WORKSPACE_PATH>/vault/`
+   - Normalize: strip trailing slashes.
+
+3. Render all 10 section templates into `~/.claude/toolbox-sections/` (replace `{{TOOLBOX_PATH}}`,
+   `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, `{{VAULT_PATH}}`). Also render `CLAUDE.global.md`.
+   Ensure `~/.claude/CLAUDE.md` has the @import line.
+
+4. Scaffold vault memory (`mkdir -p` + copy starter files, skip if exists).
+
+5. Output:
+   > Section files rendered. Vault path set to: <VAULT_PATH>
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
