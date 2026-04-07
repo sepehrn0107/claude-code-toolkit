@@ -430,7 +430,46 @@ else:
 
 ---
 
-#### v2.1.2 — Lazy Memory Loading
+#### v2.1.3 — Standards Caching for Sub-Agents
+
+The `/implement` orchestrator now pre-assembles a `standards-cache.md` in the ticket directory. Sub-agents read this single file instead of individually loading 4-8 standards files each. Saves ~3,000-5,000 tokens per parallel sub-agent.
+
+**Steps:**
+
+No installed file changes needed — this change is in the skill file only.
+
+1. Output:
+   > Standards caching enabled for /implement sub-agents. Pull latest toolbox to use.
+
+---
+
+#### v2.2.0 — Compact Skill Routing Table
+
+Compacts the skill routing table by ~40%, separating user-facing routes from internal auto-routes and removing verbose trigger descriptions.
+
+**Steps:**
+
+1. Read `{{TOOLBOX_PATH}}/templates/sections/skill-routing.md`, replace all tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`), write to `<CLAUDE_PATH>/toolbox-sections/skill-routing.md`.
+
+2. Output:
+   > Skill routing table compacted. Token savings: ~200 tokens per session.
+
+---
+
+#### v2.3.0 — Selective Standards Loading
+
+Standards are now loaded selectively based on task type instead of always loading all 9 files. This reduces token usage by 40-60% for most code edits.
+
+**Steps:**
+
+1. Read `{{TOOLBOX_PATH}}/templates/sections/standards.md`, replace all tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`), write to `<CLAUDE_PATH>/toolbox-sections/standards.md`.
+
+2. Output:
+   > Selective standards loading enabled. Standards will auto-load based on task type.
+
+---
+
+#### v2.4.0 — Lazy Memory Loading
 
 Memory files now load as one-line summaries at session start instead of full content. Full files are loaded on-demand when needed. Saves ~1,000 tokens per session.
 
