@@ -8,7 +8,7 @@ description: Use this skill whenever Claude needs to read any external URL — c
 Use this skill to fetch any external URL. Routes through Crawl4AI for clean
 markdown output and caches results in the vault under `07-web-cache/`.
 
-> `{{TOOLBOX_PATH}}` = `C:/Users/sepeh/Documents/workspace/toolbox`
+> `{{TOOLBOX_PATH}}` — resolved at install time from `~/.claude/toolbox-sections/vault-paths.md`
 
 ---
 
@@ -29,7 +29,7 @@ the full page body is needed.
 Run via Bash:
 
 ```bash
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/crawl4ai/fetch.py --url "<URL>"
+python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "<URL>"
 ```
 
 Optional flags:
@@ -51,7 +51,7 @@ If the URL was fetched within the last 24 hours, the cached version is returned
 instantly (stderr: `cache hit`). Cache lives at:
 
 ```
-C:/Users/sepeh/Documents/workspace/vault/07-web-cache/<domain>/<path>.md
+{{VAULT_PATH}}/07-web-cache/<domain>/<path>.md
 ```
 
 Each cache file uses vault frontmatter format:
@@ -89,11 +89,11 @@ message to the user and stop — do not silently fall back.
 
 ```bash
 # Standard fetch (uses cache if fresh)
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/crawl4ai/fetch.py --url "https://docs.python.org/3/library/pathlib.html"
+python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "https://docs.python.org/3/library/pathlib.html"
 
 # Force re-fetch (ignore cache)
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/crawl4ai/fetch.py --url "https://example.com/changelog" --force
+python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "https://example.com/changelog" --force
 
 # Longer cache TTL for stable reference docs
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/crawl4ai/fetch.py --url "https://docs.python.org/3/reference/expressions.html" --max-age-hours 168
+python {{TOOLBOX_PATH}}/tools/crawl4ai/fetch.py --url "https://docs.python.org/3/reference/expressions.html" --max-age-hours 168
 ```
