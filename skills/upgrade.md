@@ -607,6 +607,33 @@ If no broken files: skip the rest of this migration.
 
 ---
 
+#### v2.5.1 — Fail-Closed Standards Gate + Dependency Checks
+
+Upgrades the standards gate from fail-open to fail-closed when `jq` is missing, and adds
+dependency + vault path warnings to the session-start hook.
+
+**Steps:**
+
+1. Run dependency pre-check — print warnings for any missing tools (`jq`, `python3`, `bash`):
+   ```bash
+   MISSING=""
+   for dep in jq bash python3; do
+     command -v "$dep" >/dev/null 2>&1 || MISSING="${MISSING} ${dep}"
+   done
+   [ -n "$MISSING" ] && echo "[upgrade] WARNING: missing dependencies:${MISSING}. Install them for full toolbox functionality."
+   ```
+
+2. Copy `{{TOOLBOX_PATH}}/templates/hooks/pre-tool-standards-gate.sh` → `~/.claude/hooks/pre-tool-standards-gate.sh`
+   Then run: `chmod +x ~/.claude/hooks/pre-tool-standards-gate.sh`
+
+3. Copy `{{TOOLBOX_PATH}}/templates/hooks/session-start.sh` → `~/.claude/hooks/session-start.sh`
+   Then run: `chmod +x ~/.claude/hooks/session-start.sh`
+
+4. Output:
+   > Standards gate upgraded to fail-closed mode. Dependency and vault path checks added to session-start hook.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`

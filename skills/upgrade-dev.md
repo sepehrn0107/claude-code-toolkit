@@ -18,6 +18,25 @@ Always run from within the toolbox repo directory.
 
 ## Steps
 
+
+### 0. Dependency pre-check
+
+Verify required tools are present before attempting any path resolution or rendering:
+
+```bash
+MISSING_DEPS=""
+for dep in jq bash python3; do
+  command -v "$dep" >/dev/null 2>&1 || MISSING_DEPS="${MISSING_DEPS} ${dep}"
+done
+if [ -n "$MISSING_DEPS" ]; then
+  echo "[upgrade-dev] ERROR: missing dependencies:${MISSING_DEPS}"
+  echo "Install the missing tools (e.g. 'brew install jq', 'apt install jq', 'choco install jq') then re-run /upgrade-dev."
+  exit 1
+fi
+```
+
+If any dependency is missing: stop and print the install hint. Do not proceed.
+
 ### 1. Resolve paths
 
 `TOOLBOX_PATH` = the absolute path to the toolbox repo root (the directory containing this skill file's parent `skills/` folder).

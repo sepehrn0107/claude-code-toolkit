@@ -6,8 +6,17 @@
 # Claude Code passes the tool call as JSON via stdin.
 # Exit code 2 = block the tool call and show stdout as the error message.
 
-# Read the tool name from stdin JSON
-TOOL_NAME=$(cat | jq -r '.tool_name // empty' 2>/dev/null)
+# Fail-closed: if jq is missing, block all edits rather than allow them through
+if ! command -v jq >/dev/null 2>&1; then
+  echo "Toolbox standards gate: 'jq' is not installed."
+  echo "Install jq (e.g. 'brew install jq', 'apt install jq', or 'choco install jq') then retry."
+  echo "All code edits are blocked until jq is available."
+  exit 2
+fi
+
+INPUT=$(cat)
+TOOL_NAME=$(printf '%s' "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+if [ -z "$TOOL_NAME" ]; then exit 0; fi
 
 # Only gate code-editing tools
 case "$TOOL_NAME" in
