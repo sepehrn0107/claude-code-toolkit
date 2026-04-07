@@ -7,10 +7,6 @@ description: Extract a specific function, class, markdown section, or line range
 
 Read only the part of a file you actually need.
 
-> `{{TOOLBOX_PATH}}` — resolved at install time from `~/.claude/toolbox-sections/vault-paths.md`
-
----
-
 ## When This Skill Triggers
 
 Use instead of the `Read` tool when:

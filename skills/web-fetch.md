@@ -8,10 +8,6 @@ description: Use this skill whenever Claude needs to read any external URL — c
 Use this skill to fetch any external URL. Routes through Crawl4AI for clean
 markdown output and caches results in the vault under `07-web-cache/`.
 
-> `{{TOOLBOX_PATH}}` — resolved at install time from `~/.claude/toolbox-sections/vault-paths.md`
-
----
-
 ## When This Skill Triggers
 
 Auto-trigger whenever Claude is about to:

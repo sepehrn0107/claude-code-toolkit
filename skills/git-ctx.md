@@ -7,10 +7,6 @@ description: Compact git context in one call — branch, tracking, staged/unstag
 
 Returns compact git state in a single script call instead of chaining `git status` + `git log` + `git diff --stat`.
 
-> `{{TOOLBOX_PATH}}` — resolved at install time from `~/.claude/toolbox-sections/vault-paths.md`
-
----
-
 ## When This Skill Triggers
 
 Auto-trigger instead of running separate git commands when Claude needs to know any combination of:

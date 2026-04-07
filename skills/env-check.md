@@ -7,10 +7,6 @@ description: One-call dev environment snapshot — runtime versions, running Doc
 
 Compact environment snapshot before running dev commands or at session start.
 
-> `{{TOOLBOX_PATH}}` — resolved at install time from `~/.claude/toolbox-sections/vault-paths.md`
-
----
-
 ## When This Skill Triggers
 
 Use when Claude needs to check any combination of:

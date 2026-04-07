@@ -7,10 +7,6 @@ description: Fetch package metadata from npm or PyPI JSON APIs — version, type
 
 Compact package info without crawling the full docs page.
 
-> `{{TOOLBOX_PATH}}` — resolved at install time from `~/.claude/toolbox-sections/vault-paths.md`
-
----
-
 ## When This Skill Triggers
 
 Use instead of `/web-fetch` when Claude needs to know:

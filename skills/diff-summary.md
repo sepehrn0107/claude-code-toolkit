@@ -7,10 +7,6 @@ description: Compact per-file diff summary — file list with +/- counts and cha
 
 Shape of the change at a glance — avoids loading hundreds of diff lines into context.
 
-> `{{TOOLBOX_PATH}}` — resolved at install time from `~/.claude/toolbox-sections/vault-paths.md`
-
----
-
 ## When This Skill Triggers
 
 Auto-trigger when Claude is about to:
