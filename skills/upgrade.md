@@ -469,6 +469,19 @@ Standards are now loaded selectively based on task type instead of always loadin
 
 ---
 
+#### v2.4.0 — Lazy Memory Loading
+
+Memory files now load as one-line summaries at session start instead of full content. Full files are loaded on-demand when needed. Saves ~1,000 tokens per session.
+
+**Steps:**
+
+1. Read `{{TOOLBOX_PATH}}/templates/sections/session-start.md`, replace all tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, `{{VAULT_PATH}}`), write to `<CLAUDE_PATH>/toolbox-sections/session-start.md`.
+
+2. Output:
+   > Lazy memory loading enabled. Memory files load as summaries at session start.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
