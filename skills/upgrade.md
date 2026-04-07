@@ -456,6 +456,19 @@ Compacts the skill routing table by ~40%, separating user-facing routes from int
 
 ---
 
+#### v2.3.0 — Selective Standards Loading
+
+Standards are now loaded selectively based on task type instead of always loading all 9 files. This reduces token usage by 40-60% for most code edits.
+
+**Steps:**
+
+1. Read `{{TOOLBOX_PATH}}/templates/sections/standards.md`, replace all tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`), write to `<CLAUDE_PATH>/toolbox-sections/standards.md`.
+
+2. Output:
+   > Selective standards loading enabled. Standards will auto-load based on task type.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`
