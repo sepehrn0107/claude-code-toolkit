@@ -7,10 +7,6 @@ description: Extract a specific function, class, markdown section, or line range
 
 Read only the part of a file you actually need.
 
-> `{{TOOLBOX_PATH}}` = `C:/Users/sepeh/Documents/workspace/toolbox`
-
----
-
 ## When This Skill Triggers
 
 Use instead of the `Read` tool when:
@@ -28,19 +24,19 @@ Do NOT trigger for:
 
 ```bash
 # By function name
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/read-section/read_section.py \
+python {{TOOLBOX_PATH}}/tools/read-section/read_section.py \
   --file <path> --fn <name>
 
 # By class / interface / struct name
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/read-section/read_section.py \
+python {{TOOLBOX_PATH}}/tools/read-section/read_section.py \
   --file <path> --class <name>
 
 # By markdown heading (exact text, any level)
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/read-section/read_section.py \
+python {{TOOLBOX_PATH}}/tools/read-section/read_section.py \
   --file <path> --after "<heading text>"
 
 # By line range
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/read-section/read_section.py \
+python {{TOOLBOX_PATH}}/tools/read-section/read_section.py \
   --file <path> --lines 100-150
 ```
 
@@ -67,7 +63,7 @@ python C:/Users/sepeh/Documents/workspace/toolbox/tools/read-section/read_sectio
 ## Examples
 
 ```bash
-TOOL=C:/Users/sepeh/Documents/workspace/toolbox/tools/read-section/read_section.py
+TOOL={{TOOLBOX_PATH}}/tools/read-section/read_section.py
 
 # Function
 python $TOOL --file src/auth/handler.ts --fn handleRefresh

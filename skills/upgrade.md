@@ -709,6 +709,22 @@ else:
 
 ---
 
+#### v2.7.0 — Install hardcoded-paths pre-commit hook
+
+Installs the pre-commit hook that rejects commits introducing user-specific absolute paths
+in tracked skill, template, and standards files.
+
+**Steps:**
+
+1. Copy `{{TOOLBOX_PATH}}/tools/hooks/reject-hardcoded-paths.sh`
+   → `{{TOOLBOX_PATH}}/.git/hooks/pre-commit`
+   Then run: `chmod +x {{TOOLBOX_PATH}}/.git/hooks/pre-commit`
+
+2. Output:
+   > Pre-commit hook installed.
+
+---
+
 ### 3. Write updated version
 
 Write `TARGET_VERSION` (plain text, one line) to `~/.claude/toolbox-version.txt`

@@ -7,10 +7,6 @@ description: Compact per-file diff summary — file list with +/- counts and cha
 
 Shape of the change at a glance — avoids loading hundreds of diff lines into context.
 
-> `{{TOOLBOX_PATH}}` = `C:/Users/sepeh/Documents/workspace/toolbox`
-
----
-
 ## When This Skill Triggers
 
 Auto-trigger when Claude is about to:
@@ -25,7 +21,7 @@ Do NOT trigger when you need to read the actual code changes — use `--full` fo
 ## How to Run
 
 ```bash
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/diff-summary/diff_summary.py
+python {{TOOLBOX_PATH}}/tools/diff-summary/diff_summary.py
 ```
 
 Options:
@@ -55,14 +51,14 @@ diff: main...HEAD (3 files, +142 -37)
 
 ```bash
 # Since main (default)
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/diff-summary/diff_summary.py
+python {{TOOLBOX_PATH}}/tools/diff-summary/diff_summary.py
 
 # Staged changes before commit
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/diff-summary/diff_summary.py --staged
+python {{TOOLBOX_PATH}}/tools/diff-summary/diff_summary.py --staged
 
 # Compare against specific base
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/diff-summary/diff_summary.py --base develop
+python {{TOOLBOX_PATH}}/tools/diff-summary/diff_summary.py --base develop
 
 # Summary header + full diff body
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/diff-summary/diff_summary.py --full
+python {{TOOLBOX_PATH}}/tools/diff-summary/diff_summary.py --full
 ```

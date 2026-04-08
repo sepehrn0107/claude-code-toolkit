@@ -1,6 +1,6 @@
 {
   "name": "claude-code-toolkit",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Standards, memory, and lifecycle skills for Claude Code \u2014 loads automatically across every project.",
   "repository": {
     "type": "git",

@@ -7,10 +7,6 @@ description: Compact git context in one call — branch, tracking, staged/unstag
 
 Returns compact git state in a single script call instead of chaining `git status` + `git log` + `git diff --stat`.
 
-> `{{TOOLBOX_PATH}}` = `C:/Users/sepeh/Documents/workspace/toolbox`
-
----
-
 ## When This Skill Triggers
 
 Auto-trigger instead of running separate git commands when Claude needs to know any combination of:
@@ -28,7 +24,7 @@ Do NOT trigger when you need:
 ## How to Run
 
 ```bash
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/git-ctx/git_ctx.py
+python {{TOOLBOX_PATH}}/tools/git-ctx/git_ctx.py
 ```
 
 Options:
@@ -60,8 +56,8 @@ working tree: 3 files changed, 142 insertions(+), 37 deletions(-)
 
 ```bash
 # Default (current dir, last 5 commits)
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/git-ctx/git_ctx.py
+python {{TOOLBOX_PATH}}/tools/git-ctx/git_ctx.py
 
 # Different repo, more commits
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/git-ctx/git_ctx.py --repo ../gymbro --log 10
+python {{TOOLBOX_PATH}}/tools/git-ctx/git_ctx.py --repo ../gymbro --log 10
 ```

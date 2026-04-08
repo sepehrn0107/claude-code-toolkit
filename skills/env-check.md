@@ -7,10 +7,6 @@ description: One-call dev environment snapshot — runtime versions, running Doc
 
 Compact environment snapshot before running dev commands or at session start.
 
-> `{{TOOLBOX_PATH}}` = `C:/Users/sepeh/Documents/workspace/toolbox`
-
----
-
 ## When This Skill Triggers
 
 Use when Claude needs to check any combination of:
@@ -24,7 +20,7 @@ Use when Claude needs to check any combination of:
 ## How to Run
 
 ```bash
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/env-check/env_check.py
+python {{TOOLBOX_PATH}}/tools/env-check/env_check.py
 ```
 
 No options required. Always exits 0 — best-effort, never fails.
@@ -70,5 +66,5 @@ Run the single script once.
 ## Example
 
 ```bash
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/env-check/env_check.py
+python {{TOOLBOX_PATH}}/tools/env-check/env_check.py
 ```
