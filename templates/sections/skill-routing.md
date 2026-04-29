@@ -22,6 +22,7 @@ Detect user intent and route automatically — do not wait to be asked.
 | "set vault", "change vault path" | `/set-vault` |
 | "update docs", "docs are stale" | `/update-docs` |
 | "`/skills`", "install/list/add/disable/enable/update skill" | `/skills` |
+| "integration review", "cross-cutting review", "all plans done", "/integration-review" | `/integration-review` |
 | Any code edit request (no match above) | `/load-standards` then proceed |
 
 ### Internal Auto-Routes

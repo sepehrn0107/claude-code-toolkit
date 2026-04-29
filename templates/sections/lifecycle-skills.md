@@ -25,3 +25,4 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /auto-switch      → {{TOOLBOX_PATH}}/skills/auto-switch.md
 - /set-vault        → {{TOOLBOX_PATH}}/skills/set-vault.md
 - /update-docs      → {{TOOLBOX_PATH}}/skills/update-docs.md
+- /integration-review → {{TOOLBOX_PATH}}/skills/integration-review.md
