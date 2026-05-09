@@ -66,6 +66,10 @@ files resolves to the actual toolbox path defined in `~/.claude/CLAUDE.md`.
 - /standards-check → `skills/standards-check.md`
 - /retrospective → `skills/retrospective.md`
 - /add-stack-standards → `skills/add-stack-standards.md`
+- /add-typescript-hono-standards → `skills/add-stack-standards.md`
+- /add-tauri-standards → `skills/add-stack-standards.md`
+- /add-bullmq-standards → `skills/add-stack-standards.md`
+- /add-pnpm-turbo-standards → `skills/add-stack-standards.md`
 - /index-repo → `skills/index-repo.md`
 - /upgrade → `skills/upgrade.md`
 

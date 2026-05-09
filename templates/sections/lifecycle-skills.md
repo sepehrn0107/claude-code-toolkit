@@ -7,6 +7,10 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /standards-check  → {{TOOLBOX_PATH}}/skills/standards-check.md
 - /retrospective    → {{TOOLBOX_PATH}}/skills/retrospective.md
 - /add-stack-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
+- /add-typescript-hono-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
+- /add-tauri-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
+- /add-bullmq-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
+- /add-pnpm-turbo-standards → {{TOOLBOX_PATH}}/skills/add-stack-standards.md
 - /index-repo       → {{TOOLBOX_PATH}}/skills/index-repo.md
 - /project          → {{TOOLBOX_PATH}}/skills/project.md
 - /git-push         → {{TOOLBOX_PATH}}/skills/git-push.md
@@ -25,3 +29,4 @@ Skills are loaded from the local toolbox clone. Read the skill file before follo
 - /auto-switch      → {{TOOLBOX_PATH}}/skills/auto-switch.md
 - /set-vault        → {{TOOLBOX_PATH}}/skills/set-vault.md
 - /update-docs      → {{TOOLBOX_PATH}}/skills/update-docs.md
+- /integration-review → {{TOOLBOX_PATH}}/skills/integration-review.md
