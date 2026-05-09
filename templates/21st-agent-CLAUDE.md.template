@@ -1,0 +1,7 @@
+Stack: 21st-agents-sdk
+Agent entry: agents/<name>/index.ts
+Token route: app/api/agent-token/route.ts
+Chat component: app/page.tsx (or app/<route>/page.tsx)
+Deploy: npx @21st-sdk/cli deploy
+Dashboard: https://21st.dev/agents/app
+Standards: {{TOOLBOX_PATH}}/standards/stacks/21st-agents-sdk/
