@@ -41,7 +41,7 @@ git clone https://github.com/sepehrn0107/claude-code-toolkit ~/Documents/workspa
 
 Open the toolbox folder in Claude Code, then say: `Set up the toolbox`
 
-Then run `/upgrade-dev` once to configure your vault path.
+Claude will detect paths, ask for your vault path (or use the default), and complete the full install in one step.
 
 ---
 

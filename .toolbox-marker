@@ -1,0 +1,5 @@
+# Toolbox Marker File
+# This file identifies this directory as the toolbox installation.
+# It is used by the session-start hook to exclude the toolbox from
+# workspace project listings, regardless of the directory name.
+# Do not delete this file.

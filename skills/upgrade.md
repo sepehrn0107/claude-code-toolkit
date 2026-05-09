@@ -191,7 +191,8 @@ Splits the monolithic `~/.claude/CLAUDE.md` into modular section files, making `
 2. Create `<CLAUDE_PATH>/toolbox-sections/` if it does not exist.
 
 3. For each of the 9 section templates in `<TOOLBOX_PATH>/templates/sections/`:
-   - Read the template, replace `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`
+   - Read the template, replace `{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, and `{{VAULT_PATH}}`
+   - To resolve `{{VAULT_PATH}}`: attempt to extract it from `<CLAUDE_PATH>/toolbox-sections/vault-paths.md` if it exists and is already rendered (look for a line matching `\$VAULT\` = `` `<path>` ``). If not found, prompt the user.
    - Write rendered file to `<CLAUDE_PATH>/toolbox-sections/<filename>.md`
 
 4. Read `<TOOLBOX_PATH>/templates/CLAUDE.global.md`, replace all 3 tokens, write to `<CLAUDE_PATH>/CLAUDE.global.md`.
@@ -284,18 +285,29 @@ Installs the skill manager into the toolbox: downloads `skills/skills.md`, gener
 
 **Steps:**
 
-1. Download `skills/skills.md` from the skill-manager repo and write to `{{TOOLBOX_PATH}}/skills/skills.md`:
+1. Ensure `skills/skills.md` exists in `{{TOOLBOX_PATH}}/skills/`. The file is now bundled in the
+   repo — download is only attempted as a fallback if it is missing:
 
 ```python
 import urllib.request, pathlib
 
 toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
-url = "https://raw.githubusercontent.com/sepehrn0107/skill-manager/main/skills/skills.md"
-with urllib.request.urlopen(url, timeout=15) as r:
-    content = r.read().decode()
 dest = toolbox_path / "skills" / "skills.md"
-dest.write_text(content, encoding="utf-8")
-print(f"Downloaded skills.md → {dest}")
+
+if dest.exists():
+    print(f"skills.md already present at {dest} — skipping download")
+else:
+    url = "https://raw.githubusercontent.com/sepehrn0107/skill-manager/main/skills/skills.md"
+    try:
+        with urllib.request.urlopen(url, timeout=15) as r:
+            content = r.read().decode()
+        dest.write_text(content, encoding="utf-8")
+        print(f"Downloaded skills.md → {dest}")
+    except Exception as e:
+        print(f"ERROR: Failed to download skills.md: {e}")
+        print("ABORTING v2.0.0 migration — /skills routes will NOT be registered.")
+        print("Fix network access or ensure skills/skills.md exists in toolbox, then re-run /upgrade.")
+        raise SystemExit(1)
 ```
 
 2. Generate `{{TOOLBOX_PATH}}/skills.json` from current installed plugins + local skills:
@@ -427,6 +439,289 @@ else:
 
 7. Output:
    > Skill manager bootstrapped. Run `/skills list` to see your installed skills.
+
+---
+
+#### v2.1.3 — Standards Caching for Sub-Agents
+
+The `/implement` orchestrator now pre-assembles a `standards-cache.md` in the ticket directory. Sub-agents read this single file instead of individually loading 4-8 standards files each. Saves ~3,000-5,000 tokens per parallel sub-agent.
+
+**Steps:**
+
+No installed file changes needed — this change is in the skill file only.
+
+1. Output:
+   > Standards caching enabled for /implement sub-agents. Pull latest toolbox to use.
+
+---
+
+#### v2.2.0 — Compact Skill Routing Table
+
+Compacts the skill routing table by ~40%, separating user-facing routes from internal auto-routes and removing verbose trigger descriptions.
+
+**Steps:**
+
+1. Read `{{TOOLBOX_PATH}}/templates/sections/skill-routing.md`, replace all tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`), write to `<CLAUDE_PATH>/toolbox-sections/skill-routing.md`.
+
+2. Output:
+   > Skill routing table compacted. Token savings: ~200 tokens per session.
+
+---
+
+#### v2.3.0 — Selective Standards Loading
+
+Standards are now loaded selectively based on task type instead of always loading all 9 files. This reduces token usage by 40-60% for most code edits.
+
+**Steps:**
+
+1. Read `{{TOOLBOX_PATH}}/templates/sections/standards.md`, replace all tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`), write to `<CLAUDE_PATH>/toolbox-sections/standards.md`.
+
+2. Output:
+   > Selective standards loading enabled. Standards will auto-load based on task type.
+
+---
+
+#### v2.4.0 — Lazy Memory Loading
+
+Memory files now load as one-line summaries at session start instead of full content. Full files are loaded on-demand when needed. Saves ~1,000 tokens per session.
+
+**Steps:**
+
+1. Read `{{TOOLBOX_PATH}}/templates/sections/session-start.md`, replace all tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, `{{VAULT_PATH}}`), write to `<CLAUDE_PATH>/toolbox-sections/session-start.md`.
+
+2. Output:
+   > Lazy memory loading enabled. Memory files load as summaries at session start.
+
+---
+
+#### v2.4.1 — Remediate Ghost /skills Route
+
+Ensures `skills/skills.md` exists and registers the `/skills` lifecycle entry if missing.
+Fixes installs where the v2.0.0 download failed and the lifecycle entry was never written.
+
+**Steps:**
+
+1. Verify `{{TOOLBOX_PATH}}/skills/skills.md` exists. If missing, output:
+   > ERROR: skills.md still missing. Run `git pull` in the toolbox directory and re-run /upgrade.
+   ...and abort this migration block.
+
+2. Ensure `/skills` lifecycle entry in `~/.claude/toolbox-sections/lifecycle-skills.md`:
+
+```python
+import pathlib
+
+toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
+lifecycle_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "lifecycle-skills.md"
+content = lifecycle_path.read_text(encoding="utf-8")
+if "/skills" not in content:
+    content = content.rstrip() + f"\n- /skills             → {toolbox_path}/skills/skills.md\n"
+    lifecycle_path.write_text(content, encoding="utf-8")
+    print("Added /skills lifecycle entry")
+else:
+    print("Skipped: /skills lifecycle entry already present")
+```
+
+3. Ensure `/skills` routing row in `~/.claude/toolbox-sections/skill-routing.md`:
+
+```python
+import pathlib
+
+routing_path = pathlib.Path.home() / ".claude" / "toolbox-sections" / "skill-routing.md"
+content = routing_path.read_text(encoding="utf-8")
+if "skills" not in content:
+    content = content.replace(
+        "| Any code edit request",
+        '| "`/skills`", "install skills", "list skills", "add skill", "disable skill", "enable skill", "update skill" | Read and follow `/skills` skill |\n| Any code edit request'
+    )
+    routing_path.write_text(content, encoding="utf-8")
+    print("Added /skills routing row")
+else:
+    print("Skipped: /skills routing already present")
+```
+
+4. Output:
+   > Ghost /skills route remediated. Run `/skills list` to verify.
+
+---
+
+#### v2.4.2 — Post-Migration Skill Path Validation
+
+Warns about ghost skill paths in `lifecycle-skills.md` introduced by any prior migration.
+Non-fatal — warns but does not abort, since prior migration steps may be irreversible.
+
+**Steps:**
+
+```python
+import pathlib, re
+
+lifecycle_file = pathlib.Path.home() / ".claude" / "toolbox-sections" / "lifecycle-skills.md"
+if lifecycle_file.exists():
+    content = lifecycle_file.read_text(encoding="utf-8")
+    pattern = re.compile(r"→\s+(.+\.md)")
+    missing = [
+        m.group(1).strip()
+        for line in content.splitlines()
+        if (m := pattern.search(line)) and not pathlib.Path(m.group(1).strip()).exists()
+    ]
+    if missing:
+        print("[upgrade] WARNING: Ghost skill paths in lifecycle-skills.md:")
+        for p in missing:
+            print(f"  MISSING: {p}")
+    else:
+        print("[upgrade] Skill path validation passed.")
+```
+
+---
+
+#### v2.5.0 — Remediate Unrendered {{VAULT_PATH}} Tokens
+
+Detects and re-renders any section file that still contains literal `{{VAULT_PATH}}` tokens.
+Fixes installs where v1.6.0 ran before `VAULT_PATH` was configured.
+
+**Steps:**
+
+1. Scan `~/.claude/toolbox-sections/` for files containing `{{VAULT_PATH}}`:
+
+```python
+import pathlib
+
+sections_dir = pathlib.Path.home() / ".claude" / "toolbox-sections"
+broken = [f for f in sorted(sections_dir.glob("*.md")) if "{{VAULT_PATH}}" in f.read_text(encoding="utf-8")]
+if broken:
+    print(f"Found {len(broken)} file(s) with unrendered {{VAULT_PATH}}: {[f.name for f in broken]}")
+else:
+    print("v2.5.0: No unrendered {{VAULT_PATH}} tokens found — skipping.")
+```
+
+If no broken files: skip the rest of this migration.
+
+2. Resolve `VAULT_PATH`:
+   - Try to extract from a rendered section file that is already correct (look for a line like `- \`$VAULT\` = \`<path>\`` in `vault-paths.md` where `<path>` contains no `{{`)
+   - If not found, prompt: "Enter your vault path (absolute path, forward slashes):"
+
+3. For each broken file, re-render it from the corresponding template in `{{TOOLBOX_PATH}}/templates/sections/`,
+   substituting all 4 tokens (`{{TOOLBOX_PATH}}`, `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, `{{VAULT_PATH}}`).
+
+4. Output:
+   > v2.5.0: Re-rendered N section file(s) — {{VAULT_PATH}} tokens resolved.
+
+---
+
+#### v2.5.1 — Fail-Closed Standards Gate + Dependency Checks
+
+Upgrades the standards gate from fail-open to fail-closed when `jq` is missing, and adds
+dependency + vault path warnings to the session-start hook.
+
+**Steps:**
+
+1. Run dependency pre-check — print warnings for any missing tools (`jq`, `python3`, `bash`):
+   ```bash
+   MISSING=""
+   for dep in jq bash python3; do
+     command -v "$dep" >/dev/null 2>&1 || MISSING="${MISSING} ${dep}"
+   done
+   [ -n "$MISSING" ] && echo "[upgrade] WARNING: missing dependencies:${MISSING}. Install them for full toolbox functionality."
+   ```
+
+2. Copy `{{TOOLBOX_PATH}}/templates/hooks/pre-tool-standards-gate.sh` → `~/.claude/hooks/pre-tool-standards-gate.sh`
+   Then run: `chmod +x ~/.claude/hooks/pre-tool-standards-gate.sh`
+
+3. Copy `{{TOOLBOX_PATH}}/templates/hooks/session-start.sh` → `~/.claude/hooks/session-start.sh`
+   Then run: `chmod +x ~/.claude/hooks/session-start.sh`
+
+4. Output:
+   > Standards gate upgraded to fail-closed mode. Dependency and vault path checks added to session-start hook.
+
+---
+
+#### v2.5.2 — Vault Path in Initial Setup Flow
+
+Renders `~/.claude/toolbox-sections/` and scaffolds vault memory for installs that completed
+"Set up the toolbox" before v2.5.2 but never ran `/upgrade-dev`. No-ops if sections are already
+fully rendered (no `{{VAULT_PATH}}` literals remain).
+
+**Steps:**
+
+1. Check if sections are already rendered — skip if `~/.claude/toolbox-sections/vault-paths.md`
+   exists and contains no `{{VAULT_PATH}}` literal:
+   ```python
+   import pathlib
+   vp = pathlib.Path.home() / ".claude" / "toolbox-sections" / "vault-paths.md"
+   if vp.exists() and "{{VAULT_PATH}}" not in vp.read_text(encoding="utf-8"):
+       print("v2.5.2: Sections already rendered — skipping.")
+       raise SystemExit(0)
+   ```
+
+2. Prompt for vault path (same logic as Setup Step 17):
+   > "Enter your vault path (absolute path, forward slashes). Press Enter to use the default: `<WORKSPACE_PATH>/vault/`"
+   - Empty/whitespace → `VAULT_PATH = <WORKSPACE_PATH>/vault/`
+   - Normalize: strip trailing slashes.
+
+3. Render all 10 section templates into `~/.claude/toolbox-sections/` (replace `{{TOOLBOX_PATH}}`,
+   `{{WORKSPACE_PATH}}`, `{{CLAUDE_PATH}}`, `{{VAULT_PATH}}`). Also render `CLAUDE.global.md`.
+   Ensure `~/.claude/CLAUDE.md` has the @import line.
+
+4. Scaffold vault memory (`mkdir -p` + copy starter files, skip if exists).
+
+5. Output:
+   > Section files rendered. Vault path set to: <VAULT_PATH>
+
+---
+
+#### v2.6.0 — Flexible Toolbox Directory Detection
+
+Replaces the hardcoded `"toolbox"` name check in the session-start hook with marker-file
+detection (`.toolbox-marker`). Supports renamed clones, `TOOLBOX_DIR` env var overrides,
+and falls back to the legacy `"toolbox"` name for backward compatibility.
+
+**Steps:**
+
+1. Create `.toolbox-marker` in the toolbox directory if it does not already exist:
+
+```python
+import pathlib
+
+toolbox_path = pathlib.Path("{{TOOLBOX_PATH}}")
+marker = toolbox_path / ".toolbox-marker"
+if not marker.exists():
+    marker.write_text(
+        "# Toolbox Marker File\n"
+        "# This file identifies this directory as the toolbox installation.\n"
+        "# It is used by the session-start hook to exclude the toolbox from\n"
+        "# workspace project listings, regardless of the directory name.\n"
+        "# Do not delete this file.\n",
+        encoding="utf-8"
+    )
+    print("Created .toolbox-marker")
+else:
+    print(".toolbox-marker already exists — skipping")
+```
+
+2. Copy the updated session-start hook:
+
+   Copy `{{TOOLBOX_PATH}}/templates/hooks/session-start.sh`
+   → `~/.claude/hooks/session-start.sh`
+   Then run: `chmod +x ~/.claude/hooks/session-start.sh`
+
+3. Output:
+   > Flexible toolbox detection installed. The session-start hook now identifies the toolbox
+   > by `.toolbox-marker` instead of directory name. Set `TOOLBOX_DIR` env var to override.
+
+---
+
+#### v2.7.0 — Install hardcoded-paths pre-commit hook
+
+Installs the pre-commit hook that rejects commits introducing user-specific absolute paths
+in tracked skill, template, and standards files.
+
+**Steps:**
+
+1. Copy `{{TOOLBOX_PATH}}/tools/hooks/reject-hardcoded-paths.sh`
+   → `{{TOOLBOX_PATH}}/.git/hooks/pre-commit`
+   Then run: `chmod +x {{TOOLBOX_PATH}}/.git/hooks/pre-commit`
+
+2. Output:
+   > Pre-commit hook installed.
 
 ---
 

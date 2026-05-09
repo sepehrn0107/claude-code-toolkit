@@ -7,10 +7,6 @@ description: Fetch package metadata from npm or PyPI JSON APIs — version, type
 
 Compact package info without crawling the full docs page.
 
-> `{{TOOLBOX_PATH}}` = `C:/Users/sepeh/Documents/workspace/toolbox`
-
----
-
 ## When This Skill Triggers
 
 Use instead of `/web-fetch` when Claude needs to know:
@@ -28,7 +24,7 @@ Do NOT trigger when you need:
 ## How to Run
 
 ```bash
-python C:/Users/sepeh/Documents/workspace/toolbox/tools/pkg-info/pkg_info.py --name <package>
+python {{TOOLBOX_PATH}}/tools/pkg-info/pkg_info.py --name <package>
 ```
 
 Options:
@@ -68,7 +64,7 @@ weekly downloads: 32.1M
 ## Examples
 
 ```bash
-TOOL=C:/Users/sepeh/Documents/workspace/toolbox/tools/pkg-info/pkg_info.py
+TOOL={{TOOLBOX_PATH}}/tools/pkg-info/pkg_info.py
 
 # Auto-detect registry (npm default)
 python $TOOL --name express
